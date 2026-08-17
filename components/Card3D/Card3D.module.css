@@ -1,0 +1,26 @@
+.card {
+  display: block;
+  background: var(--color-card);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-card);
+  padding: 28px;
+  color: inherit;
+  transform-style: preserve-3d;
+  transition: transform var(--transition-card), box-shadow var(--transition-card),
+    border-color var(--transition-card);
+}
+
+.card:hover {
+  transform: rotateX(4deg) rotateY(-3deg) translateY(-8px);
+  border-color: var(--border-accent);
+  box-shadow: var(--shadow-card-hover);
+  color: inherit;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .card,
+  .card:hover {
+    transform: none;
+    transition: box-shadow var(--transition-card), border-color var(--transition-card);
+  }
+}

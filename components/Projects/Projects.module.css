@@ -1,0 +1,82 @@
+.section {
+  scroll-margin-top: var(--scroll-offset);
+  padding: 40px 0 60px;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 22px;
+  perspective: 1400px;
+}
+
+/* padding is declared here, not just inherited from the card primitive, so the
+   media band's negative margins stay locked to it */
+/* Column flex so the media band can be pinned to the bottom edge. The grid
+   stretches both cards to the tallest one, and without this the band sits at the
+   end of the text instead, leaving a strip of card visible beneath it. */
+.card,
+.card:hover {
+  --media-ratio: 16 / 9;
+  --card-pad: 28px;
+  display: flex;
+  flex-direction: column;
+  padding: var(--card-pad);
+  color: inherit;
+  text-decoration: none;
+}
+
+.meta {
+  font-family: var(--font-mono), monospace;
+  font-size: var(--text-mono-meta);
+  letter-spacing: 0.12em;
+  color: var(--color-accent);
+}
+
+.title {
+  margin-top: 12px;
+  font-size: var(--text-card-title-lg);
+  font-weight: 600;
+  color: var(--color-ink);
+}
+
+/* the bottom margin is the minimum gap to the media band, held for the taller
+   card where `margin-top: auto` on the band collapses to nothing */
+.body {
+  margin: 12px 0 22px;
+  font-size: var(--text-card-body);
+  line-height: 1.75;
+  color: var(--color-muted);
+}
+
+.link {
+  color: var(--color-accent);
+  text-decoration: underline;
+}
+
+/* Reserved space for a screenshot — intentionally empty until the images land.
+   Negative side and bottom margins bleed it to the card's left, right, and bottom
+   edges; the bottom corners are rounded here rather than clipped by the card,
+   because `overflow` on the card would flatten its `transform-style: preserve-3d`
+   and kill the hover tilt. `position: relative` lets the fill image size to this box. */
+.media {
+  position: relative;
+  margin: auto calc(var(--card-pad) * -1) calc(var(--card-pad) * -1);
+  aspect-ratio: var(--media-ratio);
+  flex: none;
+  border-radius: 0 0 var(--radius-card) var(--radius-card);
+  overflow: hidden;
+}
+
+/* contain, not cover — these are diagrams, and cropping one loses the end of
+   the pipeline. The slot already matches the image's ratio, so nothing letterboxes. */
+.mediaImage {
+  object-fit: contain;
+  object-position: center;
+}
+
+@media (max-width: 900px) {
+  .grid {
+    grid-template-columns: 1fr;
+  }
+}

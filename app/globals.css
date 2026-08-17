@@ -1,0 +1,95 @@
+:root {
+  /* color */
+  --color-paper: #f4f1e8;
+  --color-card: #fbf9f2;
+  --color-ink: #1a1a17;
+  --color-muted: #5c5848;
+  --color-faint: #8a8471;
+  --color-accent: #3546e0;
+  --color-on-accent: #f4f6ff;
+  --color-chip-text: #3a3a34;
+  --color-side-link: #6a6a60;
+
+  /* surfaces */
+  --color-nav-bg: rgba(244, 241, 232, 0.85);
+  /* plate behind transparent logos that need a white field of their own */
+  --color-logo-plate: #ffffff;
+  --border-default: rgba(26, 26, 23, 0.1);
+  --border-strong: rgba(26, 26, 23, 0.22);
+  --border-accent: rgba(53, 70, 224, 0.4);
+  --border-nav: rgba(26, 26, 23, 0.08);
+  --border-rule: rgba(26, 26, 23, 0.15);
+
+  /* elevation */
+  --shadow-card-hover: 0 30px 60px rgba(26, 26, 23, 0.12), 0 0 40px rgba(53, 70, 224, 0.1);
+  --shadow-btn-hover: 0 10px 26px rgba(53, 70, 224, 0.25);
+
+
+  /* radius */
+  --radius-card: 16px;
+  --radius-control: 8px;
+  --radius-chip: 6px;
+
+  /* layout */
+  --content-max: 1080px;
+  --content-pad: 32px;
+  --scroll-offset: 70px;
+
+  /* type */
+  --text-h1: 58px;
+  --text-h2: 30px;
+  --text-card-title-lg: 20px;
+  --text-card-title: 19px;
+  --text-org: 18px;
+  --text-body: 15px;
+  --text-group-label: 13px;
+  --text-card-body: 13px;
+  --text-card-body-sm: 12.5px;
+  --text-mono: 12px;
+  --text-mono-sm: 11px;
+  --text-mono-meta: 10.5px;
+
+  /* motion */
+  --transition-card: 0.35s;
+  --transition-btn: 0.25s;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  background: var(--color-paper);
+  color: var(--color-ink);
+  font-family: var(--font-sans), system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1,
+h2,
+h3,
+p {
+  margin: 0;
+}
+
+a {
+  color: var(--color-ink);
+  text-decoration: none;
+}
+
+a:hover {
+  color: var(--color-accent);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}

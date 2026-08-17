@@ -1,0 +1,23 @@
+.button {
+  display: inline-block;
+  background: var(--color-accent);
+  color: var(--color-on-accent);
+  padding: 13px 26px;
+  font-size: var(--text-card-body);
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  border-radius: var(--radius-control);
+  transition: transform var(--transition-btn), box-shadow var(--transition-btn);
+}
+
+.button:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-btn-hover);
+  color: var(--color-on-accent);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .button:hover {
+    transform: none;
+  }
+}

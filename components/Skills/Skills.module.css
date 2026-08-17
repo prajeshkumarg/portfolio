@@ -1,0 +1,29 @@
+.section {
+  scroll-margin-top: var(--scroll-offset);
+  padding: 40px 0 60px;
+}
+
+/* The reference omits this; the card tilt needs a perspective ancestor. */
+.stage {
+  perspective: 1400px;
+}
+
+.panel {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  padding: 32px;
+}
+
+.groupLabel {
+  margin-bottom: 10px;
+  font-size: var(--text-group-label);
+  font-weight: 600;
+  color: var(--color-ink);
+}
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}

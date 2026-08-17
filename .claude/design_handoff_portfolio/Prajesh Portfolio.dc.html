@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet data-dc-atomics>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&amp;family=JetBrains+Mono:ital,wght@0,400;0,500;0,700;1,400&amp;display=swap" rel="stylesheet">
+<script src="./image-slot.js"></script>
+<script src="./slime3d.js"></script>
+<style>
+html{scroll-behavior:smooth}
+body{margin:0;background:#f4f1e8;font-family:'Space Grotesk',system-ui,sans-serif;color:#1a1a17}
+a{color:#1a1a17}
+a:hover{color:#3546e0}
+.chip{border:1px solid rgba(26,26,23,.22);border-radius:6px;padding:5px 11px;font-family:'JetBrains Mono',monospace;font-size:11px;color:#3a3a34}
+.card3d{background:#fbf9f2;border:1px solid rgba(26,26,23,.1);border-radius:16px;transition:transform .35s,box-shadow .35s,border-color .35s;transform-style:preserve-3d}
+.card3d:hover{transform:rotateX(4deg) rotateY(-3deg) translateY(-8px);border-color:rgba(53,70,224,.4);box-shadow:0 30px 60px rgba(26,26,23,.12),0 0 40px rgba(53,70,224,.1)}
+.section-label{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.22em;color:#3546e0;margin-bottom:16px;display:flex;align-items:center;gap:12px}
+.section-label::before{content:'';width:26px;height:1px;background:#3546e0;display:inline-block}
+.btn-primary{background:#3546e0;color:#f4f6ff;padding:13px 26px;font-size:13px;font-weight:600;border-radius:8px;text-decoration:none;letter-spacing:.02em;transition:transform .25s,box-shadow .25s}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 10px 26px rgba(53,70,224,.25);color:#f4f6ff}
+.side-link{writing-mode:vertical-rl;text-orientation:mixed;font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.1em;color:#6a6a60;text-decoration:none}
+.side-link:hover{color:#3546e0}
+</style>
+</helmet>
+
+<!-- ============ NAV ============ -->
+<div style="position:sticky;top:0;z-index:50;background:rgba(244,241,232,.85);backdrop-filter:blur(10px);border-bottom:1px solid rgba(26,26,23,.08)">
+  <div style="max-width:1080px;margin:0 auto;display:flex;justify-content:space-between;align-items:center;padding:16px 32px;font-family:'JetBrains Mono',monospace;font-size:12px">
+    <span style="font-weight:700;letter-spacing:.05em">PRAJESH<span style="color:#3546e0">.</span></span>
+    <div style="display:flex;gap:24px">
+      <a href="#work" style="text-decoration:none;color:#5c5848">Work</a>
+      <a href="#projects" style="text-decoration:none;color:#5c5848">Projects</a>
+      <a href="#skills" style="text-decoration:none;color:#5c5848">Skills</a>
+      <a href="https://blog-praj3sh.com" target="_blank" style="text-decoration:none;color:#5c5848">Blog</a>
+      <a href="#contact" style="text-decoration:none;color:#3546e0;font-weight:700">Contact</a>
+    </div>
+  </div>
+</div>
+
+<div style="max-width:1080px;margin:0 auto;padding:0 32px">
+
+  <!-- ============ HERO ============ -->
+  <div id="top" style="scroll-margin-top:70px;padding:70px 0 100px;display:grid;grid-template-columns:28px 1fr 1fr;gap:44px;align-items:center;min-height:520px">
+    <div style="display:flex;flex-direction:column;align-items:center;gap:18px;height:100%;padding:6px 0">
+      <a href="#work" class="side-link">WORK</a>
+      <a href="#projects" class="side-link">PROJECTS</a>
+      <div style="flex:1;width:1px;background:rgba(26,26,23,.15);min-height:40px"></div>
+      <a href="#contact" class="side-link">CONTACT</a>
+    </div>
+    <div>
+      <div style="font-family:'JetBrains Mono',monospace;font-size:12px;color:#3546e0;letter-spacing:.1em;margin-bottom:20px">I'M PRAJESH KUMAR</div>
+      <h1 style="margin:0;font-size:58px;line-height:1.05;font-weight:700;letter-spacing:-.01em">
+        <span style="display:block;color:#1a1a17">Engineer.</span>
+        <span style="display:block;color:#3546e0">Compilers.</span>
+        <span style="display:block;color:#1a1a17">Security.</span>
+      </h1>
+      <p style="max-width:440px;font-size:15px;line-height:1.8;color:#5c5848;margin:26px 0 0">SDE intern at Amazon, MSCS at NYU Courant — I write compilers in C++ and OCaml, teach parallel computing, and break things, legally, with OSIRIS Lab.</p>
+      <div style="display:flex;gap:16px;margin-top:34px;align-items:center;flex-wrap:wrap">
+        <a href="#work" class="btn-primary">See my work →</a>
+        <a href="uploads/resume_file-1783319775597.pdf" target="_blank" style="font-family:'JetBrains Mono',monospace;font-size:12px;color:#5c5848;text-decoration:underline">resume.pdf ↓</a>
+      </div>
+    </div>
+    <div style="position:relative;width:100%;aspect-ratio:1/1.05">
+      <slime-3d></slime-3d>
+      <div style="position:absolute;bottom:10px;left:0;right:0;text-align:center;font-family:'JetBrains Mono',monospace;font-size:10.5px;color:#8a8471;pointer-events:none">click + drag, then flick to split droplets</div>
+    </div>
+  </div>
+
+  <!-- ============ EXPERIENCE ============ -->
+  <div id="work" style="scroll-margin-top:70px;padding:60px 0">
+    <div class="section-label">EXPERIENCE</div>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:22px;perspective:1400px">
+      <div class="card3d" style="padding:28px">
+        <div style="font-family:'JetBrains Mono',monospace;font-size:10.5px;color:#3546e0;letter-spacing:.12em">2026 · SEATTLE</div>
+        <div style="font-size:18px;font-weight:600;margin-top:12px">Amazon</div>
+        <div style="font-size:12.5px;color:#8a8471;margin-top:2px">Software Development Intern</div>
+        <p style="font-size:12.5px;line-height:1.75;color:#5c5848;margin:14px 0 0">I built a Grants Console putting every temporary access grant across Amazon Connect under a magnifying glass — surfacing exactly who can reach what, and closing the door the moment they shouldn't.</p>
+      </div>
+      <div class="card3d" style="padding:28px">
+        <div style="font-family:'JetBrains Mono',monospace;font-size:10.5px;color:#3546e0;letter-spacing:.12em">2023–25 · BENGALURU</div>
+        <div style="font-size:18px;font-weight:600;margin-top:12px">Shell</div>
+        <div style="font-size:12.5px;color:#8a8471;margin-top:2px">Associate Software Engineer</div>
+        <p style="font-size:12.5px;line-height:1.75;color:#5c5848;margin:14px 0 0">I closed twelve vulnerabilities, rebuilt a permissions system from scratch, cut deploys from 4h to under 1h, and redesigned storage for 3x the query speed and $70K/yr saved.</p>
+      </div>
+      <div class="card3d" style="padding:28px">
+        <div style="font-family:'JetBrains Mono',monospace;font-size:10.5px;color:#3546e0;letter-spacing:.12em">2025–27 · NEW YORK</div>
+        <div style="font-size:18px;font-weight:600;margin-top:12px">NYU Courant</div>
+        <div style="font-size:12.5px;color:#8a8471;margin-top:2px">MSCS · TA · OSIRIS Lab</div>
+        <p style="font-size:12.5px;line-height:1.75;color:#5c5848;margin:14px 0 0">I teach 100+ students OpenMP/MPI/CUDA weekly. With NYUSEC, I built the Terraform/AWS infrastructure behind CSAW '25 for 1,000+ competitors.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ PROJECTS ============ -->
+  <div id="projects" style="scroll-margin-top:70px;padding:40px 0 60px">
+    <div class="section-label">PROJECTS</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:22px;perspective:1400px">
+      <a href="https://github.com/prajeshkumarg" target="_blank" class="card3d" style="padding:28px;text-decoration:none;color:inherit;display:block">
+        <div style="font-family:'JetBrains Mono',monospace;font-size:10.5px;color:#3546e0;letter-spacing:.12em">C++ · MLIR · LLVM</div>
+        <div style="font-size:20px;font-weight:600;margin-top:12px">MiniTensorCompiler</div>
+        <p style="font-size:13px;line-height:1.75;color:#5c5848;margin:12px 0 0">A language for tensors I taught to speak fluent LLVM. It fuses, folds, and catches dimension mismatches before they become runtime crime scenes — then hands off to native or JIT execution. <span style="text-decoration:underline;color:#3546e0">github ↗</span></p>
+      </a>
+      <a href="https://github.com/prajeshkumarg" target="_blank" class="card3d" style="padding:28px;text-decoration:none;color:inherit;display:block">
+        <div style="font-family:'JetBrains Mono',monospace;font-size:10.5px;color:#3546e0;letter-spacing:.12em">OCAML · RISC-V</div>
+        <div style="font-size:20px;font-weight:600;margin-top:12px">AnyLang</div>
+        <p style="font-size:13px;line-height:1.75;color:#5c5848;margin:12px 0 0">Four stages, one long interrogation: I lower a typed language down to bare RISC-V, tightened by CFG analysis and cross-examined with a hand-built simulator. <span style="text-decoration:underline;color:#3546e0">github ↗</span></p>
+      </a>
+    </div>
+  </div>
+
+  <!-- ============ SKILLS ============ -->
+  <div id="skills" style="scroll-margin-top:70px;padding:40px 0 60px">
+    <div class="section-label">SKILLS</div>
+    <div class="card3d" style="padding:32px;display:flex;flex-direction:column;gap:24px">
+      <div>
+        <div style="font-size:13px;font-weight:600;margin-bottom:10px;color:#1a1a17">Languages</div>
+        <div style="display:flex;flex-wrap:wrap;gap:8px">
+          <span class="chip">C/C++</span><span class="chip">OCaml</span><span class="chip">Python</span><span class="chip">Java</span><span class="chip">C#</span><span class="chip">JavaScript</span>
+        </div>
+      </div>
+      <div>
+        <div style="font-size:13px;font-weight:600;margin-bottom:10px;color:#1a1a17">Systems &amp; Compilers</div>
+        <div style="display:flex;flex-wrap:wrap;gap:8px">
+          <span class="chip">LLVM/MLIR</span><span class="chip">CUDA</span><span class="chip">OpenMP</span><span class="chip">MPI</span><span class="chip">Linux</span><span class="chip">RISC-V</span>
+        </div>
+      </div>
+      <div>
+        <div style="font-size:13px;font-weight:600;margin-bottom:10px;color:#1a1a17">Cloud &amp; Infra</div>
+        <div style="display:flex;flex-wrap:wrap;gap:8px">
+          <span class="chip">AWS</span><span class="chip">Terraform</span><span class="chip">Docker</span><span class="chip">Kubernetes</span><span class="chip">CI/CD</span><span class="chip">PostgreSQL</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ BLOG ============ -->
+  <div id="blog" style="scroll-margin-top:70px;padding:40px 0 60px">
+    <div class="section-label">WRITING</div>
+    <a href="https://blog-praj3sh.com" target="_blank" class="card3d" style="padding:28px;text-decoration:none;color:inherit;display:block">
+      <div style="font-size:19px;font-weight:600">Notes from the lower layers</div>
+      <p style="font-size:13px;line-height:1.75;color:#5c5848;margin:12px 0 0">My field notes from the lower layers of the machine — dialect design, dataflow, and the occasional confession extracted from a CTF challenge. <span style="text-decoration:underline;color:#3546e0">blog-praj3sh.com ↗</span></p>
+    </a>
+  </div>
+
+  <!-- ============ CONTACT ============ -->
+  <div id="contact" style="scroll-margin-top:70px;padding:60px 0 90px;text-align:center">
+    <div class="section-label" style="justify-content:center">GET IN TOUCH</div>
+    <h2 style="font-size:30px;font-weight:600;margin:0 0 18px">The case is still open.</h2>
+    <p style="font-size:15px;line-height:1.85;max-width:480px;margin:0 auto;color:#5c5848">Looking for a 2027 SDE role — compilers, systems, or security teams — where there's always another layer to peel back.</p>
+    <div style="margin-top:30px"><a href="mailto:pg2973@nyu.edu" class="btn-primary">pg2973@nyu.edu</a></div>
+    <div style="display:flex;gap:24px;justify-content:center;margin-top:26px;font-family:'JetBrains Mono',monospace;font-size:12px">
+      <a href="https://github.com/prajeshkumarg" target="_blank" style="text-decoration:none;color:#5c5848">github ↗</a>
+      <a href="https://linkedin.com/prajeshkumarg" target="_blank" style="text-decoration:none;color:#5c5848">linkedin ↗</a>
+      <a href="https://blog-praj3sh.com" target="_blank" style="text-decoration:none;color:#5c5848">blog ↗</a>
+    </div>
+  </div>
+
+  <div style="text-align:center;font-family:'JetBrains Mono',monospace;font-size:10.5px;color:#8a8471;padding:30px 0">© 2026 Prajesh Kumar Ganesh Kumar</div>
+</div>
+
+</x-dc>
+</body>
+</html>
