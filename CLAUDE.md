@@ -112,6 +112,7 @@ npm run lint
 
 - `public/resume.pdf` — the handoff links `uploads/resume_file-1783319775597.pdf` but the
   asset was not included. Link points at `/resume.pdf`; real file still needed.
-- Blog URL `blog-praj3sh.com` appears in 3 places (nav, Writing card, Contact) — confirm final.
+- ~~Blog URL — confirm final.~~ Confirmed `https://blog-praj3sh.web.app` (Firebase Hosting).
+  Set once as `site.blogHref`; nav, Writing card, and Contact all derive from it.
 - LinkedIn in the reference is `linkedin.com/prajeshkumarg`, missing `/in/`. Corrected in
   `content.ts` to `linkedin.com/in/prajeshkumarg`.

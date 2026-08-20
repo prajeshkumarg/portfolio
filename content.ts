@@ -9,7 +9,7 @@ export const site = {
   wordmark: 'PRAJESH',
   email: 'pg2973@nyu.edu',
   resumeHref: '/resume.pdf',
-  blogHref: 'https://blog-praj3sh.com',
+  blogHref: 'https://blog-praj3sh.web.app',
   githubHref: 'https://github.com/prajeshkumarg',
   linkedinHref: 'https://linkedin.com/in/prajeshkumarg',
   copyright: '© 2026 Prajesh Kumar Ganesh Kumar',
@@ -110,7 +110,7 @@ export const skillGroups: SkillGroup[] = [
 export const writing = {
   title: 'Notes on compilers and systems',
   body: 'I write about MLIR dialect design, dataflow analysis, and the CTF challenges I work through with OSIRIS Lab.',
-  linkLabel: 'blog-praj3sh.com ↗',
+  linkLabel: 'blog-praj3sh ↗',
   href: site.blogHref,
 };
 
