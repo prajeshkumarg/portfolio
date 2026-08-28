@@ -1,0 +1,67 @@
+.section {
+  scroll-margin-top: var(--scroll-offset);
+  padding: 40px 0 60px;
+}
+
+/* The reference omits this; the card tilt needs a perspective ancestor. */
+.stage {
+  perspective: 1400px;
+}
+
+.panel {
+  padding: 28px 32px;
+}
+
+/* one compact row per degree — lighter than the work cards */
+.row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 24px;
+  padding: 18px 0;
+  border-bottom: 1px solid var(--border-default);
+}
+
+.row:first-child {
+  padding-top: 0;
+}
+
+.rowLast {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.degree {
+  font-size: var(--text-card-title-lg);
+  font-weight: 600;
+  color: var(--color-ink);
+}
+
+.institution {
+  margin-top: 4px;
+  font-size: var(--text-body);
+  color: var(--color-muted);
+}
+
+.rowMeta {
+  flex-shrink: 0;
+  text-align: right;
+}
+
+.meta {
+  font-family: var(--font-mono), monospace;
+  font-size: var(--text-mono-meta);
+  letter-spacing: 0.12em;
+  color: var(--color-accent);
+}
+
+@media (max-width: 900px) {
+  .row {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .rowMeta {
+    text-align: left;
+  }
+}

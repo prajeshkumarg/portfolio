@@ -18,7 +18,7 @@ const jetbrainsMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: 'Prajesh Kumar — Engineer. Compilers. Security.',
+  title: 'Prajesh',
   description:
     'SDE intern at Amazon, MSCS at NYU Courant — I write compilers in C++ and OCaml, teach parallel computing, and break things, legally, with OSIRIS Lab.',
 };

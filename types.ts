@@ -41,6 +41,14 @@ export type SkillGroup = {
   items: string[];
 };
 
+export type Education = {
+  degree: string;
+  /** Plain name — the separator lives in `degree` ("MS - Computer Science"). */
+  institution: string;
+  /** Dates · location line, like the experience cards' meta. */
+  meta: string;
+};
+
 export type SocialLink = {
   label: string;
   href: string;

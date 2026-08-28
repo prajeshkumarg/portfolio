@@ -1,4 +1,4 @@
-import type { Experience, Project, SkillGroup, SocialLink } from './types';
+import type { Education, Experience, Project, SkillGroup, SocialLink } from './types';
 import amazonLogo from './public/logos/amazon.png';
 import shellLogo from './public/logos/shell.png';
 import nyuLogo from './public/logos/nyu.png';
@@ -58,7 +58,7 @@ export const experiences: Experience[] = [
     logo: shellLogo,
     logoPlate: true,
     role: 'Software Engineer',
-    body: 'I fixed twelve security vulnerabilities, rebuilt the permissions system from scratch, cut deployment time from 4 hours to under 1, and redesigned storage for 3x faster queries and $70K/yr in savings.',
+    body: 'I shipped features, API, fixed security vulnerabilities in a commissioning data platform, cut deployment time from 4 hours to under 1 with a CI/CD pipeline, and migrated 50K+ records to SQLite for 3x faster queries.',
   },
   {
     meta: '2025–27 · NEW YORK',
@@ -102,8 +102,31 @@ export const skillGroups: SkillGroup[] = [
     items: ['LLVM/MLIR', 'CUDA', 'OpenMP', 'MPI', 'Linux', 'RISC-V'],
   },
   {
+    label: 'ML & AI',
+    items: [
+      'PyTorch',
+      'Hugging Face',
+      'Diffusion LLMs',
+      'Inference Optimization',
+      'NumPy/Pandas',
+    ],
+  },
+  {
     label: 'Cloud & Infra',
     items: ['AWS', 'Terraform', 'Docker', 'Kubernetes', 'CI/CD', 'PostgreSQL'],
+  },
+];
+
+export const education: Education[] = [
+  {
+    degree: 'MS - Computer Science',
+    institution: 'NYU Courant Institute of Mathematical Sciences',
+    meta: '2025–27 · NEW YORK, USA',
+  },
+  {
+    degree: 'BTech - Computer Science & Engineering',
+    institution: 'Vellore Institute of Technology',
+    meta: '2019–23 · VELLORE, INDIA',
   },
 ];
 
