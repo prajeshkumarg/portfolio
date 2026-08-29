@@ -4,6 +4,7 @@ import shellLogo from './public/logos/shell.png';
 import nyuLogo from './public/logos/nyu.png';
 import anylangArch from './public/projects/anylang-arch.png';
 import miniTensorCompilerOutput from './public/projects/minicompiler.png';
+import heroPortrait from './public/image.png';
 
 export const site = {
   wordmark: 'PRAJESH',
@@ -23,22 +24,20 @@ export const navLinks: SocialLink[] = [
   { label: 'Contact', href: '#contact' },
 ];
 
-export const sideNavLinks: SocialLink[] = [
-  { label: 'WORK', href: '#work' },
-  { label: 'PROJECTS', href: '#projects' },
-];
-
-export const sideNavFooterLink: SocialLink = { label: 'CONTACT', href: '#contact' };
+/**
+ * The hero's vertical side rail — plain words, not links ("don't make them
+ * clickable", 2026-08-29). The rail rule sits between the second and third.
+ */
+export const sideWords: string[] = ['ENGINEER', 'COMPILERS', 'SECURITY'];
 
 export const hero = {
   /** Split so the name can carry the accent colour without copy living in JSX. */
   greeting: { lead: 'Hi, I am ', name: 'Prajesh' },
-  /**
-   * Top / middle / bottom of the rotating stack at rest. They cycle downward and
-   * whichever word is in the middle is the highlighted one, so no per-word colour.
-   */
-  rotating: ['Engineer.', 'Compilers.', 'Security.'],
   bio: 'SDE intern at Amazon and MSCS student at NYU Courant. I build compilers in C++ and OCaml, teach parallel computing, and do security research with OSIRIS Lab.',
+  /** The hero portrait — replaces the rotating word stack (2026-08-28). */
+  portrait: heroPortrait,
+  /** Alt text describing the portrait — required whenever an image is set. */
+  portraitAlt: 'Portrait of Prajesh Kumar',
   ctaLabel: 'See my work',
   ctaHref: '#work',
   resumeLabel: 'resume.pdf ↗',

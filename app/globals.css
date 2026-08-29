@@ -29,6 +29,11 @@
   --radius-card: 16px;
   --radius-control: 8px;
   --radius-chip: 6px;
+  /* the hero portrait's circular frame */
+  --radius-circle: 50%;
+
+  /* hero portrait depth */
+  --shadow-hero-portrait: 0 20px 44px rgba(26, 26, 23, 0.16), 0 0 28px rgba(53, 70, 224, 0.12);
 
   /* layout */
   --content-max: 1080px;

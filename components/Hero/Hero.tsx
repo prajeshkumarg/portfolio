@@ -1,20 +1,21 @@
+import { Fragment } from 'react';
+import Image from 'next/image';
 import ButtonPrimary from '@/components/ButtonPrimary/ButtonPrimary';
-import { hero, sideNavFooterLink, sideNavLinks, site } from '@/content';
+import { hero, sideWords, site } from '@/content';
 import styles from './Hero.module.css';
 
 export default function Hero() {
   return (
     <section id="top" className={styles.hero}>
+      {/* vertical side rail — plain words, not links; the rule sits between
+          the second and third */}
       <div className={styles.side}>
-        {sideNavLinks.map((link) => (
-          <a key={link.href} className={styles.sideLink} href={link.href}>
-            {link.label}
-          </a>
+        {sideWords.map((word, index) => (
+          <Fragment key={word}>
+            <span className={styles.sideWord}>{word}</span>
+            {index === 1 ? <span className={styles.sideRule} aria-hidden="true" /> : null}
+          </Fragment>
         ))}
-        <span className={styles.sideRule} aria-hidden="true" />
-        <a className={styles.sideLink} href={sideNavFooterLink.href}>
-          {sideNavFooterLink.label}
-        </a>
       </div>
 
       <div className={styles.intro}>
@@ -31,14 +32,20 @@ export default function Hero() {
         </div>
       </div>
 
-      {/* every word stays in the DOM and in reading order — the cycle is purely visual */}
-      <p className={styles.rotator}>
-        {hero.rotating.map((word) => (
-          <span key={word} className={styles.word}>
-            {word}
-          </span>
-        ))}
-      </p>
+      {/* col 3 — the portrait, replacing the rotating words. Circular frame,
+          3D tilt on hover, slow bounce; all motion is CSS. */}
+      <div className={styles.portraitStage}>
+        <div className={styles.portraitFrame}>
+          <Image
+            className={styles.portrait}
+            src={hero.portrait}
+            alt={hero.portraitAlt}
+            fill
+            priority
+            sizes="(max-width: 900px) 60vw, 320px"
+          />
+        </div>
+      </div>
     </section>
   );
 }

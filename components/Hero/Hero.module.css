@@ -18,17 +18,13 @@
   padding: 6px 0;
 }
 
-.sideLink {
+.sideWord {
   writing-mode: vertical-rl;
   text-orientation: mixed;
   font-family: var(--font-mono), monospace;
   font-size: var(--text-mono-sm);
   letter-spacing: 0.1em;
   color: var(--color-side-link);
-}
-
-.sideLink:hover {
-  color: var(--color-accent);
 }
 
 .sideRule {
@@ -74,102 +70,43 @@
   text-decoration: underline;
 }
 
-/* col 3 — the rotating stack
-   All three words are on screen at once in three slots (top / middle / bottom).
-   Every word runs the same cycle, offset by a third of the loop via negative delay,
-   so the whole stack steps downward together and the bottom word wraps to the top.
-   The highlight belongs to the middle *slot*, not to any one word. */
-.rotator {
-  --lh: 1.05em;
-  /* vertical distance between slots */
-  --slot: 1.28em;
-  /* the two outer words sit back: smaller and lighter than the one in focus */
-  --rest: 0.62;
+/* col 3 — the portrait in a circular frame, replacing the rotating stack. */
+.portraitStage {
+  --size: clamp(240px, 26vw, 320px);
+  /* flush to the right edge of the hero's third column */
+  justify-self: end;
+  /* the 3D parent, like the card grid's perspective */
+  perspective: 1400px;
+}
+
+.portraitFrame {
   position: relative;
-  /* derived from the slot gap so the box always fits all three words */
-  height: calc(var(--slot) * 2 + var(--lh));
-  font-size: var(--text-h1);
-  line-height: 1.05;
-  letter-spacing: -0.01em;
+  width: var(--size);
+  height: var(--size);
+  border-radius: var(--radius-circle);
+  overflow: hidden;
+  border: 1px solid var(--border-strong);
+  /* explicit paper ground so any soft edges of the cutout blend into the
+     page background instead of reading as their own tint */
+  background: var(--color-paper);
+  box-shadow: var(--shadow-hero-portrait);
+  transform-style: preserve-3d;
+  transition: transform var(--transition-card), border-color var(--transition-card),
+    box-shadow var(--transition-card);
+  will-change: transform;
 }
 
-.word {
-  position: absolute;
-  left: 0;
-  right: 0;
-  top: 50%;
-  height: var(--lh);
-  margin-top: calc(var(--lh) / -2);
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-  white-space: nowrap;
-  font-weight: 500;
-  color: var(--color-muted);
-  /* scaling pivots on the right edge, so every word stays flush to it */
-  transform-origin: right center;
-  animation: cycle 10.5s cubic-bezier(0.62, 0, 0.34, 1) infinite;
+.portraitFrame:hover {
+  transform: rotateX(4deg) rotateY(-6deg) translateY(-6px);
+  border-color: var(--border-accent);
+  box-shadow: var(--shadow-card-hover);
 }
 
-/* resting layout — also what shows when the animation is switched off */
-.word:nth-child(1) {
-  transform: translateY(calc(var(--slot) * -1)) scale(var(--rest));
-}
-
-.word:nth-child(2) {
-  transform: translateY(0) scale(1);
-  font-weight: 700;
-  color: var(--color-accent);
-  animation-delay: -3.5s;
-}
-
-.word:nth-child(3) {
-  transform: translateY(var(--slot)) scale(var(--rest));
-  animation-delay: -7s;
-}
-
-@keyframes cycle {
-  /* top slot — small and light */
-  0%,
-  24% {
-    transform: translateY(calc(var(--slot) * -1)) scale(var(--rest));
-    font-weight: 500;
-    color: var(--color-muted);
-    opacity: 1;
-  }
-  /* middle slot — full size, bold, highlighted */
-  33%,
-  57% {
-    transform: translateY(0) scale(1);
-    font-weight: 700;
-    color: var(--color-accent);
-    opacity: 1;
-  }
-  /* bottom slot */
-  66%,
-  90% {
-    transform: translateY(var(--slot)) scale(var(--rest));
-    font-weight: 500;
-    color: var(--color-muted);
-    opacity: 1;
-  }
-  /* drop away, then come back around above the stack */
-  96% {
-    transform: translateY(calc(var(--slot) * 1.9)) scale(calc(var(--rest) * 0.8));
-    font-weight: 500;
-    color: var(--color-muted);
-    opacity: 0;
-  }
-  96.01% {
-    transform: translateY(calc(var(--slot) * -1.9)) scale(calc(var(--rest) * 0.8));
-    opacity: 0;
-  }
-  100% {
-    transform: translateY(calc(var(--slot) * -1)) scale(var(--rest));
-    font-weight: 500;
-    color: var(--color-muted);
-    opacity: 1;
-  }
+.portrait {
+  object-fit: cover;
+  /* zoom the subject in a touch — the frame crops, so this just tightens
+     the composition */
+  transform: scale(1.18);
 }
 
 @media (max-width: 900px) {
@@ -184,19 +121,19 @@
     display: none;
   }
 
-  .greeting,
-  .rotator {
+  .greeting {
     font-size: clamp(38px, 8vw, var(--text-h1));
   }
 
-  .word {
-    justify-content: flex-start;
+  .portraitStage {
+    --size: clamp(200px, 56vw, 280px);
+    justify-self: center;
   }
 }
 
 /* decoration only — fall back to the static stack, middle word still highlighted */
 @media (prefers-reduced-motion: reduce) {
-  .word {
-    animation: none;
+  .portraitFrame:hover {
+    transform: none;
   }
 }

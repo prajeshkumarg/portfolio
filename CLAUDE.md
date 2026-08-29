@@ -69,9 +69,11 @@ Defined in `app/globals.css` as `:root` custom properties.
 --border-accent     rgba(53,70,224,.4)    card hover
 --shadow-card-hover 0 30px 60px rgba(26,26,23,.12), 0 0 40px rgba(53,70,224,.1)
 --shadow-btn-hover  0 10px 26px rgba(53,70,224,.25)
+--shadow-hero-portrait 0 20px 44px rgba(26,26,23,.16), 0 0 28px rgba(53,70,224,.12)
 --radius-card       16px
 --radius-control    8px
 --radius-chip       6px
+--radius-circle     50%     hero portrait frame
 --content-max       1080px
 ```
 
@@ -84,19 +86,26 @@ Signature interactions:
   `transform-style: preserve-3d` on the card.
 - Button hover → `translateY(-2px)` + button shadow, `.25s`.
 
-## The hero art slot — deliberately empty
+## The hero art slot — the portrait
 
 The handoff's hero is a `28px | 1fr | 1fr` grid whose third column held an interactive
-3D blob. **That was built, then dropped — the 3D direction was rejected.** The hero is
-now `28px | 1fr` and reads as left-aligned copy.
+3D blob. **That was built, then dropped — the 3D direction was rejected.** The grid is
+`28px 1fr 1fr`; the third column holds Prajesh's portrait in a circular frame
+(`public/image.png` — the removebg cutout was tried 2026-08-29 and reverted),
+replacing the rotating word stack (2026-08-28). It is
+`next/image` in a `--radius-circle` frame with a `--shadow-hero-portrait` depth
+shadow, a CSS 3D tilt on hover (perspective on the stage, `preserve-3d` on the
+frame — the same pattern as `.card3d`). A bounce was tried and removed at
+Prajesh's request; motion respects `prefers-reduced-motion`.
 
-Do not reintroduce a canvas, a 3D library, or an animated hero decoration without being
+Do not reintroduce a canvas, a 3D library, or an animation library without being
 asked for it directly.
 
 ## Responsive
 
 The handoff defines **no** breakpoints. Invented behavior:
-- `< 900px` — hero drops the vertical side-nav and collapses to one column
+- `< 900px` — hero drops the vertical side rail (ENGINEER / COMPILERS / SECURITY,
+  non-clickable words) and collapses to one column
 - `< 900px` — Experience 3-col → 1-col, Projects 2-col → 1-col
 - h1 clamps 58px → ~38px
 

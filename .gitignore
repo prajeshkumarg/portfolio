@@ -9,3 +9,7 @@ next-env.d.ts
 
 # local working backlog
 .claude/TODO.md
+
+# stale design assets
+public/design.png
+public/design-removebg-preview.png
