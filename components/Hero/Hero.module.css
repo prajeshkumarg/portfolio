@@ -2,39 +2,20 @@
   scroll-margin-top: var(--scroll-offset);
   padding: 70px 0 100px;
   display: grid;
-  grid-template-columns: 28px 1fr 1fr;
+  grid-template-columns: 1fr 1fr;
   gap: 44px;
-  align-items: center;
-  min-height: 520px;
+  align-items: stretch;
+  min-height: 480px;
 }
 
-/* col 1 — vertical side nav */
-.side {
+/* col 1 — greeting + copy, spread vertically to fill the same height as
+   the portrait column: greeting top, buttons bottom, bio between */
+.intro {
+  justify-self: start;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  gap: 18px;
-  height: 100%;
-  padding: 6px 0;
+  justify-content: space-between;
 }
-
-.sideWord {
-  writing-mode: vertical-rl;
-  text-orientation: mixed;
-  font-family: var(--font-mono), monospace;
-  font-size: var(--text-mono-sm);
-  letter-spacing: 0.1em;
-  color: var(--color-side-link);
-}
-
-.sideRule {
-  flex: 1;
-  width: 1px;
-  min-height: 40px;
-  background: var(--border-rule);
-}
-
-/* col 2 — greeting + copy */
 .greeting {
   font-size: var(--text-h1);
   line-height: 1.05;
@@ -52,13 +33,13 @@
   font-size: var(--text-body);
   line-height: 1.8;
   color: var(--color-muted);
-  margin: 26px 0 0;
+  margin: 18px 0 0;
 }
 
 .actions {
   display: flex;
   gap: 16px;
-  margin-top: 34px;
+  margin-top: 24px;
   align-items: center;
   flex-wrap: wrap;
 }
@@ -72,7 +53,7 @@
 
 /* col 3 — the portrait in a circular frame, replacing the rotating stack. */
 .portraitStage {
-  --size: clamp(240px, 26vw, 320px);
+  --size: clamp(216px, 23vw, 288px);
   /* flush to the right edge of the hero's third column */
   justify-self: end;
   /* the 3D parent, like the card grid's perspective */
@@ -109,6 +90,16 @@
   transform: scale(1.18);
 }
 
+/* the former side-rail words, now a subscript under the frame */
+.portraitCaption {
+  margin: 14px 0 0;
+  font-family: var(--font-mono), monospace;
+  font-size: var(--text-mono);
+  letter-spacing: 0.12em;
+  color: var(--color-faint);
+  text-align: center;
+}
+
 @media (max-width: 900px) {
   .hero {
     grid-template-columns: 1fr;
@@ -117,16 +108,12 @@
     min-height: 0;
   }
 
-  .side {
-    display: none;
-  }
-
   .greeting {
     font-size: clamp(38px, 8vw, var(--text-h1));
   }
 
   .portraitStage {
-    --size: clamp(200px, 56vw, 280px);
+    --size: clamp(180px, 50vw, 252px);
     justify-self: center;
   }
 }

@@ -5,6 +5,7 @@ import nyuLogo from './public/logos/nyu.png';
 import anylangArch from './public/projects/anylang-arch.png';
 import miniTensorCompilerOutput from './public/projects/minicompiler.png';
 import heroPortrait from './public/image.png';
+import vitLogo from './public/logos/vit.webp';
 
 export const site = {
   wordmark: 'PRAJESH',
@@ -24,11 +25,8 @@ export const navLinks: SocialLink[] = [
   { label: 'Contact', href: '#contact' },
 ];
 
-/**
- * The hero's vertical side rail — plain words, not links ("don't make them
- * clickable", 2026-08-29). The rail rule sits between the second and third.
- */
-export const sideWords: string[] = ['ENGINEER', 'COMPILERS', 'SECURITY'];
+/** Subscript caption under the hero portrait — the former side-rail words. */
+export const sideCaption = 'ENGINEER · COMPILERS · SECURITY';
 
 export const hero = {
   /** Split so the name can carry the accent colour without copy living in JSX. */
@@ -118,14 +116,17 @@ export const skillGroups: SkillGroup[] = [
 
 export const education: Education[] = [
   {
-    degree: 'MS - Computer Science',
+    degree: 'Masters - Computer Science',
     institution: 'NYU Courant Institute of Mathematical Sciences',
     meta: '2025–27 · NEW YORK, USA',
+    logo: nyuLogo,
   },
   {
-    degree: 'BTech - Computer Science & Engineering',
+    degree: 'Bachelors - Computer Science & Engineering',
     institution: 'Vellore Institute of Technology',
     meta: '2019–23 · VELLORE, INDIA',
+    logo: vitLogo,
+    logoPlate: true,
   },
 ];
 

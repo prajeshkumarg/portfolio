@@ -3,32 +3,55 @@
   padding: 40px 0 60px;
 }
 
-/* The reference omits this; the card tilt needs a perspective ancestor. */
-.stage {
+/* the two cards stacked, one right below the other */
+.grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 22px;
   perspective: 1400px;
 }
 
-.panel {
-  padding: 28px 32px;
-}
-
-/* one compact row per degree — lighter than the work cards */
-.row {
+/* one card per degree — a left image column and a text column */
+.card {
   display: flex;
-  justify-content: space-between;
-  align-items: baseline;
-  gap: 24px;
-  padding: 18px 0;
-  border-bottom: 1px solid var(--border-default);
+  align-items: stretch;
+  padding: 0;
 }
 
-.row:first-child {
-  padding-top: 0;
+/* the logo band — fills the card's whole left edge, bleeding to the border.
+   The card's corners are rounded here rather than clipped, because `overflow`
+   on the card would flatten `transform-style: preserve-3d` and kill the
+   hover tilt. */
+.cardLogoWrap {
+  position: relative;
+  flex-shrink: 0;
+  width: 32%;
+  min-width: 110px;
+  border-radius: var(--radius-card) 0 0 var(--radius-card);
+  overflow: hidden;
 }
 
-.rowLast {
-  border-bottom: none;
-  padding-bottom: 0;
+/* white plate behind marks with a baked-in white field, like the Shell plate */
+.cardLogoWrap[data-plate='true'] {
+  background: var(--color-logo-plate);
+}
+
+.cardLogoWrap[data-plate='true'] .cardLogo {
+  object-fit: contain;
+  padding: 12px;
+}
+
+.cardLogo {
+  object-fit: cover;
+}
+
+.cardBody {
+  flex: 1;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  justify-content: center;
 }
 
 .degree {
@@ -38,30 +61,16 @@
 }
 
 .institution {
-  margin-top: 4px;
-  font-size: var(--text-body);
+  font-size: var(--text-card-body-sm);
   color: var(--color-muted);
 }
 
-.rowMeta {
-  flex-shrink: 0;
-  text-align: right;
-}
-
 .meta {
+  margin-top: 8px;
   font-family: var(--font-mono), monospace;
-  font-size: var(--text-mono-meta);
+  font-size: var(--text-mono);
+  font-weight: 700;
   letter-spacing: 0.12em;
   color: var(--color-accent);
 }
 
-@media (max-width: 900px) {
-  .row {
-    flex-direction: column;
-    gap: 8px;
-  }
-
-  .rowMeta {
-    text-align: left;
-  }
-}

@@ -47,6 +47,11 @@ export type Education = {
   institution: string;
   /** Dates · location line, like the experience cards' meta. */
   meta: string;
+  /** College mark, shown left of the degree row. */
+  logo?: StaticImageData;
+  /** Set when the mark sits on a baked-in white field — plates it, like the
+      Shell logo. */
+  logoPlate?: boolean;
 };
 
 export type SocialLink = {

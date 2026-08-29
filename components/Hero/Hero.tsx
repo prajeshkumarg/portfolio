@@ -1,22 +1,11 @@
-import { Fragment } from 'react';
 import Image from 'next/image';
 import ButtonPrimary from '@/components/ButtonPrimary/ButtonPrimary';
-import { hero, sideWords, site } from '@/content';
+import { hero, sideCaption, site } from '@/content';
 import styles from './Hero.module.css';
 
 export default function Hero() {
   return (
     <section id="top" className={styles.hero}>
-      {/* vertical side rail — plain words, not links; the rule sits between
-          the second and third */}
-      <div className={styles.side}>
-        {sideWords.map((word, index) => (
-          <Fragment key={word}>
-            <span className={styles.sideWord}>{word}</span>
-            {index === 1 ? <span className={styles.sideRule} aria-hidden="true" /> : null}
-          </Fragment>
-        ))}
-      </div>
 
       <div className={styles.intro}>
         <h1 className={styles.greeting}>
@@ -32,8 +21,8 @@ export default function Hero() {
         </div>
       </div>
 
-      {/* col 3 — the portrait, replacing the rotating words. Circular frame,
-          3D tilt on hover, slow bounce; all motion is CSS. */}
+      {/* col 2 — the portrait in a circular frame, with the former side-rail
+          words as a subscript caption underneath */}
       <div className={styles.portraitStage}>
         <div className={styles.portraitFrame}>
           <Image
@@ -45,6 +34,7 @@ export default function Hero() {
             sizes="(max-width: 900px) 60vw, 320px"
           />
         </div>
+        <p className={styles.portraitCaption}>{sideCaption}</p>
       </div>
     </section>
   );

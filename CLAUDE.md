@@ -104,8 +104,8 @@ asked for it directly.
 ## Responsive
 
 The handoff defines **no** breakpoints. Invented behavior:
-- `< 900px` — hero drops the vertical side rail (ENGINEER / COMPILERS / SECURITY,
-  non-clickable words) and collapses to one column
+- `< 900px` — hero collapses to one column (the portrait centers, its caption
+  centers under it)
 - `< 900px` — Experience 3-col → 1-col, Projects 2-col → 1-col
 - h1 clamps 58px → ~38px
 
