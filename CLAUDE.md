@@ -4,9 +4,33 @@ Single-page developer portfolio. Static, no backend, no data fetching.
 
 ## Stack
 
-Next.js (App Router) · TypeScript · CSS Modules
+Next.js (App Router) · TypeScript · CSS Modules · GSAP (ScrollTrigger, SplitText) · Lenis
 
-No 3D, no canvas, no animation libraries. The page is server-rendered markup and CSS.
+No 3D, no canvas. The page is server-rendered markup and CSS; motion is layered on by a
+single client component.
+
+> **Branch `experiment/awwwards`** — full-width redesign (1600px cap, fluid side padding).
+> The **hero and Contact are bento grids** of `Tile`s. Between them the page alternates
+> paper and ink: Experience (sand band, "open tabs" — the
+> company wordmarks (transparent PNGs; the name is visually hidden) heading three parts of one outlined box (border
+> only, like the hero's; thin inner rules between parts), every panel open; logos are optically aligned — scaled so their lettering matches
+> and set on one baseline, from each logo's measured `logoLetters`; `current: true` gets
+> clay point markers) · Projects
+> (paper — the screenshots are dark, so they need a light ground; an index + live preview:
+> numbered rows with tag pills; hovering/focusing a row swaps the sticky screenshot +
+> description on the right. Phones show each row's shot inline. New project = one row) · Skills (ink band, open columns) · Education (two
+> cards) · Writing (one wide row). Ink sections use the `Band` primitive.
+> Below the hero, surfaces have **no outlines**: cards are separated by tone + `--shadow-tile`.
+> **Two accents with fixed roles:** indigo `--color-accent` = interactive (links, buttons,
+> the italic title word); clay `--color-clay` = live status only (the hero's Now tile).
+> **Sections can override the accent:** Projects sets `--color-accent: var(--color-green)`
+> (header, active row, links, focus ring); Experience (sand) sets `--color-accent` and
+> `--color-faint` to the sand-safe clay and grey. Skills keeps periwinkle.
+> Dates and meta tags are neutral (`--color-faint`). **Hero tiles are `outline`** — border
+> only, no fill; the Now tile is the one filled (clay) tile. The photo has no border.
+> Section titles come from `sections` in `content.ts`. GSAP + Lenis were explicitly
+> approved for this branch only. `main` still follows the handoff spec and its
+> no-animation-library rule.
 
 ## Design source of truth
 
@@ -38,16 +62,38 @@ types.ts            # Experience, Project, SkillGroup, SocialLink
 public/             # resume.pdf and static assets
 ```
 
-Sections in page order: Nav · Hero · Experience · Projects · Skills · Writing · Contact · Footer
-Primitives: `Card3D` · `SectionLabel` · `Chip` · `ButtonPrimary`
+Sections in page order: Nav · Hero · Experience · Projects · Skills · Education · Writing ·
+Contact · Footer
+Primitives: `Bento` + `Tile` (grid and tile — Hero and Contact only) · `Band` (full-bleed
+ink section) · `SectionHeader`
+(label + h2; `ink` and `center` variants) · `ButtonPrimary` · `Motion` (the only client
+component)
+
+### Bento
+
+`Tile` takes `span` (3–8 or 12 of 12 columns), `rows` (1–2), `tone`, and `href` (only
+link tiles get hover). Under 900px spans 3–5 become half width and 6+ full; under 600px
+everything is one column. Bleeds inside a tile (logo bands, project media) use negative
+`var(--tile-pad)` margins and are clipped by the tile's `overflow: hidden`. Hover lift uses
+the `translate` property so it never fights GSAP, which animates `transform`.
+
+### Motion
+
+`components/Motion/Motion.tsx` renders nothing. Sections expose `data-*` hooks
+(`data-intro`, `data-split`, `data-reveal`, `data-preview`, `data-progress`) and
+Motion drives them; `Tile` sets `data-reveal` (or `data-intro` in the hero) itself, so every section
+stays a Server Component. New animation = add a hook in markup + handle it in Motion.
+An inline boot script in `layout.tsx` adds `html.motion` before paint so the hero starts
+hidden; it's skipped under `prefers-reduced-motion`, and removed after 3s if Motion never
+boots. Lenis is off under reduced motion; scroll-scrubbed progress stays on.
 
 ## Rules
 
 - **No hardcoded hex, font names, or shadow values in components.** Always `var(--*)`.
   New value needed? Add a token to `globals.css` first.
 - **No copy in JSX.** All text, links, and lists live in `content.ts` and render via `.map()`.
-- **Server Components by default.** Nothing currently needs `'use client'` — the whole
-  page is static. Adding it should be a deliberate, justified choice.
+- **Server Components by default.** `Motion` is the single `'use client'` component;
+  don't add others — add a `data-*` hook and handle it there.
 - **One `.module.css` per component.** No global class names outside `globals.css`.
 - Use the `next/font` CSS variables (`--font-sans`, `--font-mono`), never a raw
   `font-family: 'Space Grotesk'`.
@@ -98,8 +144,14 @@ shadow, a CSS 3D tilt on hover (perspective on the stage, `preserve-3d` on the
 frame — the same pattern as `.card3d`). A bounce was tried and removed at
 Prajesh's request; motion respects `prefers-reduced-motion`.
 
-Do not reintroduce a canvas, a 3D library, or an animation library without being
-asked for it directly.
+Do not reintroduce a canvas or a 3D library without being asked for it directly.
+
+On `experiment/awwwards` the hero is a bento: an 8-col × 2-row statement tile (eyebrow,
+h1, bio, actions), a 4-col portrait tile (the photo fills it, caption pill on top), then
+a row of Learning (3 cols) · Building (6 cols) ·
+Now (3 cols, the one filled clay tile) from `hero.learning` / `hero.building` /
+`hero.status`. Each tile has one accent on its dot, label and link — ochre
+(`--color-ochre`), green (the Projects colour), clay. The circular frame is not used on this branch.
 
 ## Responsive
 
@@ -109,6 +161,19 @@ The handoff defines **no** breakpoints. Invented behavior:
 - `< 900px` — Experience 3-col → 1-col, Projects 2-col → 1-col
 - h1 clamps 58px → ~38px
 
+On `experiment/awwwards`, **large screens scale the whole page** through one unit, `--u`
+(`globals.css`): exactly `1px` up to 1800px wide, then `100vw / 1800` (≈1.42px at 2560).
+Every size that should grow — tokens, and the px maximum inside component `clamp()`s — is
+written `calc(N * var(--u))`, so a big display shows the same composition scaled up
+rather than a small page in wide margins. New sizes: use `var(--u)`, not bare px. (CSS
+`zoom` was avoided: it breaks the `100vw` breakouts in `Band`.) The hero portrait has no
+caption on this branch.
+
+On `experiment/awwwards` type is fluid (`--text-display`, `--text-h2`, `--text-stat`,
+`--text-tile-heading` are `clamp()`s), the bento grids go 12 → 6 → 1 columns (see
+**Bento**), Experience rows and Projects splits stack `< 900px`, Skills goes 4 → 2 → 1
+columns, and the nav drops Projects/Skills `< 480px` so it fits a 375px screen.
+
 ## Commands
 
 ```
@@ -116,6 +181,12 @@ npm run dev     # localhost:3000
 npm run build   # run before declaring done — catches SSR errors dev hides
 npm run lint
 ```
+
+Opening the dev server on a LAN address (e.g. to test on a phone) relies on
+`allowedDevOrigins` in `next.config.ts`, which allows all private ranges (`192.168.*.*`,
+`10.*.*.*`, `172.16–31.*.*`) and `*.local` — so IP changes need no edit. A host outside
+those gets its JS and HMR blocked (403): the page renders but never hydrates, and every
+Motion effect silently does nothing.
 
 ## Open items
 

@@ -1,35 +1,33 @@
 import Image from 'next/image';
-import Card3D from '@/components/Card3D/Card3D';
-import SectionLabel from '@/components/SectionLabel/SectionLabel';
+import SectionHeader from '@/components/SectionHeader/SectionHeader';
 import { education } from '@/content';
 import styles from './Education.module.css';
 
 export default function Education() {
   return (
     <section id="education" className={styles.section}>
-      <SectionLabel>EDUCATION</SectionLabel>
-      <div className={styles.grid}>
+      <SectionHeader section="education" />
+      <ul className={styles.rows}>
         {education.map((entry) => (
-          <Card3D key={entry.institution} className={styles.card}>
-            {/* band fills the card's left edge, bleeding to the border — the
-                card's corners are rounded here because the card cannot clip
-                (overflow would flatten the 3D tilt) */}
+          <li key={entry.institution} className={styles.row} data-reveal>
+            {/* no frame — the mark keeps its own shape (plated only if it has a baked-in field) */}
             {entry.logo ? (
-              <div
-                className={styles.cardLogoWrap}
+              <Image
+                className={styles.logo}
+                src={entry.logo}
+                alt=""
+                sizes="180px"
                 data-plate={entry.logoPlate ? 'true' : undefined}
-              >
-                <Image className={styles.cardLogo} src={entry.logo} alt="" fill sizes="180px" />
-              </div>
+              />
             ) : null}
-            <div className={styles.cardBody}>
+            <div className={styles.body}>
               <h3 className={styles.degree}>{entry.degree}</h3>
               <p className={styles.institution}>{entry.institution}</p>
-              <p className={styles.meta}>{entry.meta}</p>
             </div>
-          </Card3D>
+            <p className={styles.meta}>{entry.meta}</p>
+          </li>
         ))}
-      </div>
+      </ul>
     </section>
   );
 }

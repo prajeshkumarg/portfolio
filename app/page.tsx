@@ -7,6 +7,7 @@ import Education from '@/components/Education/Education';
 import Writing from '@/components/Writing/Writing';
 import Contact from '@/components/Contact/Contact';
 import Footer from '@/components/Footer/Footer';
+import Motion from '@/components/Motion/Motion';
 import styles from './page.module.css';
 
 export default function Page() {
@@ -23,6 +24,7 @@ export default function Page() {
         <Contact />
         <Footer />
       </main>
+      <Motion />
     </>
   );
 }

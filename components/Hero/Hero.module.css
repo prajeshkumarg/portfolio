@@ -1,45 +1,54 @@
 .hero {
+  /* rows size to their content here — the bottom row was mostly empty at 150px */
+  --bento-row-min: 0px;
   scroll-margin-top: var(--scroll-offset);
-  padding: 70px 0 100px;
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 44px;
-  align-items: stretch;
-  min-height: 480px;
+  /* the bottom gap sets the hero off from the sand Experience band */
+  padding: clamp(20px, 2.5vw, calc(36 * var(--u))) 0 var(--space-section-sm);
 }
 
-/* col 1 — greeting + copy, spread vertically to fill the same height as
-   the portrait column: greeting top, buttons bottom, bio between */
+/* ---- intro tile ---- */
+
 .intro {
-  justify-self: start;
-  display: flex;
-  flex-direction: column;
+  gap: 18px;
   justify-content: space-between;
+  padding: clamp(24px, 3vw, calc(40 * var(--u)));
 }
-.greeting {
-  font-size: var(--text-h1);
-  line-height: 1.05;
-  font-weight: 700;
-  letter-spacing: -0.01em;
+
+.eyebrow {
+  font-family: var(--font-mono), monospace;
+  font-size: var(--text-mono-sm);
+  letter-spacing: 0.12em;
+  color: var(--color-faint);
+}
+
+.statement {
+  max-width: 13ch;
+  font-size: var(--text-display);
+  font-weight: 600;
+  line-height: 0.98;
+  letter-spacing: -0.045em;
   color: var(--color-ink);
 }
 
-.greetingName {
+.em {
+  font-family: var(--font-serif), serif;
+  font-style: italic;
+  font-weight: 400;
+  letter-spacing: -0.02em;
   color: var(--color-accent);
 }
 
 .bio {
-  max-width: 440px;
-  font-size: var(--text-body);
-  line-height: 1.8;
+  max-width: 520px;
+  font-size: var(--text-body-lg);
+  line-height: 1.6;
+  letter-spacing: -0.01em;
   color: var(--color-muted);
-  margin: 18px 0 0;
 }
 
 .actions {
   display: flex;
-  gap: 16px;
-  margin-top: 24px;
+  gap: 20px;
   align-items: center;
   flex-wrap: wrap;
 }
@@ -49,78 +58,158 @@
   font-size: var(--text-mono);
   color: var(--color-muted);
   text-decoration: underline;
+  text-underline-offset: 4px;
 }
 
-/* col 3 — the portrait in a circular frame, replacing the rotating stack. */
-.portraitStage {
-  --size: clamp(216px, 23vw, 288px);
-  /* flush to the right edge of the hero's third column */
-  justify-self: end;
-  /* the 3D parent, like the card grid's perspective */
-  perspective: 1400px;
-}
+/* ---- portrait tile: the photo fills it edge to edge ---- */
 
-.portraitFrame {
-  position: relative;
-  width: var(--size);
-  height: var(--size);
-  border-radius: var(--radius-circle);
+.portraitTile {
+  min-height: calc(320 * var(--u));
+  /* it's a photograph, not a card — rounded, but no fill or shadow */
+  border-radius: var(--radius-tile);
   overflow: hidden;
-  border: 1px solid var(--border-strong);
-  /* explicit paper ground so any soft edges of the cutout blend into the
-     page background instead of reading as their own tint */
-  background: var(--color-paper);
-  box-shadow: var(--shadow-hero-portrait);
-  transform-style: preserve-3d;
-  transition: transform var(--transition-card), border-color var(--transition-card),
-    box-shadow var(--transition-card);
-  will-change: transform;
-}
-
-.portraitFrame:hover {
-  transform: rotateX(4deg) rotateY(-6deg) translateY(-6px);
-  border-color: var(--border-accent);
-  box-shadow: var(--shadow-card-hover);
 }
 
 .portrait {
   object-fit: cover;
-  /* zoom the subject in a touch — the frame crops, so this just tightens
-     the composition */
-  transform: scale(1.18);
+  object-position: center 30%;
 }
 
-/* the former side-rail words, now a subscript under the frame */
-.portraitCaption {
-  margin: 14px 0 0;
+
+/* ---- the learning · building · now row ---- */
+
+/* One colour per tile: ochre for learning, green (the Projects colour) for
+   building, clay (live status) for now. Colour stays on the dot, label and
+   link — only Now is filled. */
+/* Label and title stack from the top in every tile, so titles share a line
+   across the row; the link (and Building's stack) is pinned to the bottom. */
+.note {
+  gap: 16px;
+}
+
+.learning {
+  --color-accent: var(--color-ochre);
+}
+
+.building {
+  --color-accent: var(--color-green);
+}
+
+.label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-mono), monospace;
+  font-size: var(--text-mono-sm);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--color-accent);
+}
+
+.dot {
+  width: 8px;
+  height: 8px;
+  border-radius: var(--radius-circle);
+  background: var(--color-accent);
+}
+
+.copy {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.title {
+  font-size: var(--text-org);
+  font-weight: 600;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+}
+
+.detail {
+  max-width: 56ch;
+  font-size: var(--text-card-body-sm);
+  line-height: 1.6;
+  color: var(--color-muted);
+}
+
+/* the building tile: stack on the left, link on the right */
+.footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 8px 24px;
+}
+
+.stack {
   font-family: var(--font-mono), monospace;
   font-size: var(--text-mono);
-  letter-spacing: 0.12em;
   color: var(--color-faint);
-  text-align: center;
+}
+
+.note > .link,
+.footer {
+  margin-top: auto;
+  padding-top: 8px;
+}
+
+.link {
+  font-family: var(--font-mono), monospace;
+  font-size: var(--text-mono);
+  color: var(--color-accent);
+  transition: translate var(--transition-btn) var(--ease-out);
+}
+
+@media (hover: hover) {
+  .note:hover .link {
+    translate: 4px 0;
+  }
+}
+
+/* on the clay tile everything takes the tile's paper text colour */
+.onClay .label,
+.onClay .link {
+  color: inherit;
+}
+
+/* a live-status dot; the ring pulses outward */
+.pulse {
+  position: relative;
+  width: 8px;
+  height: 8px;
+  border-radius: var(--radius-circle);
+  background: var(--color-on-clay);
+}
+
+.pulse::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  border: 1px solid var(--color-on-clay);
+  animation: pulse 2s var(--ease-out) infinite;
+}
+
+@keyframes pulse {
+  to {
+    transform: scale(2.6);
+    opacity: 0;
+  }
 }
 
 @media (max-width: 900px) {
-  .hero {
-    grid-template-columns: 1fr;
-    gap: 36px;
-    padding: 48px 0 72px;
-    min-height: 0;
-  }
-
-  .greeting {
-    font-size: clamp(38px, 8vw, var(--text-h1));
-  }
-
-  .portraitStage {
-    --size: clamp(180px, 50vw, 252px);
-    justify-self: center;
+  .portraitTile {
+    min-height: 360px;
   }
 }
 
-/* decoration only — fall back to the static stack, middle word still highlighted */
 @media (prefers-reduced-motion: reduce) {
-  .portraitFrame:hover {
-    transform: none;
+  .pulse::after {
+    animation: none;
+  }
+
+  .note:hover .link {
+    translate: none;
   }
 }

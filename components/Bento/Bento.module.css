@@ -1,0 +1,137 @@
+.grid {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  /* a floor so sparse tiles don't collapse; a section can lower it */
+  grid-auto-rows: minmax(var(--bento-row-min, 150px), auto);
+  grid-auto-flow: dense;
+  gap: var(--bento-gap);
+}
+
+/* Bleeds (logo bands, media) inside a tile use negative var(--tile-pad)
+   margins; overflow clips them to the tile's rounded corners. */
+.tile {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  grid-row: span var(--rows, 1);
+  padding: var(--tile-pad);
+  border-radius: var(--radius-tile);
+  overflow: hidden;
+  color: inherit;
+  /* hover lifts with `translate`, leaving `transform` free for the GSAP reveal */
+  transition: translate var(--transition-btn) var(--ease-out), box-shadow var(--transition-btn),
+    border-color var(--transition-btn);
+}
+
+.tile[data-span='3'] { grid-column: span 3; }
+.tile[data-span='4'] { grid-column: span 4; }
+.tile[data-span='5'] { grid-column: span 5; }
+.tile[data-span='6'] { grid-column: span 6; }
+.tile[data-span='7'] { grid-column: span 7; }
+.tile[data-span='8'] { grid-column: span 8; }
+.tile[data-span='12'] { grid-column: span 12; }
+
+/* ---- tones ---- */
+
+.card {
+  background: var(--color-card);
+  box-shadow: var(--shadow-tile);
+}
+
+.ink {
+  background: var(--color-ink);
+  color: var(--color-on-ink);
+}
+
+.accent {
+  background: var(--color-accent);
+  color: var(--color-on-accent);
+}
+
+.clay {
+  background: var(--color-clay);
+  color: var(--color-on-clay);
+}
+
+/* the page shows through; only the edge marks the tile */
+.outline {
+  border: 1px solid var(--border-strong);
+}
+
+/* no surface: the grid only places content */
+.plain {
+  padding: 0;
+  border-radius: 0;
+  overflow: visible;
+}
+
+/* ---- link tiles ---- */
+
+.link:hover {
+  color: inherit;
+}
+
+@media (hover: hover) {
+  .link:hover {
+    translate: 0 -4px;
+    box-shadow: var(--shadow-tile-hover);
+  }
+
+  .outline.link:hover {
+    border-color: var(--border-accent);
+    box-shadow: none;
+  }
+
+  /* nothing to lift without a surface — the section styles its own cue */
+  .plain.link:hover {
+    translate: none;
+    box-shadow: none;
+  }
+}
+
+.link:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 3px;
+}
+
+/* ---- responsive: 12 → 6 → 1 ---- */
+
+@media (max-width: 900px) {
+  .grid {
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+    grid-auto-rows: auto;
+  }
+
+  .tile {
+    grid-row: auto;
+  }
+
+  .tile[data-span='3'],
+  .tile[data-span='4'],
+  .tile[data-span='5'] {
+    grid-column: span 3;
+  }
+
+  .tile[data-span='6'],
+  .tile[data-span='7'],
+  .tile[data-span='8'],
+  .tile[data-span='12'] {
+    grid-column: span 6;
+  }
+}
+
+@media (max-width: 600px) {
+  .grid {
+    grid-template-columns: 1fr;
+  }
+
+  .tile[data-span] {
+    grid-column: auto;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .link:hover {
+    translate: none;
+  }
+}

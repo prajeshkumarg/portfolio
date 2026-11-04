@@ -1,14 +1,49 @@
 :root {
+  /*
+   * The scaling unit. Exactly 1px up to 1800px wide, so laptops and normal
+   * desktops are untouched; above that it grows with the viewport, so big
+   * displays get the same composition scaled up instead of a small page
+   * floating in wide margins. Sizes that should scale are written as
+   * calc(N * var(--u)). (Not CSS zoom: that breaks the 100vw breakouts.)
+   */
+  --u: 1px;
+
   /* color */
   --color-paper: #f4f1e8;
   --color-card: #fbf9f2;
   --color-ink: #1a1a17;
   --color-muted: #5c5848;
-  --color-faint: #8a8471;
+  /* darkened from #8a8471 — that measured 3.3:1 on paper, under AA */
+  --color-faint: #736d5b;
   --color-accent: #3546e0;
   --color-on-accent: #f4f6ff;
+  /* second accent: live status only (the hero's Now tile). Indigo stays the
+     interactive colour. Clay on paper and paper on clay are both 4.7:1. */
+  --color-clay: #b8461f;
+  /* the warm sand band (Experience) and the two text colours deepened to pass
+     on it: clay 5.1:1, faint 4.7:1 */
+  --color-sand: #ece6d8;
+  --color-clay-on-sand: #a63d1a;
+  --color-faint-on-sand: #6a6453;
+  /* the Projects section's accent — it stands in for indigo there. Brightest green
+     that still clears 4.5:1 on paper (4.7:1) */
+  --color-green: #1f7a45;
+  /* the hero's Learning tile — a gold, distinct from clay's red-orange. 5.3:1 on paper */
+  --color-ochre: #8a5a00;
+  --color-on-clay: var(--color-paper);
   --color-chip-text: #3a3a34;
+  /* fill behind project tag pills — tone, not an outline */
+  --color-tag: rgba(26, 26, 23, 0.06);
   --color-side-link: #6a6a60;
+
+  /* text on ink — the hero's ink tiles and the full-bleed Projects band */
+  --color-on-ink: var(--color-paper);
+  --color-on-ink-muted: #b3ad98;
+  --color-on-ink-faint: #8f8a78;
+  --color-on-ink-accent: #8b96ff;
+  --border-on-ink: rgba(244, 241, 232, 0.14);
+  /* secondary text on the accent tile — 4.8:1 */
+  --color-on-accent-muted: #d3d8fb;
 
   /* surfaces */
   --color-nav-bg: rgba(244, 241, 232, 0.85);
@@ -23,40 +58,65 @@
   /* elevation */
   --shadow-card-hover: 0 30px 60px rgba(26, 26, 23, 0.12), 0 0 40px rgba(53, 70, 224, 0.1);
   --shadow-btn-hover: 0 10px 26px rgba(53, 70, 224, 0.25);
-
+  /* surfaces are separated by tone and a soft, wide shadow — no outlines */
+  --shadow-tile: 0 1px 2px rgba(26, 26, 23, 0.04), 0 10px 30px -12px rgba(26, 26, 23, 0.12);
+  --shadow-tile-hover: 0 2px 4px rgba(26, 26, 23, 0.04), 0 26px 50px -18px rgba(26, 26, 23, 0.22);
+  /* dark screenshots on paper — soft, warm, wide */
+  --shadow-media: 0 2px 6px rgba(26, 26, 23, 0.06), 0 24px 60px -20px rgba(26, 26, 23, 0.35);
 
   /* radius */
-  --radius-card: 16px;
-  --radius-control: 8px;
-  --radius-chip: 6px;
+  --radius-tile: calc(22 * var(--u));
+  --radius-card: calc(16 * var(--u));
+  --radius-control: calc(8 * var(--u));
+  --radius-chip: calc(6 * var(--u));
   /* the hero portrait's circular frame */
   --radius-circle: 50%;
 
   /* hero portrait depth */
   --shadow-hero-portrait: 0 20px 44px rgba(26, 26, 23, 0.16), 0 0 28px rgba(53, 70, 224, 0.12);
 
-  /* layout */
-  --content-max: 1080px;
-  --content-pad: 32px;
-  --scroll-offset: 70px;
+  /* layout — every size below is in --u, so wide screens scale the whole page */
+  /* full width — a wide cap only so lines stay readable */
+  --content-max: calc(1600 * var(--u));
+  --content-pad: clamp(20px, 4vw, calc(64 * var(--u)));
+  --scroll-offset: calc(70 * var(--u));
+  /* vertical rhythm — deliberately uneven between sections */
+  --space-section-sm: clamp(56px, 7vw, calc(88 * var(--u)));
+  --space-section: clamp(80px, 10vw, calc(140 * var(--u)));
+  /* bento */
+  --bento-gap: calc(14 * var(--u));
+  --tile-pad: clamp(22px, 2.4vw, calc(30 * var(--u)));
 
   /* type */
-  --text-h1: 58px;
-  --text-h2: 30px;
-  --text-card-title-lg: 20px;
-  --text-card-title: 19px;
-  --text-org: 18px;
-  --text-body: 15px;
-  --text-group-label: 13px;
-  --text-card-body: 13px;
-  --text-card-body-sm: 12.5px;
-  --text-mono: 12px;
-  --text-mono-sm: 11px;
-  --text-mono-meta: 10.5px;
+  --text-display: clamp(36px, 4.6vw, calc(78 * var(--u)));
+  --text-h1: calc(58 * var(--u));
+  --text-h2: clamp(34px, 4.6vw, calc(60 * var(--u)));
+  --text-tile-heading: clamp(26px, 3vw, calc(38 * var(--u)));
+  /* lettering height of the company wordmarks heading each Experience column */
+  --logo-letters: clamp(22px, 2.2vw, calc(34 * var(--u)));
+  --text-card-title-lg: clamp(22px, 2.2vw, calc(28 * var(--u)));
+  --text-card-title: calc(19 * var(--u));
+  --text-org: clamp(20px, 2vw, calc(24 * var(--u)));
+  --text-body-lg: clamp(17px, 1.3vw, calc(19 * var(--u)));
+  --text-body: calc(16 * var(--u));
+  --text-group-label: calc(13 * var(--u));
+  --text-card-body: calc(15 * var(--u));
+  --text-card-body-sm: calc(14 * var(--u));
+  --text-mono: calc(12 * var(--u));
+  --text-mono-sm: calc(11 * var(--u));
+  --text-mono-meta: calc(11 * var(--u));
 
   /* motion */
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
   --transition-card: 0.35s;
   --transition-btn: 0.25s;
+  --transition-row: 0.4s;
+}
+
+@media (min-width: 1800px) {
+  :root {
+    --u: calc(100vw / 1800);
+  }
 }
 
 *,
@@ -65,16 +125,14 @@
   box-sizing: border-box;
 }
 
-html {
-  scroll-behavior: smooth;
-}
-
 body {
   margin: 0;
   background: var(--color-paper);
   color: var(--color-ink);
   font-family: var(--font-sans), system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
+  /* full-bleed bands break out with 100vw; clip the scrollbar's width */
+  overflow-x: clip;
 }
 
 h1,
@@ -93,8 +151,14 @@ a:hover {
   color: var(--color-accent);
 }
 
-@media (prefers-reduced-motion: reduce) {
-  html {
-    scroll-behavior: auto;
-  }
+::selection {
+  background: var(--color-accent);
+  color: var(--color-on-accent);
+}
+
+/* Set by the inline script in layout.tsx before first paint, only when motion
+   is allowed — so the hero intro starts hidden instead of flashing. Without JS
+   or with reduced motion, nothing is ever hidden. */
+html.motion [data-intro] {
+  visibility: hidden;
 }

@@ -2,9 +2,18 @@ import type { StaticImageData } from 'next/image';
 
 export type Experience = {
   meta: string;
+  /** Marks the role you're in now — its point markers are accented. */
+  current?: boolean;
+  /**
+   * Where the wordmark's lettering sits in the logo file, as fractions of its
+   * height (0 = top). Experience sizes each logo so the lettering is the same
+   * height and sits on one shared baseline. Re-measure when a logo file changes.
+   */
+  logoLetters?: { top: number; bottom: number };
   org: string;
   role: string;
-  body: string;
+  /** What you did, as separate points — two reads best in the Experience columns. */
+  points: string[];
   /**
    * Statically imported logo, so Next carries the real intrinsic dimensions and
    * the mark scales to the slot height at its true aspect ratio. The slot is
@@ -20,7 +29,8 @@ export type Experience = {
 };
 
 export type Project = {
-  meta: string;
+  /** Stack and tools, rendered as tag pills. */
+  tags: string[];
   title: string;
   body: string;
   linkLabel: string;

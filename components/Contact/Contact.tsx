@@ -1,24 +1,45 @@
-import SectionLabel from '@/components/SectionLabel/SectionLabel';
-import ButtonPrimary from '@/components/ButtonPrimary/ButtonPrimary';
-import { contact, socialLinks } from '@/content';
+import { Bento, Tile } from '@/components/Bento/Bento';
+import SectionHeader from '@/components/SectionHeader/SectionHeader';
+import { contact, contactLinks } from '@/content';
 import styles from './Contact.module.css';
+
+/* resume and GitHub stack beside the email tile; the last two share a row */
+const spans = [4, 4, 6, 6] as const;
 
 export default function Contact() {
   return (
     <section id="contact" className={styles.section}>
-      <SectionLabel centered>{contact.label}</SectionLabel>
-      <h2 className={styles.heading}>{contact.heading}</h2>
-      <p className={styles.body}>{contact.body}</p>
-      <div className={styles.cta}>
-        <ButtonPrimary href={contact.ctaHref}>{contact.ctaLabel}</ButtonPrimary>
-      </div>
-      <div className={styles.socials}>
-        {socialLinks.map((link) => (
-          <a key={link.label} className={styles.social} href={link.href} target="_blank" rel="noreferrer">
-            {link.label}
-          </a>
+      <SectionHeader section="contact" />
+      <Bento>
+        <Tile span={8} rows={2} tone="accent" href={contact.ctaHref} className={styles.email}>
+          <p className={styles.label}>{contact.label}</p>
+          <div className={styles.copy}>
+            <h3 className={styles.heading}>{contact.heading}</h3>
+            <p className={styles.body}>{contact.body}</p>
+          </div>
+          <p className={styles.address}>
+            {contact.ctaLabel}
+            <span className={styles.arrow}>{contact.arrow}</span>
+          </p>
+        </Tile>
+
+        {contactLinks.map((link, index) => (
+          <Tile
+            key={link.label}
+            span={spans[index % spans.length]}
+            tone={index === 0 ? 'ink' : 'card'}
+            href={link.href}
+            external
+            className={index === 0 ? `${styles.linkTile} ${styles.onInk}` : styles.linkTile}
+          >
+            <p className={styles.linkLabel}>{link.label}</p>
+            <p className={styles.linkValue}>
+              {link.value}
+              <span className={styles.arrow}>{contact.arrow}</span>
+            </p>
+          </Tile>
         ))}
-      </div>
+      </Bento>
     </section>
   );
 }

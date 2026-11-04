@@ -1,42 +1,98 @@
 .section {
   scroll-margin-top: var(--scroll-offset);
-  padding: 60px 0 90px;
-  text-align: center;
+  padding-bottom: var(--space-section);
+}
+
+/* ---- the email tile ---- */
+
+.email {
+  justify-content: space-between;
+  gap: 28px;
+  padding: clamp(28px, 4vw, calc(44 * var(--u)));
+}
+
+.label {
+  font-family: var(--font-mono), monospace;
+  font-size: var(--text-mono-sm);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--color-on-accent-muted);
+}
+
+.copy {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
 }
 
 .heading {
-  margin: 0 0 18px;
-  font-size: var(--text-h2);
+  max-width: 14ch;
+  font-size: var(--text-tile-heading);
   font-weight: 600;
-  color: var(--color-ink);
+  line-height: 1.05;
+  letter-spacing: -0.035em;
 }
 
 .body {
-  max-width: 480px;
-  margin: 0 auto;
-  font-size: var(--text-body);
-  line-height: 1.85;
-  color: var(--color-muted);
+  max-width: 460px;
+  font-size: var(--text-card-body);
+  line-height: 1.65;
+  color: var(--color-on-accent-muted);
 }
 
-.cta {
-  margin-top: 30px;
-}
-
-.socials {
+.address {
   display: flex;
-  gap: 24px;
-  justify-content: center;
-  margin-top: 26px;
+  align-items: center;
+  gap: 12px;
+  font-size: var(--text-tile-heading);
+  font-weight: 600;
+  letter-spacing: -0.035em;
+  overflow-wrap: anywhere;
+}
+
+/* ---- link tiles ---- */
+
+.linkTile {
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.linkLabel {
   font-family: var(--font-mono), monospace;
-  font-size: var(--text-mono);
+  font-size: var(--text-mono-sm);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--color-faint);
 }
 
-.social {
-  color: var(--color-muted);
-  text-decoration: none;
+.onInk .linkLabel {
+  color: var(--color-on-ink-accent);
 }
 
-.social:hover {
-  color: var(--color-accent);
+.linkValue {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: var(--text-org);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+
+/* every link tile shares the same cue: the arrow nudges toward its destination */
+.arrow {
+  transition: translate var(--transition-btn) var(--ease-out);
+}
+
+@media (hover: hover) {
+  .email:hover .arrow,
+  .linkTile:hover .arrow {
+    translate: 4px -4px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .email:hover .arrow,
+  .linkTile:hover .arrow {
+    translate: none;
+  }
 }

@@ -1,29 +1,47 @@
 .section {
-  scroll-margin-top: var(--scroll-offset);
-  padding: 40px 0 60px;
+  padding-block: var(--space-section);
 }
 
-/* The reference omits this; the card tilt needs a perspective ancestor. */
-.stage {
-  perspective: 1400px;
-}
-
-.panel {
-  display: flex;
-  flex-direction: column;
-  gap: 24px;
-  padding: 32px;
+.table {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 40px clamp(32px, 3vw, calc(56 * var(--u)));
 }
 
 .groupLabel {
-  margin-bottom: 10px;
-  font-size: var(--text-group-label);
-  font-weight: 600;
-  color: var(--color-ink);
+  padding-bottom: 14px;
+  border-bottom: 1px solid var(--border-on-ink);
+  font-family: var(--font-mono), monospace;
+  font-size: var(--text-mono-sm);
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--color-on-ink-accent);
 }
 
-.chips {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
+.items {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.item {
+  padding: 11px 0;
+  border-bottom: 1px solid var(--border-on-ink);
+  font-size: var(--text-card-body);
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  color: var(--color-on-ink);
+}
+
+@media (max-width: 900px) {
+  .table {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 480px) {
+  .table {
+    grid-template-columns: 1fr;
+  }
 }

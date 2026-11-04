@@ -45,6 +45,17 @@
   font-weight: 700;
 }
 
+.progress {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -1px;
+  height: 2px;
+  background: var(--color-accent);
+  transform: scaleX(0);
+  transform-origin: left;
+}
+
 @media (max-width: 560px) {
   .inner {
     padding: 14px 20px;
@@ -53,5 +64,13 @@
 
   .links {
     gap: 16px;
+  }
+}
+
+/* five mono links overflow a 375px screen — keep Work, Blog, Contact */
+@media (max-width: 480px) {
+  .links a:nth-child(2),
+  .links a:nth-child(3) {
+    display: none;
   }
 }

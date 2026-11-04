@@ -1,79 +1,149 @@
 .section {
-  scroll-margin-top: var(--scroll-offset);
-  padding: 60px 0;
+  /* Scoped to the sand band: clay accent for the header and the current role,
+     and a faint grey deep enough to pass on sand. */
+  --color-accent: var(--color-clay-on-sand);
+  --color-faint: var(--color-faint-on-sand);
+  /* Fills the screen under the nav, content centred in it — capped, because on
+     a tall monitor a full screen of sand was mostly empty. */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-height: min(calc(100svh - var(--scroll-offset)), calc(900 * var(--u)));
+  padding-block: var(--space-section-sm);
 }
 
-.grid {
+/* One outlined box (border only, like the hero's tiles) split into three parts
+   by thin inner rules. The parts share two row tracks — logo · details. */
+.tabs {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 22px;
-  perspective: 1400px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-tile);
 }
 
-/* no top padding — the logo band runs to the card's top edge */
-.card {
-  --logo-band: 130px;
-  --card-pad-x: 32px;
-  padding: 0 var(--card-pad-x) 36px;
+.tab {
+  grid-row: span 2;
+  display: grid;
+  grid-template-rows: subgrid;
+  padding: clamp(24px, 2.6vw, calc(40 * var(--u)));
 }
 
-/* Full-bleed band across the top of the card. Negative side margins break it out
-   of the card's horizontal padding; the top corners are rounded here rather than
-   clipped by the card, because `overflow` on the card would flatten its
-   `transform-style: preserve-3d` and kill the hover tilt. */
+.tab + .tab {
+  border-left: 1px solid var(--border-rule);
+}
+
+/* The head's content edge is the shared baseline. Logos drop below it by their
+   own hang, into the padding, which is sized for the deepest (Amazon's smile). */
+.head {
+  align-self: end;
+  display: flex;
+  align-items: flex-end;
+  padding-bottom: calc(var(--logo-letters) * 0.8 + 18px);
+}
+
+/* --logo-scale and --logo-drop come from each logo's measured lettering
+   (content.ts `logoLetters`), so every wordmark's letters are --logo-letters
+   tall and sit on the baseline. Width follows the file's own aspect ratio. */
 .logo {
-  position: relative;
-  height: var(--logo-band);
-  margin: 0 calc(var(--card-pad-x) * -1) 26px;
-  border-radius: var(--radius-card) var(--radius-card) 0 0;
+  display: block;
+  width: auto;
+  height: calc(var(--logo-letters) * var(--logo-scale, 1));
+  margin-bottom: calc(var(--logo-letters) * var(--logo-drop, 0) * -1);
+}
+
+/* visually hidden — the logo shows the name */
+.org {
+  position: absolute;
+  width: 1px;
+  height: 1px;
   overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
 }
 
-/* Transparent marks sit on a white plate and fit inside the band — cropping to
-   fill would clip a centred mark like the Shell pecten. */
-.logo[data-plate='true'] {
-  background: var(--color-logo-plate);
-}
-
-.logoImage {
-  object-fit: cover;
-  object-position: center;
-}
-
-.logo[data-plate='true'] .logoImage {
-  object-fit: contain;
-  padding: 18px;
+.panel {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
 }
 
 .meta {
   font-family: var(--font-mono), monospace;
   font-size: var(--text-mono-meta);
-  letter-spacing: 0.12em;
-  color: var(--color-accent);
-}
-
-.org {
-  margin-top: 12px;
-  font-size: var(--text-org);
-  font-weight: 600;
-  color: var(--color-ink);
-}
-
-.role {
-  margin-top: 2px;
-  font-size: var(--text-card-body-sm);
+  letter-spacing: 0.1em;
   color: var(--color-faint);
 }
 
-.body {
-  margin: 18px 0 0;
-  font-size: var(--text-card-body-sm);
-  line-height: 1.75;
+.role {
+  margin-top: 10px;
+  font-size: var(--text-org);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  color: var(--color-ink);
+}
+
+.points {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin: 16px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* a short dash hangs in the gutter as the marker */
+.point {
+  position: relative;
+  padding-left: 22px;
+  font-size: var(--text-card-body);
+  line-height: 1.65;
   color: var(--color-muted);
 }
 
+.point::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0.8em;
+  width: 10px;
+  height: 2px;
+  border-radius: var(--radius-control);
+  background: var(--color-faint);
+}
+
+.tab[data-current='true'] .point::before {
+  background: var(--color-accent);
+}
+
+/* Hovering one column softens the others. The fade is on the children, because
+   the column itself carries the reveal's inline opacity. */
+.head,
+.panel {
+  transition: opacity var(--transition-row) var(--ease-out);
+}
+
+@media (hover: hover) {
+  .tabs:hover .tab:not(:hover) > * {
+    opacity: 0.45;
+  }
+}
+
 @media (max-width: 900px) {
-  .grid {
+  .tabs {
     grid-template-columns: 1fr;
+  }
+
+  .tab {
+    grid-row: auto;
+    grid-template-rows: auto;
+  }
+
+  /* stacked, the inner rules run across instead */
+  .tab + .tab {
+    border-left: 0;
+    border-top: 1px solid var(--border-rule);
   }
 }

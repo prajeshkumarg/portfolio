@@ -30,6 +30,8 @@ export default function Nav() {
           })}
         </nav>
       </div>
+      {/* compile progress — scrubbed to page scroll by Motion */}
+      <span className={styles.progress} aria-hidden="true" data-progress />
     </header>
   );
 }

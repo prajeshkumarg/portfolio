@@ -1,62 +1,55 @@
 .section {
   scroll-margin-top: var(--scroll-offset);
-  padding: 40px 0 60px;
+  padding: var(--space-section-sm) 0;
 }
 
-/* the two cards stacked, one right below the other */
-.grid {
+.rows {
   display: grid;
-  grid-template-columns: 1fr;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 22px;
-  perspective: 1400px;
-}
-
-/* one card per degree — a left image column and a text column */
-.card {
-  display: flex;
-  align-items: stretch;
+  margin: 0;
   padding: 0;
+  list-style: none;
 }
 
-/* the logo band — fills the card's whole left edge, bleeding to the border.
-   The card's corners are rounded here rather than clipped, because `overflow`
-   on the card would flatten `transform-style: preserve-3d` and kill the
-   hover tilt. */
-.cardLogoWrap {
-  position: relative;
-  flex-shrink: 0;
-  width: 32%;
-  min-width: 110px;
-  border-radius: var(--radius-card) 0 0 var(--radius-card);
-  overflow: hidden;
+.row {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding: 24px;
+  background: var(--color-card);
+  border-radius: var(--radius-tile);
+  box-shadow: var(--shadow-tile);
 }
 
-/* white plate behind marks with a baked-in white field, like the Shell plate */
-.cardLogoWrap[data-plate='true'] {
+/* height is fixed, width follows the file's own aspect ratio */
+.logo {
+  /* the card is a flex column — without this the image would stretch full width */
+  align-self: flex-start;
+  width: auto;
+  height: 44px;
+  max-width: 180px;
+  object-fit: contain;
+  object-position: left center;
+}
+
+/* marks with a baked-in white field get a matching white plate */
+.logo[data-plate='true'] {
+  padding: 6px 10px;
+  border-radius: var(--radius-chip);
   background: var(--color-logo-plate);
 }
 
-.cardLogoWrap[data-plate='true'] .cardLogo {
-  object-fit: contain;
-  padding: 12px;
-}
-
-.cardLogo {
-  object-fit: cover;
-}
-
-.cardBody {
-  flex: 1;
-  padding: 24px;
+.body {
   display: flex;
   flex-direction: column;
-  gap: 4px;
-  justify-content: center;
+  gap: 6px;
 }
 
 .degree {
-  font-size: var(--text-card-title-lg);
+  font-size: var(--text-org);
   font-weight: 600;
+  letter-spacing: -0.02em;
   color: var(--color-ink);
 }
 
@@ -66,11 +59,15 @@
 }
 
 .meta {
-  margin-top: 8px;
+  margin-top: auto;
   font-family: var(--font-mono), monospace;
-  font-size: var(--text-mono);
-  font-weight: 700;
-  letter-spacing: 0.12em;
-  color: var(--color-accent);
+  font-size: var(--text-mono-meta);
+  letter-spacing: 0.1em;
+  color: var(--color-faint);
 }
 
+@media (max-width: 700px) {
+  .rows {
+    grid-template-columns: 1fr;
+  }
+}

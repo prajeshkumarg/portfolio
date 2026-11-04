@@ -1,82 +1,197 @@
 .section {
+  /* Scoped accent: everything in here that reads --color-accent — the header's
+     label and italic word, the active row, links, focus ring — turns green. */
+  --color-accent: var(--color-green);
   scroll-margin-top: var(--scroll-offset);
-  padding: 40px 0 60px;
+  padding: var(--space-section) 0;
 }
 
-.grid {
+/* list on the left, preview on the right; the preview follows the list as it grows */
+.layout {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 22px;
-  perspective: 1400px;
+  grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+  gap: clamp(32px, 5vw, calc(96 * var(--u)));
+  align-items: start;
 }
 
-/* padding is declared here, not just inherited from the card primitive, so the
-   media band's negative margins stay locked to it */
-/* Column flex so the media band can be pinned to the bottom edge. The grid
-   stretches both cards to the tallest one, and without this the band sits at the
-   end of the text instead, leaving a strip of card visible beneath it. */
-.card,
-.card:hover {
-  --media-ratio: 16 / 9;
-  --card-pad: 28px;
+/* ---- the index ---- */
+
+.list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border-top: 1px solid var(--border-rule);
+}
+
+.list > li {
+  border-bottom: 1px solid var(--border-rule);
+}
+
+.row,
+.row:hover {
+  display: grid;
+  grid-template-columns: 44px minmax(0, 1fr) auto;
+  gap: 8px 20px;
+  align-items: baseline;
+  padding: 28px 0;
+  color: inherit;
+  transition: opacity var(--transition-row) var(--ease-out);
+}
+
+.index {
+  font-family: var(--font-mono), monospace;
+  font-size: var(--text-mono);
+  color: var(--color-faint);
+}
+
+.main {
   display: flex;
   flex-direction: column;
-  padding: var(--card-pad);
-  color: inherit;
-  text-decoration: none;
-}
-
-.meta {
-  font-family: var(--font-mono), monospace;
-  font-size: var(--text-mono-meta);
-  letter-spacing: 0.12em;
-  color: var(--color-accent);
+  gap: 14px;
 }
 
 .title {
-  margin-top: 12px;
-  font-size: var(--text-card-title-lg);
+  font-size: var(--text-tile-heading);
   font-weight: 600;
+  line-height: 1.05;
+  letter-spacing: -0.035em;
   color: var(--color-ink);
+  transition: color var(--transition-row), translate var(--transition-row) var(--ease-out);
 }
 
-/* the bottom margin is the minimum gap to the media band, held for the taller
-   card where `margin-top: auto` on the band collapses to nothing */
-.body {
-  margin: 12px 0 22px;
-  font-size: var(--text-card-body);
-  line-height: 1.75;
-  color: var(--color-muted);
+.tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+/* tone-filled pills, no outline */
+.tag {
+  padding: 4px 10px;
+  border-radius: var(--radius-chip);
+  background: var(--color-tag);
+  font-family: var(--font-mono), monospace;
+  font-size: var(--text-mono-sm);
+  color: var(--color-chip-text);
 }
 
 .link {
+  font-family: var(--font-mono), monospace;
+  font-size: var(--text-mono);
   color: var(--color-accent);
-  text-decoration: underline;
+  white-space: nowrap;
 }
 
-/* Reserved space for a screenshot — intentionally empty until the images land.
-   Negative side and bottom margins bleed it to the card's left, right, and bottom
-   edges; the bottom corners are rounded here rather than clipped by the card,
-   because `overflow` on the card would flatten its `transform-style: preserve-3d`
-   and kill the hover tilt. `position: relative` lets the fill image size to this box. */
+/* the active row — hovered, focused, or the default first — leans in */
+.row[data-active='true'] .title {
+  color: var(--color-accent);
+  translate: 6px 0;
+}
+
+/* hovering the list quiets every row but the one under the pointer */
+@media (hover: hover) {
+  .list:hover .row:not(:hover) {
+    opacity: 0.45;
+  }
+}
+
+.row:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 4px;
+}
+
+/* phones only */
+.inline {
+  display: none;
+}
+
+/* ---- the preview ---- */
+
+/* every figure shares one grid cell, so the pane is as tall as the tallest */
+.preview {
+  position: sticky;
+  top: calc(var(--scroll-offset) + 24px);
+  display: grid;
+}
+
+.figure {
+  grid-area: 1 / 1;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  margin: 0;
+  opacity: 0;
+  translate: 0 12px;
+  pointer-events: none;
+  transition: opacity 0.5s var(--ease-out), translate 0.6s var(--ease-out);
+}
+
+.figure[data-active='true'] {
+  opacity: 1;
+  translate: none;
+}
+
 .media {
   position: relative;
-  margin: auto calc(var(--card-pad) * -1) calc(var(--card-pad) * -1);
-  aspect-ratio: var(--media-ratio);
-  flex: none;
-  border-radius: 0 0 var(--radius-card) var(--radius-card);
+  aspect-ratio: var(--media-ratio, 3 / 2);
+  border-radius: var(--radius-card);
   overflow: hidden;
+  background: var(--color-ink);
+  box-shadow: var(--shadow-media);
 }
 
-/* contain, not cover — these are diagrams, and cropping one loses the end of
-   the pipeline. The slot already matches the image's ratio, so nothing letterboxes. */
+/* contain, not cover — diagrams and terminal output lose meaning when cropped */
 .mediaImage {
   object-fit: contain;
-  object-position: center;
 }
 
+.body {
+  font-size: var(--text-card-body-sm);
+  line-height: 1.65;
+  color: var(--color-muted);
+}
+
+/* ---- phones: no preview; each row carries its own shot and copy ---- */
+
 @media (max-width: 900px) {
-  .grid {
+  .layout {
     grid-template-columns: 1fr;
+  }
+
+  .preview {
+    display: none;
+  }
+
+  .row,
+  .row:hover {
+    grid-template-columns: 32px minmax(0, 1fr);
+  }
+
+  .link {
+    grid-column: 2;
+  }
+
+  .inline {
+    grid-column: 1 / -1;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    margin-top: 14px;
+  }
+
+  .row[data-active='true'] .title {
+    color: var(--color-ink);
+    translate: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .figure {
+    translate: none;
+    transition: none;
+  }
+
+  .row[data-active='true'] .title {
+    translate: none;
   }
 }
