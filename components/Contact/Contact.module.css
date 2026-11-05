@@ -1,98 +1,94 @@
 .section {
+  padding: var(--space-section) 0 var(--space-section-sm);
   scroll-margin-top: var(--scroll-offset);
-  padding-bottom: var(--space-section);
 }
 
-/* ---- the email tile ---- */
-
-.email {
-  justify-content: space-between;
-  gap: 28px;
-  padding: clamp(28px, 4vw, calc(44 * var(--u)));
-}
-
-.label {
-  font-family: var(--font-mono), monospace;
-  font-size: var(--text-mono-sm);
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: var(--color-on-accent-muted);
-}
-
-.copy {
+.panel {
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  align-items: center;
+  text-align: center;
+  gap: 22px;
+  max-width: 54ch;
+  margin: 0 auto;
 }
 
 .heading {
-  max-width: 14ch;
-  font-size: var(--text-tile-heading);
+  font-size: var(--text-card-title-lg);
   font-weight: 600;
-  line-height: 1.05;
-  letter-spacing: -0.035em;
+  letter-spacing: -0.02em;
+  color: var(--color-ink);
 }
 
 .body {
-  max-width: 460px;
-  font-size: var(--text-card-body);
-  line-height: 1.65;
-  color: var(--color-on-accent-muted);
+  font-size: var(--text-body-lg);
+  line-height: 1.7;
+  color: var(--color-muted);
 }
 
-.address {
+.links {
+  list-style: none;
+  margin: clamp(48px, 6vw, 80px) 0 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  border-top: 1px solid var(--border-rule);
+}
+
+.link {
   display: flex;
-  align-items: center;
-  gap: 12px;
-  font-size: var(--text-tile-heading);
-  font-weight: 600;
-  letter-spacing: -0.035em;
-  overflow-wrap: anywhere;
+  flex-direction: column;
+  gap: 8px;
+  padding: 24px 20px;
+  border-right: 1px solid var(--border-rule);
+  height: 100%;
+  transition: background var(--t-fast) var(--ease-out);
 }
 
-/* ---- link tiles ---- */
+.links li:last-child .link {
+  border-right: none;
+}
 
-.linkTile {
-  justify-content: space-between;
-  gap: 20px;
+.link:hover {
+  background: var(--color-accent-tint);
 }
 
 .linkLabel {
   font-family: var(--font-mono), monospace;
   font-size: var(--text-mono-sm);
-  letter-spacing: 0.12em;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: var(--color-faint);
-}
-
-.onInk .linkLabel {
-  color: var(--color-on-ink-accent);
+  color: var(--color-faint-strong);
 }
 
 .linkValue {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  font-size: var(--text-org);
-  font-weight: 600;
-  letter-spacing: -0.02em;
+  font-size: var(--text-card-title);
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  color: var(--color-ink);
 }
 
-/* every link tile shares the same cue: the arrow nudges toward its destination */
-.arrow {
-  transition: translate var(--transition-btn) var(--ease-out);
+.link:hover .linkValue {
+  color: var(--color-accent);
 }
 
-@media (hover: hover) {
-  .email:hover .arrow,
-  .linkTile:hover .arrow {
-    translate: 4px -4px;
+@media (max-width: 700px) {
+  .links {
+    grid-template-columns: 1fr 1fr;
+  }
+  .link {
+    border-bottom: 1px solid var(--border-rule);
+  }
+  .links li:nth-child(even) .link {
+    border-right: none;
   }
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .email:hover .arrow,
-  .linkTile:hover .arrow {
-    translate: none;
+@media (max-width: 420px) {
+  .links {
+    grid-template-columns: 1fr;
+  }
+  .link {
+    border-right: none;
   }
 }

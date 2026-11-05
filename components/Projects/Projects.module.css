@@ -1,197 +1,116 @@
 .section {
-  /* Scoped accent: everything in here that reads --color-accent — the header's
-     label and italic word, the active row, links, focus ring — turns green. */
-  --color-accent: var(--color-green);
-  scroll-margin-top: var(--scroll-offset);
   padding: var(--space-section) 0;
+  scroll-margin-top: var(--scroll-offset);
 }
-
-/* list on the left, preview on the right; the preview follows the list as it grows */
-.layout {
-  display: grid;
-  grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
-  gap: clamp(32px, 5vw, calc(96 * var(--u)));
-  align-items: start;
-}
-
-/* ---- the index ---- */
 
 .list {
+  list-style: none;
   margin: 0;
   padding: 0;
-  list-style: none;
-  border-top: 1px solid var(--border-rule);
+  display: flex;
+  flex-direction: column;
+  gap: clamp(48px, 7vw, 104px);
 }
 
-.list > li {
-  border-bottom: 1px solid var(--border-rule);
-}
-
-.row,
-.row:hover {
+.card {
   display: grid;
-  grid-template-columns: 44px minmax(0, 1fr) auto;
-  gap: 8px 20px;
-  align-items: baseline;
-  padding: 28px 0;
-  color: inherit;
-  transition: opacity var(--transition-row) var(--ease-out);
+  grid-template-columns: 1fr 1fr;
+  gap: clamp(28px, 4vw, 64px);
+  align-items: center;
+}
+
+/* alternate the media to the right on even rows */
+.item:nth-child(even) .media {
+  order: 2;
+}
+
+.media {
+  position: relative;
+  aspect-ratio: var(--ratio, 16 / 10);
+  border-radius: var(--radius-card);
+  overflow: hidden;
+  background: var(--color-ink-ground);
+  box-shadow: var(--shadow-media);
+  transition:
+    transform var(--t-card) var(--ease-out),
+    box-shadow var(--t-card) var(--ease-out);
+}
+
+.image {
+  object-fit: cover;
+}
+
+.card:hover .media {
+  transform: translateY(-6px);
+  box-shadow: var(--shadow-media), 0 0 0 1px var(--border-accent);
+}
+
+.text {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 14px;
 }
 
 .index {
   font-family: var(--font-mono), monospace;
   font-size: var(--text-mono);
-  color: var(--color-faint);
-}
-
-.main {
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
+  letter-spacing: 0.1em;
+  color: var(--color-accent);
 }
 
 .title {
-  font-size: var(--text-tile-heading);
+  font-size: var(--text-card-title-lg);
   font-weight: 600;
-  line-height: 1.05;
-  letter-spacing: -0.035em;
+  letter-spacing: -0.02em;
   color: var(--color-ink);
-  transition: color var(--transition-row), translate var(--transition-row) var(--ease-out);
-}
-
-.tags {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
-}
-
-/* tone-filled pills, no outline */
-.tag {
-  padding: 4px 10px;
-  border-radius: var(--radius-chip);
-  background: var(--color-tag);
-  font-family: var(--font-mono), monospace;
-  font-size: var(--text-mono-sm);
-  color: var(--color-chip-text);
-}
-
-.link {
-  font-family: var(--font-mono), monospace;
-  font-size: var(--text-mono);
-  color: var(--color-accent);
-  white-space: nowrap;
-}
-
-/* the active row — hovered, focused, or the default first — leans in */
-.row[data-active='true'] .title {
-  color: var(--color-accent);
-  translate: 6px 0;
-}
-
-/* hovering the list quiets every row but the one under the pointer */
-@media (hover: hover) {
-  .list:hover .row:not(:hover) {
-    opacity: 0.45;
-  }
-}
-
-.row:focus-visible {
-  outline: 2px solid var(--color-accent);
-  outline-offset: 4px;
-}
-
-/* phones only */
-.inline {
-  display: none;
-}
-
-/* ---- the preview ---- */
-
-/* every figure shares one grid cell, so the pane is as tall as the tallest */
-.preview {
-  position: sticky;
-  top: calc(var(--scroll-offset) + 24px);
-  display: grid;
-}
-
-.figure {
-  grid-area: 1 / 1;
-  display: flex;
-  flex-direction: column;
-  gap: 18px;
-  margin: 0;
-  opacity: 0;
-  translate: 0 12px;
-  pointer-events: none;
-  transition: opacity 0.5s var(--ease-out), translate 0.6s var(--ease-out);
-}
-
-.figure[data-active='true'] {
-  opacity: 1;
-  translate: none;
-}
-
-.media {
-  position: relative;
-  aspect-ratio: var(--media-ratio, 3 / 2);
-  border-radius: var(--radius-card);
-  overflow: hidden;
-  background: var(--color-ink);
-  box-shadow: var(--shadow-media);
-}
-
-/* contain, not cover — diagrams and terminal output lose meaning when cropped */
-.mediaImage {
-  object-fit: contain;
 }
 
 .body {
-  font-size: var(--text-card-body-sm);
-  line-height: 1.65;
+  font-size: var(--text-card-body);
+  line-height: 1.7;
   color: var(--color-muted);
+  max-width: 48ch;
 }
 
-/* ---- phones: no preview; each row carries its own shot and copy ---- */
+.tags {
+  list-style: none;
+  margin: 4px 0 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
 
-@media (max-width: 900px) {
-  .layout {
+.tag {
+  padding: 5px 11px;
+  border-radius: var(--radius-chip);
+  background: var(--fill-tag);
+  font-family: var(--font-mono), monospace;
+  font-size: var(--text-mono-sm);
+  color: var(--color-faint-strong);
+}
+
+.link {
+  margin-top: 6px;
+  font-family: var(--font-mono), monospace;
+  font-size: var(--text-mono);
+  color: var(--color-accent);
+  border-bottom: 1px solid var(--border-accent);
+  padding-bottom: 2px;
+  transition: gap var(--t-fast) var(--ease-out);
+}
+
+.card:hover .link {
+  color: var(--color-accent-deep);
+}
+
+@media (max-width: 860px) {
+  .card {
     grid-template-columns: 1fr;
+    gap: 22px;
   }
-
-  .preview {
-    display: none;
-  }
-
-  .row,
-  .row:hover {
-    grid-template-columns: 32px minmax(0, 1fr);
-  }
-
-  .link {
-    grid-column: 2;
-  }
-
-  .inline {
-    grid-column: 1 / -1;
-    display: flex;
-    flex-direction: column;
-    gap: 14px;
-    margin-top: 14px;
-  }
-
-  .row[data-active='true'] .title {
-    color: var(--color-ink);
-    translate: none;
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .figure {
-    translate: none;
-    transition: none;
-  }
-
-  .row[data-active='true'] .title {
-    translate: none;
+  .item:nth-child(even) .media {
+    order: 0;
   }
 }

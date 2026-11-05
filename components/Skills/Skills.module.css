@@ -5,7 +5,7 @@
 .table {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 40px clamp(32px, 3vw, calc(56 * var(--u)));
+  gap: 40px clamp(32px, 3vw, 56px);
 }
 
 .groupLabel {

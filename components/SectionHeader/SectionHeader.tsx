@@ -3,7 +3,7 @@ import styles from './SectionHeader.module.css';
 
 type SectionHeaderProps = {
   section: SectionKey;
-  /** `ink` for the full-bleed Projects band; `center` for the closing Contact section. */
+  /** `ink` for the dark Skills band; `center` for the closing Contact section. */
   variant?: 'ink' | 'center';
 };
 
@@ -16,7 +16,7 @@ export default function SectionHeader({ section, variant }: SectionHeaderProps) 
       <p className={styles.label} data-reveal>
         {label}
       </p>
-      <h2 className={styles.title} data-split>
+      <h2 className={styles.title} data-reveal>
         {title.lead}
         <em className={styles.em}>{title.em}</em>
       </h2>

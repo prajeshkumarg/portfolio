@@ -1,45 +1,33 @@
-import { Bento, Tile } from '@/components/Bento/Bento';
+import ButtonPrimary from '@/components/ButtonPrimary/ButtonPrimary';
 import SectionHeader from '@/components/SectionHeader/SectionHeader';
 import { contact, contactLinks } from '@/content';
 import styles from './Contact.module.css';
 
-/* resume and GitHub stack beside the email tile; the last two share a row */
-const spans = [4, 4, 6, 6] as const;
-
+/*
+ * The closing panel. A centred statement and the email CTA, then a row of the
+ * other links. Reads like the back cover — a sign-off, not another grid.
+ */
 export default function Contact() {
   return (
     <section id="contact" className={styles.section}>
-      <SectionHeader section="contact" />
-      <Bento>
-        <Tile span={8} rows={2} tone="accent" href={contact.ctaHref} className={styles.email}>
-          <p className={styles.label}>{contact.label}</p>
-          <div className={styles.copy}>
-            <h3 className={styles.heading}>{contact.heading}</h3>
-            <p className={styles.body}>{contact.body}</p>
-          </div>
-          <p className={styles.address}>
-            {contact.ctaLabel}
-            <span className={styles.arrow}>{contact.arrow}</span>
-          </p>
-        </Tile>
-
-        {contactLinks.map((link, index) => (
-          <Tile
-            key={link.label}
-            span={spans[index % spans.length]}
-            tone={index === 0 ? 'ink' : 'card'}
-            href={link.href}
-            external
-            className={index === 0 ? `${styles.linkTile} ${styles.onInk}` : styles.linkTile}
-          >
-            <p className={styles.linkLabel}>{link.label}</p>
-            <p className={styles.linkValue}>
-              {link.value}
-              <span className={styles.arrow}>{contact.arrow}</span>
-            </p>
-          </Tile>
+      <SectionHeader section="contact" variant="center" />
+      <div className={styles.panel} data-reveal>
+        <h3 className={styles.heading}>{contact.heading}</h3>
+        <p className={styles.body}>{contact.body}</p>
+        <ButtonPrimary href={contact.ctaHref}>{`${contact.ctaLabel} ${contact.arrow}`}</ButtonPrimary>
+      </div>
+      <ul className={styles.links} data-reveal>
+        {contactLinks.map((link) => (
+          <li key={link.label}>
+            <a className={styles.link} href={link.href} target="_blank" rel="noreferrer">
+              <span className={styles.linkLabel}>{link.label}</span>
+              <span className={styles.linkValue}>
+                {link.value} <span aria-hidden="true">{contact.arrow}</span>
+              </span>
+            </a>
+          </li>
         ))}
-      </Bento>
+      </ul>
     </section>
   );
 }

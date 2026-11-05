@@ -145,6 +145,8 @@ frame — the same pattern as `.card3d`). A bounce was tried and removed at
 Prajesh's request; motion respects `prefers-reduced-motion`.
 
 Do not reintroduce a canvas or a 3D library without being asked for it directly.
+(Exception, `experiment/awwwards-next`, asked for 2026-11-05: the hero's small pixel-art
+skyline is a 2D `<canvas data-skyline>` drawn by Motion — no library.)
 
 On `experiment/awwwards` the hero is a bento: an 8-col × 2-row statement tile (eyebrow,
 h1, bio, actions), a 4-col portrait tile (the photo fills it, caption pill on top), then

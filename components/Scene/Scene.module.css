@@ -1,0 +1,237 @@
+/*
+ * The camera is a tall element; pinning the stage inside it for its full height
+ * gives the scroll-zoom its runway. The stage is one viewport tall and pinned;
+ * the scene is what actually scales and fades.
+ */
+
+.camera {
+  position: relative;
+  /* the scroll runway for the zoom — longer = slower, more deliberate fly-in */
+  height: 220vh;
+}
+
+.stage {
+  height: 100vh;
+  display: grid;
+  place-items: center;
+  overflow: clip;
+  background: var(--color-paper);
+  /* keep the scene clear of the viewport edges on any height */
+  padding: clamp(16px, 3vh, 40px) 0;
+}
+
+/* the composed cover — everything the camera flies into */
+.scene {
+  position: relative;
+  width: min(92vw, var(--content-max));
+  /* fill the stage but never overflow it — the inner layout compresses first */
+  height: 100%;
+  max-height: 760px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: clamp(24px, 4vh, 52px) clamp(24px, 5vw, 64px);
+  background: var(--color-card);
+  border: 1px solid var(--border-rule);
+  border-radius: var(--radius-scene);
+  box-shadow: var(--shadow-scene);
+  transform-origin: 50% 46%;
+  will-change: transform, opacity, filter;
+}
+
+/* faint paper grain so the card reads as printed, not flat */
+.grain {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  opacity: 0.5;
+  background-image: radial-gradient(rgba(26, 26, 23, 0.04) 1px, transparent 1px);
+  background-size: 4px 4px;
+}
+
+.readout {
+  position: relative;
+  font-family: var(--font-mono), monospace;
+  font-size: var(--text-mono);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--color-faint-strong);
+}
+
+.readout time {
+  font-variant-numeric: tabular-nums;
+  color: var(--color-ink);
+}
+
+/* the stacked identity, centred, with the portrait tucked above it */
+.center {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: clamp(14px, 2.4vh, 22px);
+  margin: auto 0;
+}
+
+.greeting {
+  font-family: var(--font-mono), monospace;
+  font-size: clamp(13px, 1.4vw, 15px);
+  letter-spacing: 0.1em;
+  color: var(--color-accent);
+}
+
+.portrait {
+  position: relative;
+  width: clamp(132px, 15vw, 200px);
+  aspect-ratio: 1;
+  border-radius: var(--radius-circle);
+  overflow: hidden;
+  box-shadow: var(--shadow-portrait);
+}
+
+.photo {
+  object-fit: cover;
+  object-position: center 38%;
+}
+
+.statement {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-size: var(--text-display);
+  font-weight: 600;
+  line-height: 0.96;
+  letter-spacing: -0.04em;
+  color: var(--color-ink);
+}
+
+.line {
+  display: block;
+}
+
+.em {
+  font-family: var(--font-serif), serif;
+  font-style: italic;
+  font-weight: 400;
+  letter-spacing: -0.02em;
+  color: var(--color-accent);
+}
+
+.caption {
+  font-family: var(--font-mono), monospace;
+  font-size: var(--text-mono-sm);
+  letter-spacing: 0.26em;
+  color: var(--color-faint-strong);
+}
+
+.actions {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(20px, 3vw, 36px);
+  flex-wrap: wrap;
+}
+
+.cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 13px 26px;
+  border-radius: var(--radius-control);
+  background: var(--color-accent);
+  color: var(--color-on-accent);
+  font-weight: 500;
+  font-size: var(--text-body);
+  transition:
+    transform var(--t-fast) var(--ease-out),
+    box-shadow var(--t-fast) var(--ease-out),
+    background var(--t-fast) var(--ease-out);
+}
+
+.cta:hover {
+  transform: translateY(-2px);
+  background: var(--color-accent-deep);
+  box-shadow: var(--shadow-btn-hover);
+}
+
+.resume {
+  font-family: var(--font-mono), monospace;
+  font-size: var(--text-mono);
+  color: var(--color-muted);
+  text-decoration: underline;
+  text-decoration-color: var(--border-accent);
+  text-underline-offset: 4px;
+  transition: color var(--t-fast) var(--ease-out);
+}
+
+.resume:hover {
+  color: var(--color-accent);
+}
+
+/* the scroll cue, pinned to the viewport bottom, floating under the scene */
+.cue {
+  position: absolute;
+  left: 50%;
+  bottom: clamp(18px, 4vh, 40px);
+  transform: translateX(-50%);
+  font-family: var(--font-mono), monospace;
+  font-size: var(--text-mono-sm);
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--color-faint);
+  animation: hint 2.4s var(--ease-in-out) infinite;
+}
+
+@keyframes hint {
+  0%,
+  100% {
+    transform: translate(-50%, 0);
+    opacity: 0.55;
+  }
+  50% {
+    transform: translate(-50%, 6px);
+    opacity: 1;
+  }
+}
+
+@media (max-width: 640px) {
+  .scene {
+    width: 94vw;
+    padding: 24px 20px;
+  }
+}
+
+/* short viewports (laptops in landscape, small windows): shrink the scene's
+   display type and portrait so the full cover fits without clipping */
+@media (max-height: 720px) {
+  .scene {
+    --text-display: clamp(40px, 7vh, 72px);
+    /* leave room for the cue so the actions don't collide with it */
+    padding-bottom: clamp(44px, 8vh, 64px);
+  }
+  .portrait {
+    width: clamp(104px, 13vh, 150px);
+  }
+  .center {
+    gap: clamp(10px, 1.8vh, 18px);
+  }
+}
+
+/* No zoom under reduced motion — the scene is a normal full-height block. */
+@media (prefers-reduced-motion: reduce) {
+  .camera {
+    height: auto;
+  }
+  .stage {
+    height: auto;
+    min-height: 100vh;
+    padding: 80px 0;
+    overflow: visible;
+  }
+  .cue {
+    animation: none;
+  }
+}

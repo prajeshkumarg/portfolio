@@ -1,11 +1,24 @@
 .bar {
-  position: sticky;
+  position: fixed;
   top: 0;
+  left: 0;
+  right: 0;
   z-index: 50;
-  background: var(--color-nav-bg);
+  background: color-mix(in srgb, var(--color-paper) 85%, transparent);
   -webkit-backdrop-filter: blur(10px);
   backdrop-filter: blur(10px);
-  border-bottom: 1px solid var(--border-nav);
+  border-bottom: 1px solid var(--border-hair);
+  /* hidden over the scene — Motion adds .isShown past the camera */
+  transform: translateY(-100%);
+  opacity: 0;
+  transition:
+    transform 0.5s var(--ease-out),
+    opacity 0.4s var(--ease-out);
+}
+
+.bar:global(.isShown) {
+  transform: translateY(0);
+  opacity: 1;
 }
 
 .inner {
@@ -15,14 +28,14 @@
   justify-content: space-between;
   align-items: center;
   gap: 24px;
-  padding: 16px var(--content-pad);
+  padding: 15px var(--content-pad);
   font-family: var(--font-mono), monospace;
   font-size: var(--text-mono);
 }
 
 .wordmark {
   font-weight: 700;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.08em;
   color: var(--color-ink);
   white-space: nowrap;
 }
@@ -38,6 +51,11 @@
 
 .link {
   color: var(--color-muted);
+  transition: color var(--t-fast) var(--ease-out);
+}
+
+.link:hover {
+  color: var(--color-accent);
 }
 
 .linkPrimary {
@@ -45,7 +63,7 @@
   font-weight: 700;
 }
 
-.progress {
+.rail {
   position: absolute;
   left: 0;
   right: 0;
@@ -58,10 +76,9 @@
 
 @media (max-width: 560px) {
   .inner {
-    padding: 14px 20px;
+    padding: 13px 20px;
     gap: 16px;
   }
-
   .links {
     gap: 16px;
   }
@@ -72,5 +89,12 @@
   .links a:nth-child(2),
   .links a:nth-child(3) {
     display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bar {
+    position: sticky;
+    transition: none;
   }
 }

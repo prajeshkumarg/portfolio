@@ -1,59 +1,36 @@
-import type { CSSProperties } from 'react';
 import Image from 'next/image';
-import Band from '@/components/Band/Band';
 import SectionHeader from '@/components/SectionHeader/SectionHeader';
 import { experiences } from '@/content';
-import type { Experience as Role } from '@/types';
 import styles from './Experience.module.css';
 
 /*
- * Logos are optically aligned, not box-aligned: each is scaled so its lettering
- * is the same height, and dropped so the lettering sits on one shared baseline.
- * Whatever sits below the letters (Amazon's smile, the foot of NYU's box) hangs
- * under that line, as it would in print. Without measurements, a logo just
- * sits on the line at the lettering height.
- */
-function logoVars(role: Role): CSSProperties {
-  const { top, bottom } = role.logoLetters ?? { top: 0, bottom: 1 };
-  const letters = bottom - top;
-  return {
-    '--logo-scale': 1 / letters,
-    '--logo-drop': (1 - bottom) / letters,
-  } as CSSProperties;
-}
-
-/*
- * Open tabs: the company wordmarks head three columns, every panel open, so all
- * roles are visible at once. Columns are a subgrid of the same two rows (logo ·
- * details), so the details start on one line; thin vertical rules divide them.
+ * A ledger of roles. Each row is a wide band: meta + logo on the left rail, the
+ * role and what you did on the right. The current role is marked. Clean rules
+ * between rows, no cards — it reads like a printed CV, not a dashboard.
  */
 export default function Experience() {
   return (
-    <Band id="work" tone="sand" className={styles.section}>
+    <section id="work" className={styles.section}>
       <SectionHeader section="work" />
-      <ol className={styles.tabs}>
+      <ol className={styles.list}>
         {experiences.map((role) => (
           <li
             key={role.org}
-            className={styles.tab}
+            className={styles.row}
             data-current={role.current ? 'true' : undefined}
             data-reveal
           >
-            {/* the wordmark is the heading; the name is kept for screen readers */}
-            <div className={styles.head}>
+            <div className={styles.rail}>
+              <p className={styles.meta}>
+                {role.current ? <span className={styles.now} aria-hidden="true" /> : null}
+                {role.meta}
+              </p>
               {role.logo ? (
-                <Image
-                  className={styles.logo}
-                  src={role.logo}
-                  alt=""
-                  sizes="280px"
-                  style={logoVars(role)}
-                />
+                <Image className={styles.logo} src={role.logo} alt={`${role.org} logo`} sizes="120px" />
               ) : null}
-              <h3 className={styles.org}>{role.org}</h3>
             </div>
-            <div className={styles.panel}>
-              <p className={styles.meta}>{role.meta}</p>
+            <div className={styles.body}>
+              <h3 className={styles.org}>{role.org}</h3>
               <p className={styles.role}>{role.role}</p>
               <ul className={styles.points}>
                 {role.points.map((point) => (
@@ -66,6 +43,6 @@ export default function Experience() {
           </li>
         ))}
       </ol>
-    </Band>
+    </section>
   );
 }

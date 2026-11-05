@@ -42,36 +42,34 @@ export const sections = {
 export type SectionKey = keyof typeof sections;
 
 export const hero = {
-  eyebrow: 'PRAJESH KUMAR · SOFTWARE ENGINEER',
-  /** Split so the last word can carry the serif italic without copy living in JSX. */
-  statement: { lead: 'I build the layer between your code and the ', em: 'machine', tail: '.' },
-  bio: 'SDE intern at Amazon and MSCS student at NYU Courant. I build compilers in C++ and OCaml, teach parallel computing, and do security research with OSIRIS Lab.',
-  /** The hero portrait — replaces the rotating word stack (2026-08-28). */
+  /** The greeting above the stacked statement. */
+  greeting: 'Hi, I’m Prajesh —',
+  /**
+   * The stacked identity. Each line is a word; `em` marks the one carried in the
+   * accent (indigo). The scene the camera flies into is built from these.
+   */
+  statement: [
+    { word: 'Engineer', em: false },
+    { word: 'Compilers', em: true },
+    { word: 'Security', em: false },
+  ],
+  caption: 'ENGINEER · COMPILERS · SECURITY',
+  bio: 'SDE intern at Amazon and MSCS student at NYU Courant. I write compilers in C++ and OCaml, teach parallel computing, and do security research with OSIRIS Lab.',
+  /** The hero portrait — the circular photo the scene is composed around. */
   portrait: heroPortrait,
-  /** Alt text describing the portrait — required whenever an image is set. */
-  portraitAlt: 'Portrait of Prajesh Kumar',
+  portraitAlt:
+    'Prajesh Kumar at Belvedere Castle, Central Park, with the autumn trees and the skyline behind him',
   ctaLabel: 'See my work',
   ctaHref: '#work',
-  resumeLabel: 'resume.pdf ↗',
-  /** The row under the hero: what you're learning, what you're building, and your status. */
-  learning: {
-    label: 'Learning',
-    title: 'Inference engineering',
-    detail: 'batching, KV cache, GPU kernels',
-    linkLabel: 'my notes →',
-    // TODO(prajesh): point at the notes post/page once it exists
-    href: site.blogHref,
+  resumeLabel: 'resume.pdf',
+  /** The small cue inviting the scroll-zoom. */
+  scrollCue: 'scroll to enter',
+  /** Live clock readout in the scene's corner. */
+  readout: {
+    city: 'New York',
+    timeZone: 'America/New_York',
+    timeZoneLabel: 'ET',
   },
-  building: {
-    label: 'Building',
-    title: 'pspgemma',
-    body: 'Running a small language model on a PSP-3000. 64 MB of RAM, a 333 MHz MIPS CPU, and no GPU to lean on. Starting with a llama2.c port and working up to a Gemma-style assistant.',
-    stack: 'C · MIPS · Quantization · LLM inference',
-    linkLabel: 'follow along →',
-    // TODO(prajesh): swap for the pspgemma repo once it's public
-    href: site.githubHref,
-  },
-  status: { label: 'Now', text: 'Open to SWE / AI Infra and Inference roles', linkLabel: 'get in touch →', href: '#contact' },
 };
 
 export const experiences: Experience[] = [

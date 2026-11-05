@@ -13,3 +13,6 @@ next-env.d.ts
 # stale design assets
 public/design.png
 public/design-removebg-preview.png
+
+# Kiro Crew local CLI settings
+.kiro/settings/
