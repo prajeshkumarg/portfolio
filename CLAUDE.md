@@ -4,10 +4,28 @@ Single-page developer portfolio. Static, no backend, no data fetching.
 
 ## Stack
 
-Next.js (App Router) · TypeScript · CSS Modules · GSAP (ScrollTrigger, SplitText) · Lenis
+Next.js (App Router) · TypeScript · CSS Modules · GSAP (ScrollTrigger) · Lenis
 
-No 3D, no canvas. The page is server-rendered markup and CSS; motion is layered on by a
-single client component.
+The page is server-rendered markup and CSS; motion is layered on by client components.
+
+> **Branch `experiment/zoom-folio` (current direction)** — a complete editorial
+> redesign. The landing is a single composed "cover" **scene** (`components/Scene`,
+> a client component) with no nav at rest: a greeting, the circular Central Park
+> portrait, a stacked `Engineer. / Compilers. / Security.` statement (Compilers in
+> the serif italic indigo), a caption and a live clock. On scroll a GSAP
+> ScrollTrigger **pins the stage and flies the camera INTO the scene** — it scales
+> (~3.4×), blurs and fades while the page content rises in behind it. Under reduced
+> motion / no JS the scene is a plain full-height cover and the page scrolls normally.
+> Identity: warm paper `#f4f1e8`, indigo `#3546e0`, Space Grotesk + JetBrains Mono +
+> Instrument Serif (italic accent). Tokens live in `app/globals.css`; no `var(--u)`
+> scaling unit (that was awwwards-only). Sections below the scene: Nav (fades in past
+> the camera, `data-nav`) · Experience (CV ledger, ruled rows) · Projects (alternating
+> media rows, numbered) · Skills (full-bleed ink `Band`) · Education · Writing ·
+> Contact (centred sign-off + link row) · Footer. `components/Motion` drives the
+> scroll reveals (`data-reveal`), the nav reveal and the progress rail (`data-rail`).
+> The Hero and Bento components were removed on this branch.
+
+No 3D, no canvas on any branch. Below, the older `experiment/awwwards` notes.
 
 > **Branch `experiment/awwwards`** — full-width redesign (1600px cap, fluid side padding).
 > The **hero and Contact are bento grids** of `Tile`s. Between them the page alternates
