@@ -33,22 +33,13 @@
   color: var(--color-ink);
 }
 
+/* the emphasised word carries the accent gradient */
 .em {
-  font-family: var(--font-serif), serif;
-  font-style: italic;
-  font-weight: 400;
-  letter-spacing: -0.01em;
-  color: var(--color-accent);
-}
-
-/* on the ink band */
-.ink .label,
-.ink .em {
-  color: var(--color-on-ink-accent);
-}
-
-.ink .title {
-  color: var(--color-on-ink);
+  background: var(--gradient-text);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  font-style: normal;
 }
 
 .center {

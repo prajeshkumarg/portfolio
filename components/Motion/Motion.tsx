@@ -23,15 +23,15 @@ export default function Motion() {
   useEffect(() => {
     const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-    // the nav: shown only once the scene is behind us
+    // the nav: shown only once the hero is mostly scrolled past
     const nav = document.querySelector<HTMLElement>('[data-nav]');
     let navTrigger: ScrollTrigger | undefined;
     if (nav) {
       navTrigger = ScrollTrigger.create({
-        trigger: '[data-camera]',
-        start: 'bottom 80%',
-        onToggle: (self) => nav.classList.toggle('isShown', self.isActive || self.progress >= 1),
-        onUpdate: (self) => nav.classList.toggle('isShown', self.progress >= 1),
+        trigger: '#top',
+        start: 'bottom 70%',
+        onEnter: () => nav.classList.add('isShown'),
+        onLeaveBack: () => nav.classList.remove('isShown'),
       });
     }
 

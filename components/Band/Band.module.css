@@ -6,13 +6,14 @@
   padding-inline: var(--content-pad);
 }
 
+/* a darker, faintly-bordered strip for depth against the gradient */
 .ink {
-  background: var(--color-ink-ground);
-  color: var(--color-on-ink);
+  background: rgba(10, 6, 18, 0.5);
+  border-block: 1px solid var(--glass-border);
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
 }
 
-/* The page shell's --content-max includes its side padding (border-box); the
-   band pads itself, so the inner column subtracts it to land on the same edges. */
 .inner {
   max-width: calc(var(--content-max) - 2 * var(--content-pad));
   margin: 0 auto;

@@ -1,61 +1,58 @@
 /*
- * zoom-folio — editorial paper identity.
+ * zoom-folio → vibrant gradient glass.
  *
- * The landing is a composed scene (the editorial hero) the camera flies INTO on
- * scroll. Content rises up from behind the scene as the zoom progresses. Tokens
- * here are the design's source of truth; components never hardcode a value.
+ * Deep violet→indigo→black gradient ground, glassmorphic frosted cards with a
+ * soft glow, big soft type. No scroll-zoom. Tokens here are the source of truth;
+ * components never hardcode a value.
  */
 
 :root {
-  /* ---- color: warm editorial paper ---- */
-  --color-paper: #f4f1e8;
-  --color-paper-deep: #ece7d8; /* recessed ground the scene sits on */
-  --color-card: #fbf9f2;
-  --color-ink: #1a1a17;
-  --color-muted: #534f44;
-  --color-faint: #837c69; /* meta / captions — 3.9:1, meta only */
-  --color-faint-strong: #6c6555; /* when faint text must pass AA (4.9:1) */
+  /* ---- gradient ground ---- */
+  --bg-0: #0a0612; /* near-black base */
+  --bg-1: #140a2e; /* deep violet */
+  --bg-2: #1b1250; /* indigo */
+  --bg-glow-a: #7c3aed; /* violet glow */
+  --bg-glow-b: #2563eb; /* blue glow */
+  --bg-glow-c: #db2777; /* magenta glow */
 
-  /* indigo — the single interactive accent: links, labels, the primary button */
-  --color-accent: #3546e0;
-  --color-accent-deep: #2334c4;
-  --color-on-accent: #f4f6ff;
-  --color-accent-tint: rgba(53, 70, 224, 0.08);
+  /* ---- text ---- */
+  --color-ink: #f5f3ff; /* near-white primary */
+  --color-muted: #c4bedd; /* body */
+  --color-faint: #8f88ad; /* meta / captions — 4.6:1 on bg */
 
-  /* ink ground — the full-bleed dark sections */
-  --color-ink-ground: #17171a;
-  --color-on-ink: #efe9dc;
-  --color-on-ink-muted: #b4ad99;
-  --color-on-ink-faint: #8a8372;
-  --color-on-ink-accent: #99a2ff;
+  /* ---- accents ---- */
+  --color-accent: #a78bfa; /* violet — primary interactive */
+  --color-accent-strong: #c4b5fd;
+  --color-accent-2: #38bdf8; /* cyan — secondary highlight */
+  --color-accent-3: #f472b6; /* pink — tertiary pop */
+  --color-on-accent: #0a0612;
+  --gradient-accent: linear-gradient(120deg, #a78bfa, #38bdf8 55%, #f472b6);
+  --gradient-text: linear-gradient(120deg, #c4b5fd, #7dd3fc 50%, #f9a8d4);
 
-  /* lines */
-  --border-hair: rgba(26, 26, 23, 0.1);
-  --border-rule: rgba(26, 26, 23, 0.16);
-  --border-strong: rgba(26, 26, 23, 0.24);
-  --border-accent: rgba(53, 70, 224, 0.4);
-  --border-on-ink: rgba(239, 233, 220, 0.14);
+  /* ---- glass surfaces ---- */
+  --glass-fill: rgba(255, 255, 255, 0.05);
+  --glass-fill-strong: rgba(255, 255, 255, 0.08);
+  --glass-border: rgba(255, 255, 255, 0.12);
+  --glass-border-strong: rgba(255, 255, 255, 0.2);
+  --glass-blur: 16px;
+  --fill-tag: rgba(255, 255, 255, 0.07);
 
-  /* tag / chip fill — tone, not an outline */
-  --fill-tag: rgba(26, 26, 23, 0.05);
-
-  /* ---- elevation ---- */
-  --shadow-scene: 0 40px 120px -40px rgba(26, 26, 23, 0.4);
-  --shadow-portrait: 0 24px 60px -18px rgba(26, 26, 23, 0.3), 0 0 0 1px rgba(26, 26, 23, 0.05);
-  --shadow-card: 0 1px 2px rgba(26, 26, 23, 0.04), 0 18px 40px -22px rgba(26, 26, 23, 0.22);
-  --shadow-card-hover: 0 2px 4px rgba(26, 26, 23, 0.05), 0 30px 60px -24px rgba(26, 26, 23, 0.3);
-  --shadow-btn-hover: 0 12px 28px -8px rgba(53, 70, 224, 0.5);
-  --shadow-media: 0 2px 8px rgba(26, 26, 23, 0.06), 0 30px 70px -26px rgba(26, 26, 23, 0.4);
+  /* ---- elevation / glow ---- */
+  --shadow-glass: 0 1px 0 rgba(255, 255, 255, 0.08) inset, 0 24px 60px -24px rgba(0, 0, 0, 0.7);
+  --shadow-glass-hover: 0 1px 0 rgba(255, 255, 255, 0.14) inset,
+    0 30px 70px -22px rgba(0, 0, 0, 0.75), 0 0 48px -8px rgba(167, 139, 250, 0.45);
+  --glow-accent: 0 0 40px -6px rgba(167, 139, 250, 0.55);
+  --shadow-media: 0 30px 70px -24px rgba(0, 0, 0, 0.8), 0 0 0 1px rgba(255, 255, 255, 0.08);
 
   /* ---- radius ---- */
-  --radius-scene: 20px;
-  --radius-card: 16px;
-  --radius-control: 9px;
-  --radius-chip: 7px;
+  --radius-hero: 28px;
+  --radius-card: 20px;
+  --radius-control: 999px; /* pill buttons */
+  --radius-chip: 999px;
   --radius-circle: 50%;
 
   /* ---- layout ---- */
-  --content-max: 1120px;
+  --content-max: 1160px;
   --content-pad: clamp(20px, 5vw, 48px);
   --scroll-offset: 88px;
   --space-section: clamp(88px, 12vh, 168px);
@@ -63,12 +60,12 @@
   --gap-grid: clamp(18px, 2vw, 26px);
 
   /* ---- type ---- */
-  --text-display: clamp(52px, 9vw, 112px); /* the hero statement */
-  --text-h2: clamp(32px, 4.2vw, 52px);
-  --text-card-title-lg: clamp(22px, 2.4vw, 28px);
-  --text-org: clamp(20px, 2vw, 24px);
+  --text-display: clamp(52px, 9vw, 116px);
+  --text-h2: clamp(34px, 4.6vw, 60px);
+  --text-card-title-lg: clamp(22px, 2.4vw, 30px);
+  --text-org: clamp(21px, 2vw, 26px);
   --text-card-title: 19px;
-  --text-body-lg: clamp(16px, 1.3vw, 19px);
+  --text-body-lg: clamp(17px, 1.3vw, 20px);
   --text-body: 16px;
   --text-card-body: 15px;
   --text-card-body-sm: 14px;
@@ -76,19 +73,33 @@
   --text-mono: 12px;
   --text-mono-sm: 11px;
 
+  /* aliases used by older section modules */
+  --text-mono-meta: var(--text-mono-sm);
+  --radius-tile: var(--radius-card);
+  --shadow-tile: var(--shadow-glass);
+  --color-logo-plate: #ffffff;
+  --transition-btn: var(--t-fast);
+  --transition-row: var(--t-card);
+  --color-card: var(--glass-fill);
+
+  /* on-ink aliases (Skills band was "ink"; now it's just glass on the gradient) */
+  --color-on-ink: var(--color-ink);
+  --color-on-ink-accent: var(--color-accent);
+  --border-on-ink: var(--glass-border);
+
+  --border-hair: var(--glass-border);
+  --border-rule: var(--glass-border);
+  --border-strong: var(--glass-border-strong);
+  --border-accent: rgba(167, 139, 250, 0.5);
+  --color-faint-strong: #a79fc4; /* 5.2:1 */
+  --color-accent-tint: rgba(167, 139, 250, 0.12);
+  --color-accent-deep: #8b5cf6;
+
   /* ---- motion ---- */
   --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
   --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
   --t-fast: 0.22s;
   --t-card: 0.4s;
-
-  /* aliases used by Education / Writing / Footer */
-  --text-mono-meta: var(--text-mono-sm);
-  --radius-tile: var(--radius-card);
-  --shadow-tile: var(--shadow-card);
-  --color-logo-plate: #ffffff;
-  --transition-btn: var(--t-fast);
-  --transition-row: var(--t-card);
 }
 
 *,
@@ -103,7 +114,6 @@ html {
 
 body {
   margin: 0;
-  background: var(--color-paper);
   color: var(--color-ink);
   font-family: var(--font-sans), system-ui, sans-serif;
   font-size: var(--text-body);
@@ -111,6 +121,16 @@ body {
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
   overflow-x: clip;
+  /* the gradient ground: a dark base with three soft colour glows baked in,
+     fixed so it stays put while the page scrolls over it */
+  background-color: var(--bg-0);
+  background-image:
+    radial-gradient(1100px 700px at 15% -5%, color-mix(in srgb, var(--bg-glow-a) 55%, transparent), transparent 60%),
+    radial-gradient(1000px 800px at 95% 10%, color-mix(in srgb, var(--bg-glow-b) 42%, transparent), transparent 55%),
+    radial-gradient(900px 900px at 50% 115%, color-mix(in srgb, var(--bg-glow-c) 38%, transparent), transparent 60%),
+    linear-gradient(180deg, var(--bg-1), var(--bg-0) 55%);
+  background-attachment: fixed;
+  background-repeat: no-repeat;
 }
 
 h1,
@@ -140,10 +160,27 @@ img {
 :focus-visible {
   outline: 2px solid var(--color-accent);
   outline-offset: 3px;
-  border-radius: 2px;
+  border-radius: 4px;
 }
 
-/* A shared label: mono eyebrow with a short accent tick before it. */
+/* a text run painted with the accent gradient */
+.gradientText {
+  background: var(--gradient-text);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* shared frosted-glass surface */
+.glass {
+  background: var(--glass-fill);
+  border: 1px solid var(--glass-border);
+  -webkit-backdrop-filter: blur(var(--glass-blur));
+  backdrop-filter: blur(var(--glass-blur));
+  box-shadow: var(--shadow-glass);
+}
+
+/* shared label: mono eyebrow with a short accent tick */
 .eyebrow {
   display: inline-flex;
   align-items: center;
@@ -160,15 +197,6 @@ img {
   width: 24px;
   height: 1px;
   background: currentColor;
-}
-
-/*
- * Set by the boot script in layout.tsx before first paint, only when motion is
- * allowed. The scene starts in its "far" state so content doesn't flash before
- * the camera is wired up. Without JS or under reduced motion, nothing hides.
- */
-html.motion [data-scene-hidden] {
-  opacity: 0;
 }
 
 @media (prefers-reduced-motion: reduce) {

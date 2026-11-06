@@ -4,11 +4,11 @@
   left: 0;
   right: 0;
   z-index: 50;
-  background: color-mix(in srgb, var(--color-paper) 85%, transparent);
-  -webkit-backdrop-filter: blur(10px);
-  backdrop-filter: blur(10px);
-  border-bottom: 1px solid var(--border-hair);
-  /* hidden over the scene — Motion adds .isShown past the camera */
+  background: color-mix(in srgb, var(--bg-0) 70%, transparent);
+  -webkit-backdrop-filter: blur(14px) saturate(140%);
+  backdrop-filter: blur(14px) saturate(140%);
+  border-bottom: 1px solid var(--glass-border);
+  /* hidden over the hero — Motion adds .isShown once you scroll into content */
   transform: translateY(-100%);
   opacity: 0;
   transition:

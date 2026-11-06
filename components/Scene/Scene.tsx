@@ -1,43 +1,147 @@
 'use client';
 
 /*
- * The landing scene + the scroll-zoom camera.
- *
- * The scene is an editorial "cover": greeting, a stacked ENGINEER / COMPILERS /
- * SECURITY statement, the circular portrait, a caption. At rest it fills the
- * viewport with no nav bar — it reads like the front of a printed zine.
- *
- * On scroll the camera flies INTO the scene: a pinned stage scales the scene up
- * and fades it out while the page content (which flows after this component)
- * rises into view. The whole move is one ScrollTrigger scrubbed to a tall pin
- * spacer, so it tracks the scrollbar exactly.
- *
- * Under reduced motion (or no JS) none of this runs: the scene is a normal
- * full-height block and the page scrolls past it conventionally.
+ * The hero. A bold asymmetric layout on the gradient ground with an interactive
+ * particle field behind it: drifting glowing dots in the accent palette, linked
+ * by faint lines when near, that lean away from the pointer. Big display type
+ * with the accent gradient on the name; the portrait sits in a glowing ring.
+ * No scroll-zoom. Particles + the load-in are off under reduced motion.
  */
 
 import { useRef } from 'react';
 import Image from 'next/image';
 import gsap from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { useGSAP } from '@gsap/react';
 import { hero, site } from '@/content';
 import styles from './Scene.module.css';
 
-gsap.registerPlugin(ScrollTrigger, useGSAP);
+gsap.registerPlugin(useGSAP);
 
-declare global {
-  interface Window {
-    __motion?: boolean;
-  }
+type Dot = { x: number; y: number; vx: number; vy: number; r: number; c: string };
+
+/** The drifting, pointer-reactive particle field. Returns a cleanup. */
+function particles(canvas: HTMLCanvasElement) {
+  const ctx = canvas.getContext('2d');
+  if (!ctx) return () => {};
+
+  const palette = ['#a78bfa', '#38bdf8', '#f472b6'];
+  let dots: Dot[] = [];
+  let dpr = 1;
+  let w = 0;
+  let h = 0;
+  let raf = 0;
+  const pointer = { x: -1e4, y: -1e4 };
+
+  const build = () => {
+    const rect = canvas.getBoundingClientRect();
+    dpr = Math.min(window.devicePixelRatio || 1, 2);
+    w = canvas.width = Math.round(rect.width * dpr);
+    h = canvas.height = Math.round(rect.height * dpr);
+    // density scales with area, capped so it stays cheap
+    const count = Math.min(90, Math.round((rect.width * rect.height) / 11000));
+    dots = Array.from({ length: count }, () => ({
+      x: Math.random() * w,
+      y: Math.random() * h,
+      vx: (Math.random() - 0.5) * 0.25 * dpr,
+      vy: (Math.random() - 0.5) * 0.25 * dpr,
+      r: (Math.random() * 1.6 + 0.8) * dpr,
+      c: palette[(Math.random() * palette.length) | 0],
+    }));
+  };
+
+  const link = 120;
+  const step = () => {
+    raf = requestAnimationFrame(step);
+    ctx.clearRect(0, 0, w, h);
+    const reach = 120 * dpr;
+    const linkPx = link * dpr;
+
+    for (const d of dots) {
+      // pointer repulsion
+      const dx = d.x - pointer.x;
+      const dy = d.y - pointer.y;
+      const d2 = dx * dx + dy * dy;
+      if (d2 < reach * reach && d2 > 0.01) {
+        const dist = Math.sqrt(d2);
+        const push = (1 - dist / reach) * 0.9 * dpr;
+        d.vx += (dx / dist) * push;
+        d.vy += (dy / dist) * push;
+      }
+      d.vx *= 0.96;
+      d.vy *= 0.96;
+      d.x += d.vx;
+      d.y += d.vy;
+      // wrap at edges
+      if (d.x < 0) d.x += w;
+      else if (d.x > w) d.x -= w;
+      if (d.y < 0) d.y += h;
+      else if (d.y > h) d.y -= h;
+    }
+
+    // links
+    ctx.lineWidth = dpr;
+    for (let i = 0; i < dots.length; i++) {
+      for (let j = i + 1; j < dots.length; j++) {
+        const a = dots[i];
+        const b = dots[j];
+        const dx = a.x - b.x;
+        const dy = a.y - b.y;
+        const dist = Math.hypot(dx, dy);
+        if (dist < linkPx) {
+          ctx.globalAlpha = (1 - dist / linkPx) * 0.18;
+          ctx.strokeStyle = a.c;
+          ctx.beginPath();
+          ctx.moveTo(a.x, a.y);
+          ctx.lineTo(b.x, b.y);
+          ctx.stroke();
+        }
+      }
+    }
+
+    // dots with glow
+    ctx.globalAlpha = 1;
+    for (const d of dots) {
+      ctx.fillStyle = d.c;
+      ctx.shadowColor = d.c;
+      ctx.shadowBlur = 8 * dpr;
+      ctx.beginPath();
+      ctx.arc(d.x, d.y, d.r, 0, Math.PI * 2);
+      ctx.fill();
+    }
+    ctx.shadowBlur = 0;
+  };
+
+  const move = (e: PointerEvent) => {
+    if (e.pointerType === 'touch') return;
+    const rect = canvas.getBoundingClientRect();
+    pointer.x = (e.clientX - rect.left) * dpr;
+    pointer.y = (e.clientY - rect.top) * dpr;
+  };
+  const leave = () => {
+    pointer.x = -1e4;
+    pointer.y = -1e4;
+  };
+
+  const ro = new ResizeObserver(build);
+  ro.observe(canvas);
+  build();
+  step();
+  window.addEventListener('pointermove', move);
+  document.documentElement.addEventListener('pointerleave', leave);
+
+  return () => {
+    cancelAnimationFrame(raf);
+    ro.disconnect();
+    window.removeEventListener('pointermove', move);
+    document.documentElement.removeEventListener('pointerleave', leave);
+  };
 }
 
 export default function Scene() {
-  const root = useRef<HTMLDivElement>(null);
+  const root = useRef<HTMLElement>(null);
 
   useGSAP(
     () => {
-      window.__motion = true;
       const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
 
       // live clock
@@ -55,102 +159,69 @@ export default function Scene() {
         clockId = window.setInterval(tick, 1000);
       }
 
-      // The CSS pre-hide (html.motion [data-scene-hidden]) keeps the scene from
-      // flashing before this runs. Drop the attribute so that rule stops applying,
-      // then drive the reveal explicitly — otherwise GSAP reads the hidden state
-      // as the target and animates 0 -> 0.
-      const hidden = gsap.utils.toArray<HTMLElement>('[data-scene-hidden]');
-      hidden.forEach((el) => el.removeAttribute('data-scene-hidden'));
+      let stopParticles = () => {};
+      if (!reduced) {
+        const canvas = root.current?.querySelector<HTMLCanvasElement>('[data-particles]');
+        if (canvas) stopParticles = particles(canvas);
 
-      if (reduced) {
-        gsap.set(hidden, { opacity: 1 });
-        return () => window.clearInterval(clockId);
+        gsap.from(gsap.utils.toArray<HTMLElement>('[data-hero-in]'), {
+          y: 34,
+          opacity: 0,
+          duration: 1,
+          stagger: 0.09,
+          ease: 'expo.out',
+          delay: 0.1,
+        });
       }
 
-      const stage = root.current?.querySelector<HTMLElement>(`.${styles.stage}`);
-      const scene = root.current?.querySelector<HTMLElement>(`.${styles.scene}`);
-      const cue = root.current?.querySelector<HTMLElement>(`.${styles.cue}`);
-      if (!stage || !scene) return () => window.clearInterval(clockId);
-
-      // intro: the scene settles in on load (cue stays CSS-driven)
-      gsap.fromTo(
-        gsap.utils.toArray<HTMLElement>('[data-scene-in]'),
-        { y: 28, opacity: 0 },
-        { y: 0, opacity: 1, duration: 1, stagger: 0.08, ease: 'expo.out', delay: 0.1 },
-      );
-
-      // the camera: scrub the scene's scale + fade to the pin spacer
-      const tl = gsap.timeline({
-        scrollTrigger: {
-          trigger: root.current,
-          start: 'top top',
-          end: 'bottom top',
-          scrub: 0.6,
-          pin: stage,
-          pinSpacing: true,
-          anticipatePin: 1,
-        },
-      });
-
-      // fly in: scale past the viewport while fading — the content behind rises in
-      tl.to(scene, { scale: 3.4, ease: 'power2.in' }, 0)
-        .to(scene, { opacity: 0, ease: 'power1.in' }, 0.25)
-        .to(scene, { filter: 'blur(6px)', ease: 'none' }, 0.1);
-
-      if (cue) tl.to(cue, { opacity: 0, duration: 0.15, ease: 'none' }, 0);
-
-      return () => window.clearInterval(clockId);
+      return () => {
+        window.clearInterval(clockId);
+        stopParticles();
+      };
     },
     { scope: root },
   );
 
   return (
-    <div ref={root} className={styles.camera} data-camera>
-      <div className={styles.stage}>
-        <div className={styles.scene}>
-          <div className={styles.grain} aria-hidden="true" />
+    <header id="top" ref={root} className={styles.hero}>
+      <canvas className={styles.particles} data-particles aria-hidden="true" />
 
-          <p className={styles.readout} data-scene-hidden data-scene-in>
-            {hero.readout.city} <time data-clock>--:--</time> {hero.readout.timeZoneLabel}
+      <div className={styles.inner}>
+        <p className={styles.readout} data-hero-in>
+          <span className={styles.ping} aria-hidden="true" />
+          {hero.greeting}
+          <span className={styles.clock}>
+            <time data-clock>--:--</time> {hero.readout.timeZoneLabel}
+          </span>
+        </p>
+
+        <h1 className={styles.statement} data-hero-in>
+          {hero.statement.map((line) => (
+            <span key={line.word} className={line.em ? `${styles.line} gradientText` : styles.line}>
+              {line.word}
+              <span aria-hidden="true">.</span>
+            </span>
+          ))}
+        </h1>
+
+        <div className={styles.foot}>
+          <figure className={styles.portrait} data-hero-in>
+            <span className={styles.ring} aria-hidden="true" />
+            <Image
+              className={styles.photo}
+              src={hero.portrait}
+              alt={hero.portraitAlt}
+              fill
+              priority
+              sizes="(max-width: 640px) 96px, 120px"
+            />
+          </figure>
+
+          <p className={styles.bio} data-hero-in>
+            {hero.bio}
           </p>
 
-          <div className={styles.center}>
-            <p className={styles.greeting} data-scene-hidden data-scene-in>
-              {hero.greeting}
-            </p>
-
-            <figure className={styles.portrait} data-scene-hidden data-scene-in>
-              <Image
-                className={styles.photo}
-                src={hero.portrait}
-                alt={hero.portraitAlt}
-                fill
-                priority
-                sizes="(max-width: 640px) 180px, 240px"
-              />
-            </figure>
-
-            <h1 className={styles.statement}>
-              {hero.statement.map((line, i) => (
-                <span
-                  key={line.word}
-                  className={line.em ? `${styles.line} ${styles.em}` : styles.line}
-                  data-scene-hidden
-                  data-scene-in
-                  style={{ transitionDelay: `${i * 60}ms` }}
-                >
-                  {line.word}
-                  <span aria-hidden="true">.</span>
-                </span>
-              ))}
-            </h1>
-
-            <p className={styles.caption} data-scene-hidden data-scene-in>
-              {hero.caption}
-            </p>
-          </div>
-
-          <div className={styles.actions} data-scene-hidden data-scene-in>
+          <div className={styles.actions} data-hero-in>
             <a className={styles.cta} href={hero.ctaHref}>
               {hero.ctaLabel} <span aria-hidden="true">↓</span>
             </a>
@@ -158,12 +229,8 @@ export default function Scene() {
               {hero.resumeLabel} <span aria-hidden="true">↗</span>
             </a>
           </div>
-
-          <p className={styles.cue} aria-hidden="true">
-            {hero.scrollCue}
-          </p>
         </div>
       </div>
-    </div>
+    </header>
   );
 }

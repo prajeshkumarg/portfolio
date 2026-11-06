@@ -45,12 +45,17 @@
   box-shadow: 0 0 0 4px var(--color-accent-tint);
 }
 
+/* dark marks on a dark ground — plate white so they read */
 .logo {
   width: auto;
-  height: clamp(22px, 2.4vw, 30px);
+  height: clamp(20px, 2.2vw, 26px);
   object-fit: contain;
   object-position: left center;
-  opacity: 0.9;
+  padding: 8px 12px;
+  border-radius: 8px;
+  background: #fff;
+  box-sizing: content-box;
+  align-self: flex-start;
 }
 
 .org {
