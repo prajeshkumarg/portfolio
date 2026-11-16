@@ -3,16 +3,16 @@ import { education } from '@/content';
 import styles from './Education.module.css';
 
 /*
- * Education — two rows, each the degree large with the institution and dates
- * beneath. The mark sits at the left on a plate matched to the logo: NYU's
- * banner keeps its purple ground; other marks sit on white.
+ * Education — white cards, one per degree: a brand-coloured logo panel on the
+ * left (NYU purple, VIT white), the degree, institution and dates in dark ink
+ * on the card's white ground. The light cards are a deliberate break from the
+ * dark page, like the old awwwards layout.
  */
 
-// plate colour per institution, so a logo with a baked-in background (NYU's
-// purple banner) sits on its own colour instead of a clashing white square
+// logo-panel colour per institution
 function plateFor(institution: string): string {
   if (institution.toLowerCase().includes('nyu')) return '#57068c';
-  return '#ffffff';
+  return '#f3f1ea';
 }
 
 export default function Education() {
@@ -24,11 +24,11 @@ export default function Education() {
         </h2>
         <ol className={styles.list}>
           {education.map((e) => (
-            <li key={e.institution} className={styles.row} data-reveal>
+            <li key={e.institution} className={styles.card} data-reveal>
               {e.logo ? (
-                <span className={styles.plate} style={{ background: plateFor(e.institution) }}>
-                  <Image className={styles.logo} src={e.logo} alt={`${e.institution} logo`} sizes="140px" />
-                </span>
+                <div className={styles.logoPanel} style={{ background: plateFor(e.institution) }}>
+                  <Image className={styles.logo} src={e.logo} alt={`${e.institution} logo`} sizes="200px" />
+                </div>
               ) : null}
               <div className={styles.text}>
                 <h3 className={styles.degree}>{e.degree}</h3>

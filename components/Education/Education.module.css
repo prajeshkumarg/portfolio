@@ -1,11 +1,11 @@
-/* Education — two rows, degree large, mark on a plate. */
+/* Education — white cards with a brand logo panel + dark text. */
 
 .section {
   padding-block: var(--gap-section);
 }
 
 .heading {
-  margin-bottom: clamp(40px, 6vh, 72px);
+  margin-bottom: clamp(32px, 5vh, 64px);
   font-weight: 600;
   letter-spacing: -0.04em;
   line-height: 0.95;
@@ -15,58 +15,69 @@
 .list {
   display: flex;
   flex-direction: column;
-  gap: clamp(40px, 6vh, 72px);
+  gap: clamp(16px, 2vh, 24px);
 }
 
-.row {
+/* a light card, a deliberate break from the dark page */
+.card {
   display: grid;
-  grid-template-columns: 140px 1fr;
-  gap: clamp(20px, 3vw, 44px);
-  align-items: center;
+  grid-template-columns: clamp(180px, 22vw, 260px) 1fr;
+  align-items: stretch;
+  background: #fbf9f3;
+  overflow: hidden;
+  border-radius: 4px;
 }
 
-/* a wider plate so banner-style marks (NYU) fit naturally; colour set inline */
-.plate {
+.logoPanel {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 140px;
-  height: 64px;
-  padding: 10px 14px;
-  overflow: hidden;
+  padding: clamp(18px, 2vw, 28px);
 }
 
 .logo {
   width: auto;
-  max-width: 100%;
+  max-width: 82%;
   height: auto;
-  max-height: 100%;
+  max-height: 52px;
   object-fit: contain;
 }
 
+.text {
+  padding: clamp(20px, 2.4vw, 32px);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+/* dark ink on the white card */
 .degree {
+  color: #1a1a17;
   font-weight: 600;
   letter-spacing: -0.03em;
   line-height: 1.05;
-  font-size: clamp(1.5rem, 3vw, 2.25rem);
+  font-size: clamp(1.375rem, 2.6vw, 2rem);
 }
 
 .inst {
   margin-top: 0.3em;
-  color: var(--ink);
+  color: #4a4a42;
   font-size: var(--step-body);
 }
 
 .meta {
-  margin-top: 0.4em;
-  color: var(--muted);
+  margin-top: 0.5em;
+  color: #6b6b60;
   font-size: var(--step-small);
-  letter-spacing: 0.01em;
+  letter-spacing: 0.02em;
 }
 
 @media (max-width: 560px) {
-  .row {
+  .card {
     grid-template-columns: 1fr;
-    gap: 14px;
+  }
+
+  .logoPanel {
+    aspect-ratio: 16 / 7;
   }
 }

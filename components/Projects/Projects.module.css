@@ -1,4 +1,4 @@
-/* Projects — a scannable list, one project per row. */
+/* Projects — split index (left) + sticky preview (right). */
 
 .section {
   padding-block: var(--gap-section);
@@ -12,86 +12,44 @@
   font-size: var(--step-mid);
 }
 
+.split {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: clamp(32px, 5vw, 80px);
+  align-items: start;
+}
+
+/* left: the index of names */
 .list {
   display: flex;
   flex-direction: column;
 }
 
-.row {
+.item {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 20px;
+  padding: clamp(18px, 2.4vh, 28px) 0;
   border-top: 1px solid color-mix(in srgb, var(--ink) 12%, transparent);
-}
-
-.row:last-child {
-  border-bottom: 1px solid color-mix(in srgb, var(--ink) 12%, transparent);
-}
-
-/* the whole row is one link: text left, thumbnail right, arrow at the end */
-.link {
-  display: grid;
-  grid-template-columns: 1fr auto auto;
-  align-items: center;
-  gap: clamp(24px, 4vw, 64px);
-  padding: clamp(24px, 3.4vh, 40px) clamp(8px, 1.5vw, 20px);
-  transition: background var(--t-fast) var(--ease-out);
-}
-
-.link:hover {
-  background: var(--surface);
-}
-
-.text {
-  min-width: 0;
-}
-
-.title {
-  font-weight: 600;
-  letter-spacing: -0.03em;
-  line-height: 1;
-  font-size: clamp(2rem, 4.4vw, 3.5rem);
+  color: var(--ink-dim);
   transition: color var(--t-fast) var(--ease-out);
 }
 
-.link:hover .title {
-  color: var(--accent);
+.list li:last-child .item {
+  border-bottom: 1px solid color-mix(in srgb, var(--ink) 12%, transparent);
 }
 
-.body {
-  margin-top: 0.5em;
-  max-width: 56ch;
-  color: var(--muted);
-  font-size: var(--step-body);
-  line-height: 1.45;
+.item[data-active='true'],
+.item:hover {
+  color: var(--ink);
 }
 
-.stack {
-  margin-top: 0.8em;
-  color: var(--muted);
-  font-size: var(--step-small);
-  letter-spacing: 0.01em;
-}
-
-/* a small screenshot thumbnail at the right end of the row */
-.thumb {
-  margin: 0;
-  width: clamp(160px, 20vw, 260px);
-  aspect-ratio: 16 / 10;
-  overflow: hidden;
-  background: var(--surface-2);
-  border-radius: 2px;
-}
-
-.thumb :global(img) {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  display: block;
-  opacity: 0.85;
-  transition: opacity var(--t-fast) var(--ease-out), transform var(--t-mid) var(--ease-out);
-}
-
-.link:hover .thumb :global(img) {
-  opacity: 1;
-  transform: scale(1.04);
+.name {
+  font-weight: 600;
+  letter-spacing: -0.03em;
+  line-height: 1;
+  font-size: clamp(1.75rem, 3.4vw, 3rem);
 }
 
 .arrow {
@@ -100,19 +58,91 @@
   transition: color var(--t-fast) var(--ease-out), transform var(--t-fast) var(--ease-out);
 }
 
-.link:hover .arrow {
+.item[data-active='true'] .arrow,
+.item:hover .arrow {
   color: var(--accent);
   transform: translate(2px, -2px);
 }
 
-/* phone: drop the thumbnail, stack text, keep the arrow */
-@media (max-width: 720px) {
-  .link {
-    grid-template-columns: 1fr auto;
-    gap: 16px;
+/* right: the sticky preview */
+.preview {
+  position: sticky;
+  top: clamp(40px, 12vh, 120px);
+}
+
+.previewInner {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.media {
+  margin: 0;
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  overflow: hidden;
+  background: var(--surface-2);
+}
+
+.media :global(img) {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  animation: fadeIn 0.4s var(--ease-out);
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.caption {
+  max-width: 48ch;
+  color: var(--muted);
+  font-size: var(--step-body);
+  line-height: 1.45;
+}
+
+.stack {
+  color: var(--accent);
+  font-size: var(--step-small);
+  letter-spacing: 0.01em;
+}
+
+/* the phone-only inline image is hidden on desktop */
+.inlineMedia {
+  display: none;
+}
+
+@media (max-width: 860px) {
+  .split {
+    grid-template-columns: 1fr;
+    gap: 0;
   }
 
-  .thumb {
+  /* no sticky preview on phone — each row shows its own image inline */
+  .preview {
     display: none;
+  }
+
+  .inlineMedia {
+    display: block;
+    margin: 0 0 clamp(20px, 4vh, 32px);
+    width: 100%;
+    aspect-ratio: 16 / 10;
+    overflow: hidden;
+    background: var(--surface-2);
+  }
+
+  .inlineMedia :global(img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
   }
 }
