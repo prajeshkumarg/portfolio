@@ -57,18 +57,7 @@
   flex: none;
 }
 
-.logo {
-  width: auto;
-  height: 26px;
-  object-fit: contain;
-  object-position: left center;
-  /* plate dark marks so they read on the green-black ground */
-  background: #fff;
-  padding: 6px 10px;
-  width: fit-content;
-}
-
-/* right body — org + role on one line, impact beneath, tight */
+/* right body — org name large and text-forward (no logo chips), impact beneath */
 .body {
   max-width: 70ch;
 }
@@ -77,7 +66,7 @@
   font-weight: 600;
   letter-spacing: -0.03em;
   line-height: 1;
-  font-size: clamp(1.5rem, 2.6vw, 2.125rem);
+  font-size: clamp(2rem, 3.6vw, 3rem);
 }
 
 .role {

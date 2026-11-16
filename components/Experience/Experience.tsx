@@ -1,4 +1,3 @@
-import Image from 'next/image';
 import { experiences } from '@/content';
 import styles from './Experience.module.css';
 
@@ -28,14 +27,6 @@ export default function Experience() {
                   {role.current ? <span className={styles.now} aria-hidden="true" /> : null}
                   {role.meta}
                 </p>
-                {role.logo ? (
-                  <Image
-                    className={styles.logo}
-                    src={role.logo}
-                    alt={`${role.org} logo`}
-                    sizes="120px"
-                  />
-                ) : null}
               </div>
               <div className={styles.body}>
                 <h3 className={styles.org}>{role.org}</h3>

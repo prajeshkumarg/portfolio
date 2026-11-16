@@ -1,62 +1,24 @@
-/* PixelSpace — the procedural pixel-art scene in the hero's right half. */
+/* PixelSpace — a frameless, transparent pixel-art canvas in the hero's right
+   half. It sits directly on the hero ground as part of the scene. */
 
-.frame {
+.canvas {
   position: absolute;
   top: 50%;
   right: clamp(-20px, 2vw, 72px);
   transform: translateY(-50%);
-  width: clamp(300px, 38vw, 560px);
+  width: clamp(320px, 40vw, 600px);
   aspect-ratio: 1;
   z-index: 0; /* behind the name text */
   pointer-events: none;
-  overflow: hidden;
-  background: var(--surface-2);
-}
-
-.canvas {
-  position: absolute;
-  inset: 0;
-  z-index: 0;
-  width: 100%;
-  height: 100%;
-  /* hard pixel blocks: the 84×84 canvas scaled up stays crisp */
+  background: transparent;
+  /* hard pixel blocks: the small canvas scaled up stays crisp */
   image-rendering: pixelated;
   image-rendering: crisp-edges;
 }
 
-/* faint scanlines for the retro feel */
-.scan {
-  position: absolute;
-  inset: 0;
-  z-index: 1;
-  pointer-events: none;
-  background: repeating-linear-gradient(
-    0deg,
-    rgba(0, 0, 0, 0.18) 0px,
-    rgba(0, 0, 0, 0.18) 1px,
-    transparent 2px,
-    transparent 4px
-  );
-  mix-blend-mode: multiply;
-  opacity: 0.5;
-}
-
-/* a tiny corner label in the retro spirit */
-.tag {
-  position: absolute;
-  left: 10px;
-  bottom: 8px;
-  z-index: 2;
-  margin: 0;
-  color: var(--accent);
-  font-size: var(--step-small);
-  letter-spacing: 0.04em;
-  opacity: 0.8;
-}
-
 @media (max-width: 720px) {
-  .frame {
-    width: 240px;
+  .canvas {
+    width: 260px;
     right: -56px;
     opacity: 0.55;
   }
