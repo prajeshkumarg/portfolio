@@ -3,17 +3,11 @@ import { education } from '@/content';
 import styles from './Education.module.css';
 
 /*
- * Education — white cards, one per degree: a brand-coloured logo panel on the
- * left (NYU purple, VIT white), the degree, institution and dates in dark ink
- * on the card's white ground. The light cards are a deliberate break from the
- * dark page, like the old awwwards layout.
+ * Education — white cards, one per degree: a white logo panel on the left with
+ * the mark filling it, and the degree, institution and dates in dark ink on the
+ * card's white ground. Light cards are a deliberate break from the dark page,
+ * like the old awwwards layout.
  */
-
-// logo-panel colour per institution
-function plateFor(institution: string): string {
-  if (institution.toLowerCase().includes('nyu')) return '#57068c';
-  return '#f3f1ea';
-}
 
 export default function Education() {
   return (
@@ -26,8 +20,8 @@ export default function Education() {
           {education.map((e) => (
             <li key={e.institution} className={styles.card} data-reveal>
               {e.logo ? (
-                <div className={styles.logoPanel} style={{ background: plateFor(e.institution) }}>
-                  <Image className={styles.logo} src={e.logo} alt={`${e.institution} logo`} sizes="200px" />
+                <div className={styles.logoPanel}>
+                  <Image className={styles.logo} src={e.logo} alt={`${e.institution} logo`} sizes="260px" />
                 </div>
               ) : null}
               <div className={styles.text}>

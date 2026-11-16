@@ -1,4 +1,4 @@
-/* Education — white cards with a brand logo panel + dark text. */
+/* Education — dark cards with a white logo plate the mark fills, + light text. */
 
 .section {
   padding-block: var(--gap-section);
@@ -18,41 +18,44 @@
   gap: clamp(16px, 2vh, 24px);
 }
 
-/* a light card, a deliberate break from the dark page */
+/* a card on the page's own surface, so it belongs to the dark page */
 .card {
   display: grid;
-  grid-template-columns: clamp(180px, 22vw, 260px) 1fr;
-  align-items: stretch;
-  background: #fbf9f3;
+  grid-template-columns: clamp(170px, 20vw, 220px) 1fr;
+  align-items: center;
+  gap: clamp(20px, 3vw, 44px);
+  background: var(--surface);
   overflow: hidden;
   border-radius: 4px;
+  padding: clamp(18px, 2vw, 26px);
 }
 
+/* a white plate sized so each logo fills it edge-to-edge; the image drives the
+   plate's aspect ratio, so there is no box-in-a-box and all plates read alike */
 .logoPanel {
+  background: #fff;
+  border-radius: 3px;
+  padding: 12px 16px;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: clamp(18px, 2vw, 28px);
 }
 
 .logo {
-  width: auto;
-  max-width: 82%;
+  width: 100%;
   height: auto;
-  max-height: 52px;
   object-fit: contain;
+  display: block;
 }
 
 .text {
-  padding: clamp(20px, 2.4vw, 32px);
   display: flex;
   flex-direction: column;
   justify-content: center;
 }
 
-/* dark ink on the white card */
 .degree {
-  color: #1a1a17;
+  color: var(--ink);
   font-weight: 600;
   letter-spacing: -0.03em;
   line-height: 1.05;
@@ -61,13 +64,13 @@
 
 .inst {
   margin-top: 0.3em;
-  color: #4a4a42;
+  color: var(--ink);
   font-size: var(--step-body);
 }
 
 .meta {
   margin-top: 0.5em;
-  color: #6b6b60;
+  color: var(--muted);
   font-size: var(--step-small);
   letter-spacing: 0.02em;
 }
@@ -75,9 +78,10 @@
 @media (max-width: 560px) {
   .card {
     grid-template-columns: 1fr;
+    gap: 16px;
   }
 
   .logoPanel {
-    aspect-ratio: 16 / 7;
+    width: fit-content;
   }
 }
