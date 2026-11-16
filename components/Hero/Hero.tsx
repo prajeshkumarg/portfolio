@@ -15,6 +15,7 @@
 
 import { useEffect, useRef, useState } from 'react';
 import { site } from '@/content';
+import HeroArt from './HeroArt';
 import styles from './Hero.module.css';
 
 const ROLES = ['systems', 'compilers', 'security'];
@@ -48,6 +49,7 @@ export default function Hero() {
 
   return (
     <header id="top" className={styles.hero} data-hero-pending>
+      <HeroArt />
       <div className={styles.top}>
         <span className={styles.monogram}>{site.wordmark}</span>
         <nav className={styles.links} aria-label="Primary">

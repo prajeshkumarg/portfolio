@@ -1,0 +1,119 @@
+/* HeroArt — the orbital kinetic illustration in the hero's right half. */
+
+.art {
+  position: absolute;
+  top: 50%;
+  right: clamp(-40px, 2vw, 80px);
+  transform: translateY(-50%);
+  width: clamp(360px, 42vw, 680px);
+  aspect-ratio: 1;
+  pointer-events: none;
+  z-index: 0; /* behind the name text */
+}
+
+.svg {
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+/* concentric rings — faint bone structure */
+.rings circle {
+  fill: none;
+  stroke: var(--ink);
+  stroke-width: 1;
+  opacity: 0.12;
+}
+
+/* sweeping arcs in jade */
+.arcStroke {
+  stroke: var(--accent);
+  stroke-width: 2;
+  opacity: 0.85;
+  stroke-linecap: round;
+}
+
+/* orbiting nodes */
+.node {
+  fill: var(--accent);
+}
+
+.nodeDim {
+  fill: var(--ink);
+  opacity: 0.6;
+}
+
+.core {
+  fill: var(--accent);
+}
+
+/* ---- motion: every group rotates about the viewBox centre (200,200) ---- */
+.arcA,
+.arcB,
+.orbitOuter,
+.orbitMid,
+.orbitInner {
+  transform-box: view-box;
+  transform-origin: 200px 200px;
+}
+
+.arcA {
+  animation: spin 26s linear infinite;
+}
+
+.arcB {
+  animation: spin 18s linear infinite reverse;
+}
+
+.orbitOuter {
+  animation: spin 22s linear infinite;
+}
+
+.orbitMid {
+  animation: spin 14s linear infinite reverse;
+}
+
+.orbitInner {
+  animation: spin 9s linear infinite;
+}
+
+/* a gentle breathing drift on the whole piece, so it is never dead-still */
+.svg {
+  animation: drift 12s ease-in-out infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes drift {
+  0%,
+  100% {
+    transform: translateY(0) scale(1);
+  }
+  50% {
+    transform: translateY(-10px) scale(1.015);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .arcA,
+  .arcB,
+  .orbitOuter,
+  .orbitMid,
+  .orbitInner,
+  .svg {
+    animation: none;
+  }
+}
+
+/* hide on small phones where the name needs the full width */
+@media (max-width: 720px) {
+  .art {
+    opacity: 0.35;
+    width: 300px;
+    right: -80px;
+  }
+}

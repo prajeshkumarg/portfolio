@@ -11,6 +11,8 @@
 
 /* top row: monogram left, three links right, all small */
 .top {
+  position: relative;
+  z-index: 1;
   display: flex;
   align-items: baseline;
   justify-content: space-between;
@@ -39,6 +41,8 @@
 /* the name: two lines, line-height 0.82, flush left, pointer-reactive weight */
 .name {
   --name-weight: 600;
+  position: relative;
+  z-index: 1;
   align-self: start;
   margin-top: 8vh;
   font-weight: var(--name-weight);
@@ -64,6 +68,8 @@
 
 /* bottom row: kinetic role line left-weighted, button right */
 .foot {
+  position: relative;
+  z-index: 1;
   align-self: end;
   display: grid;
   grid-template-columns: 1fr auto;
