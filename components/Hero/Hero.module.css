@@ -54,14 +54,17 @@
 }
 
 /* The reveal mask clips the rising line. With tight leading the clip box is
-   shorter than the glyphs' ascenders, so it shaves the tops of P, j, k. Pad the
-   mask top (and pull it back with a negative margin so layout does not shift),
-   giving the ascenders room while still hiding the line as it rises. */
+   shorter than the glyphs, so it shaves ascender tops (P, K) AND descender
+   tails (the j). Pad the mask on BOTH top and bottom, pulling each back with a
+   matching negative margin so layout does not shift, giving ascenders and
+   descenders room while the line still hides as it rises. */
 .line {
   display: block;
   overflow: hidden;
   padding-top: 0.14em;
   margin-top: -0.14em;
+  padding-bottom: 0.22em;
+  margin-bottom: -0.22em;
 }
 
 .line > span {
