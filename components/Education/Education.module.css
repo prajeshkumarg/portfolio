@@ -20,17 +20,28 @@
 
 .row {
   display: grid;
-  grid-template-columns: 56px 1fr;
-  gap: clamp(20px, 3vw, 40px);
-  align-items: start;
+  grid-template-columns: 140px 1fr;
+  gap: clamp(20px, 3vw, 44px);
+  align-items: center;
+}
+
+/* a wider plate so banner-style marks (NYU) fit naturally; colour set inline */
+.plate {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 140px;
+  height: 64px;
+  padding: 10px 14px;
+  overflow: hidden;
 }
 
 .logo {
-  width: 56px;
-  height: 56px;
+  width: auto;
+  max-width: 100%;
+  height: auto;
+  max-height: 100%;
   object-fit: contain;
-  background: #fff;
-  padding: 8px;
 }
 
 .degree {
@@ -53,14 +64,9 @@
   letter-spacing: 0.01em;
 }
 
-@media (max-width: 480px) {
+@media (max-width: 560px) {
   .row {
-    grid-template-columns: 48px 1fr;
-    gap: 16px;
-  }
-
-  .logo {
-    width: 48px;
-    height: 48px;
+    grid-template-columns: 1fr;
+    gap: 14px;
   }
 }

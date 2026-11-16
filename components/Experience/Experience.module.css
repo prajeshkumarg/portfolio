@@ -1,43 +1,69 @@
-/* Experience — a CV ledger. No cards, no rules; space and scale separate rows. */
+/* Experience — a bento row of logo-forward company cards. */
 
 .section {
   padding-block: var(--gap-section);
 }
 
 .heading {
-  margin-bottom: clamp(32px, 4.5vh, 56px);
+  margin-bottom: clamp(40px, 6vh, 72px);
   font-weight: 600;
   letter-spacing: -0.04em;
   line-height: 0.95;
   font-size: var(--step-mid);
 }
 
-.list {
-  display: flex;
-  flex-direction: column;
-  gap: clamp(20px, 2.6vh, 32px);
-}
-
-/* each role is a compact card you scan, not a full-height row */
-.row {
+.grid {
   display: grid;
-  grid-template-columns: minmax(150px, 200px) 1fr;
-  gap: clamp(20px, 3vw, 48px);
-  align-items: center;
-  padding: clamp(20px, 2.6vh, 30px) clamp(20px, 2.6vw, 32px);
-  background: var(--surface);
-  transition: background var(--t-fast) var(--ease-out);
+  grid-template-columns: repeat(3, 1fr);
+  gap: clamp(18px, 2vw, 28px);
 }
 
-.row[data-current='true'] {
-  background: color-mix(in srgb, var(--accent) 12%, var(--surface));
-}
-
-/* left rail */
-.rail {
+.card {
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  background: var(--surface);
+  overflow: hidden;
+  transition: transform var(--t-fast) var(--ease-out);
+}
+
+.card:hover {
+  transform: translateY(-4px);
+}
+
+.card[data-current='true'] {
+  outline: 2px solid color-mix(in srgb, var(--accent) 55%, transparent);
+  outline-offset: -2px;
+}
+
+/* the big logo panel on the company's own brand colour */
+.logoPanel {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  aspect-ratio: 16 / 7;
+  padding: clamp(24px, 3vw, 40px);
+}
+
+.logo {
+  width: auto;
+  max-width: 78%;
+  height: auto;
+  max-height: 64%;
+  object-fit: contain;
+}
+
+.logoText {
+  color: var(--ink);
+  font-weight: 600;
+  font-size: var(--step-lead);
+}
+
+/* the details below the logo */
+.body {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  padding: clamp(20px, 2vw, 28px);
 }
 
 .meta {
@@ -57,16 +83,12 @@
   flex: none;
 }
 
-/* right body — org name large and text-forward (no logo chips), impact beneath */
-.body {
-  max-width: 70ch;
-}
-
 .org {
+  margin-top: 0.5em;
   font-weight: 600;
   letter-spacing: -0.03em;
   line-height: 1;
-  font-size: clamp(2rem, 3.6vw, 3rem);
+  font-size: clamp(1.5rem, 2.2vw, 2rem);
 }
 
 .role {
@@ -76,10 +98,10 @@
 }
 
 .points {
-  margin-top: 12px;
+  margin-top: 14px;
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 10px;
 }
 
 .point {
@@ -88,9 +110,9 @@
   line-height: 1.45;
 }
 
-@media (max-width: 720px) {
-  .row {
+@media (max-width: 860px) {
+  .grid {
     grid-template-columns: 1fr;
-    gap: 16px;
+    max-width: 520px;
   }
 }

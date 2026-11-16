@@ -3,10 +3,10 @@ import { projects } from '@/content';
 import styles from './Projects.module.css';
 
 /*
- * Projects — the real work, large. Each project is a wide row: the screenshot
- * on one side (sides alternate so neighbouring rows differ), the name, one
- * sentence, the stack as plain words, and a link. The screenshots are the
- * page's dominant pictures; they count toward the imagery floor.
+ * Projects — a list, one project per row. Each row: the name large, a one-line
+ * description and the stack, with a small thumbnail at the right end and the
+ * whole row linking out. Rows are separated by space and a hover wash, no
+ * boxes — a scannable index of the work.
  */
 export default function Projects() {
   return (
@@ -18,23 +18,25 @@ export default function Projects() {
         <ol className={styles.list}>
           {projects.map((p) => (
             <li key={p.title} className={styles.row} data-reveal>
-              {p.image ? (
-                <figure className={styles.media}>
-                  <Image
-                    src={p.image}
-                    alt={p.imageAlt ?? `${p.title} screenshot`}
-                    sizes="(max-width: 860px) 100vw, 55vw"
-                  />
-                </figure>
-              ) : null}
-              <div className={styles.text}>
-                <h3 className={styles.title}>{p.title}</h3>
-                <p className={styles.body}>{p.body}</p>
-                <p className={styles.stack}>{p.tags.join('  ·  ')}</p>
-                <a className={styles.link} href={p.href} target="_blank" rel="noreferrer">
-                  {p.linkLabel}
-                </a>
-              </div>
+              <a className={styles.link} href={p.href} target="_blank" rel="noreferrer">
+                <div className={styles.text}>
+                  <h3 className={styles.title}>{p.title}</h3>
+                  <p className={styles.body}>{p.body}</p>
+                  <p className={styles.stack}>{p.tags.join('  ·  ')}</p>
+                </div>
+                {p.image ? (
+                  <figure className={styles.thumb}>
+                    <Image
+                      src={p.image}
+                      alt={p.imageAlt ?? `${p.title} screenshot`}
+                      sizes="320px"
+                    />
+                  </figure>
+                ) : null}
+                <span className={styles.arrow} aria-hidden="true">
+                  ↗
+                </span>
+              </a>
             </li>
           ))}
         </ol>

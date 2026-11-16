@@ -12,15 +12,16 @@
  */
 
 :root {
-  /* ---- colour: green-black & bone ---- */
-  --bg: #161c1a; /* green-black ground */
-  --surface: #1f2725; /* panels, barely lighter than the ground */
-  --surface-2: #121716; /* one step darker, for an inverted band */
-  --ink: #e3e2da; /* bone — running text and display */
+  /* ---- colour: deep ink-teal & bone ---- a cooler, more deliberate dark than
+     a stock slate: near-black with a faint teal cast, paired with warm jade ---- */
+  --bg: #0d1412; /* deep ink-teal ground */
+  --surface: #16211e; /* panels, a step up with the same cast */
+  --surface-2: #0a100e; /* one step darker, for an inverted band */
+  --ink: #e8e6dc; /* bone — running text and display */
   --ink-dim: #c7c6bd; /* second display ink (hero line two) */
-  --muted: #9aa09a; /* secondary notes, meta — 4.9:1 on bg */
-  --accent: #9fc7b8; /* pale jade — the contact/primary button alone */
-  --accent-ink: #161c1a; /* ink on the jade button */
+  --muted: #94a09a; /* secondary notes, meta — ~5:1 on bg */
+  --accent: #9fc7b8; /* pale jade — the contact/primary button */
+  --accent-ink: #0d1412; /* ink on the jade button */
 
   /* ---- type: Switzer, one face ---- */
   --font: 'Switzer', system-ui, -apple-system, sans-serif;
