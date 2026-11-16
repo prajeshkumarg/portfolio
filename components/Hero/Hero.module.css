@@ -176,11 +176,24 @@
   }
 }
 
+/* tablet / mid widths: the big name and the pixel art compete for the same
+   space, so ease the name down and let the art sit lower-right behind it. */
+@media (max-width: 1024px) {
+  .name {
+    font-size: clamp(4rem, 13vw, 9rem);
+    margin-top: 6vh;
+  }
+}
+
 /* phone: name stays two lines + two inks, role + button stack left */
 @media (max-width: 720px) {
   .name {
     margin-top: 10vh;
-    font-size: 21vw;
+    font-size: 19vw;
+  }
+
+  .role {
+    font-size: var(--step-body);
   }
 
   .foot {
@@ -191,5 +204,12 @@
   .cta {
     grid-column: 1;
     justify-self: start;
+  }
+}
+
+/* very narrow: keep the name from overflowing */
+@media (max-width: 400px) {
+  .name {
+    font-size: 17vw;
   }
 }

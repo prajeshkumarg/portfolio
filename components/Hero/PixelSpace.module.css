@@ -6,7 +6,7 @@
   top: 50%;
   right: clamp(-20px, 2vw, 72px);
   transform: translateY(-50%);
-  width: clamp(320px, 40vw, 600px);
+  width: clamp(300px, 40vw, 600px);
   aspect-ratio: 1;
   z-index: 0; /* behind the name text */
   pointer-events: none;
@@ -16,10 +16,25 @@
   image-rendering: crisp-edges;
 }
 
+/* tablet: the name fills the upper-left, so drop the art to the lower-right
+   corner and shrink it, out from under the letters */
+@media (max-width: 1024px) {
+  .canvas {
+    top: auto;
+    bottom: clamp(80px, 14vh, 140px);
+    transform: none;
+    width: clamp(240px, 36vw, 340px);
+    right: clamp(-10px, 2vw, 40px);
+    opacity: 0.85;
+  }
+}
+
+/* phone: keep it small and faint in the corner, behind the type */
 @media (max-width: 720px) {
   .canvas {
-    width: 260px;
-    right: -56px;
-    opacity: 0.55;
+    width: 200px;
+    right: -40px;
+    bottom: clamp(96px, 20vh, 180px);
+    opacity: 0.4;
   }
 }

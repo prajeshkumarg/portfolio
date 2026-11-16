@@ -1,5 +1,4 @@
 import Hero from '@/components/Hero/Hero';
-import Proof from '@/components/Proof/Proof';
 import Experience from '@/components/Experience/Experience';
 import Projects from '@/components/Projects/Projects';
 import Skills from '@/components/Skills/Skills';
@@ -13,7 +12,6 @@ export default function Page() {
     <>
       <Hero />
       <main>
-        <Proof />
         <Experience />
         <Projects />
         <Skills />

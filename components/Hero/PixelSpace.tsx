@@ -2,25 +2,18 @@
 
 /*
  * PixelSpace — procedural "8-bit" pixel-art in the hero's right half, frameless
- * (transparent canvas on the hero ground). Several artworks cycle, and the
- * transition is a BIT-SHUFFLE DISSOLVE: the outgoing scene's pixels scatter and
- * drift off-frame while fading, and the incoming scene's pixels fly in from the
- * edges and settle — a glitchy pixel storm between scenes, not a plain fade.
- *
- * How it works: each scene is drawn to its own offscreen buffer; during a
- * transition we read both buffers and blit them pixel-by-pixel with a
- * per-pixel scatter offset + alpha keyed on a stable random field, so every
- * block leaves/arrives on its own trajectory. The starfield is drawn live
- * behind. Under prefers-reduced-motion it paints one still scene.
+ * (transparent canvas on the hero ground). Four artworks cycle, each holding a
+ * few seconds and then cleanly cross-fading into the next, looping. A twinkling
+ * starfield sits live behind every scene; the comet and rocket stay on-frame.
+ * Under prefers-reduced-motion it paints one still scene and does not cycle.
  */
 
 import { useEffect, useRef } from 'react';
 import styles from './PixelSpace.module.css';
 
 const GRID = 88; // logical pixels across — the "bit" resolution
-const HOLD = 2600; // ms a scene holds before it shuffles out
-const SHUFFLE = 900; // ms of the bit-shuffle transition
-const SCATTER = 46; // max px a bit flies off-frame during the shuffle
+const HOLD = 2600; // ms a scene holds before it changes
+const FADE = 700; // ms of the cross-fade between scenes
 
 const C = {
   star: '#e3e2da',
@@ -52,7 +45,7 @@ export default function PixelSpace() {
     const buf = document.createElement('canvas');
     buf.width = GRID;
     buf.height = GRID;
-    const bctx = buf.getContext('2d', { willReadFrequently: true })!;
+    const bctx = buf.getContext('2d')!;
     bctx.imageSmoothingEnabled = false;
 
     const mk = (c: CanvasRenderingContext2D) => {
@@ -159,53 +152,14 @@ export default function PixelSpace() {
 
     const scenes = [sceneRingedPlanet, sceneRocket, sceneComet, sceneSystem];
 
-    // per-pixel stable randomness for the scatter (one value per cell)
-    const noise = new Float32Array(GRID * GRID);
-    const noiseA = new Float32Array(GRID * GRID); // angle
-    for (let i = 0; i < noise.length; i++) {
-      noise[i] = rng();
-      noiseA[i] = rng() * Math.PI * 2;
-    }
-
-    // render a scene into the offscreen buffer and return its ImageData
-    const renderScene = (sceneIdx: number, t: number): ImageData => {
+    // draw a scene into the offscreen buffer and blit it onto the main canvas
+    // at a given alpha — a clean cross-fade, no scatter.
+    const blitScene = (sceneIdx: number, t: number, alpha: number) => {
+      if (alpha <= 0.01) return;
       bctx.clearRect(0, 0, GRID, GRID);
       scenes[sceneIdx](bctx, t);
-      return bctx.getImageData(0, 0, GRID, GRID);
-    };
-
-    // blit one scene's pixels with a scatter offset + alpha.
-    // dir = +1 pushes pixels OUT (leaving), dir = -1 means they start out and
-    // settle (arriving); `s` is 0..1 progress of the move, `fade` is the alpha.
-    const blitScatter = (img: ImageData, s: number, fade: number, leaving: boolean) => {
-      const d = img.data;
-      for (let y = 0; y < GRID; y++) {
-        for (let x = 0; x < GRID; x++) {
-          const i = y * GRID + x;
-          const o = i * 4;
-          const alpha = d[o + 3];
-          if (alpha < 8) continue;
-
-          // this cell's own drift: a staggered start so bits leave in waves
-          const n = noise[i];
-          // leaving: 0→1 over s but each bit starts at its own threshold n*0.5
-          // arriving: 1→0 (fly in) with the same stagger reversed
-          let k = leaving ? (s - n * 0.5) / 0.5 : 1 - (s - n * 0.5) / 0.5;
-          k = k < 0 ? 0 : k > 1 ? 1 : k;
-
-          const dist = k * SCATTER * (0.5 + n);
-          const ang = noiseA[i];
-          const dx = Math.round(Math.cos(ang) * dist);
-          const dy = Math.round(Math.sin(ang) * dist);
-
-          const a = leaving ? fade * (1 - k) : fade * (1 - k);
-          if (a <= 0.02) continue;
-
-          ctx.globalAlpha = a;
-          ctx.fillStyle = `rgba(${d[o]},${d[o + 1]},${d[o + 2]},1)`;
-          ctx.fillRect(x + dx, y + dy, 1, 1);
-        }
-      }
+      ctx.globalAlpha = alpha;
+      ctx.drawImage(buf, 0, 0);
       ctx.globalAlpha = 1;
     };
 
@@ -222,21 +176,18 @@ export default function PixelSpace() {
         return;
       }
 
-      const cycle = HOLD + SHUFFLE;
+      const cycle = HOLD + FADE;
       const idx = Math.floor(now / cycle) % scenes.length;
       const nextIdx = (idx + 1) % scenes.length;
       const inCycle = now % cycle;
 
       if (inCycle < HOLD) {
-        // steady show, drawn live so it keeps animating
         scenes[idx](ctx, t);
       } else {
-        // bit-shuffle: outgoing scatters out & fades, incoming flies in & fades up
-        const s = (inCycle - HOLD) / SHUFFLE; // 0..1
-        const outImg = renderScene(idx, t);
-        const inImg = renderScene(nextIdx, t);
-        blitScatter(outImg, s, 1, true); // leaving
-        blitScatter(inImg, s, 1, false); // arriving
+        // clean cross-fade: current fades out, next fades in
+        const k = (inCycle - HOLD) / FADE; // 0..1
+        blitScene(idx, t, 1 - k);
+        blitScene(nextIdx, t, k);
       }
 
       raf = requestAnimationFrame(frame);
