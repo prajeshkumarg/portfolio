@@ -1,8 +1,29 @@
+/* Footer — the name at full width, then credits. */
+
 .footer {
-  padding: 28px 0 36px;
-  border-top: 1px solid var(--border-rule);
-  text-align: center;
-  font-family: var(--font-mono), monospace;
-  font-size: var(--text-mono-meta);
-  color: var(--color-faint);
+  padding-block: clamp(56px, 10vh, 120px) clamp(32px, 5vh, 56px);
+}
+
+.wordmark {
+  font-weight: 600;
+  letter-spacing: -0.05em;
+  line-height: 0.9;
+  font-size: clamp(3rem, 18vw, 16rem);
+  color: var(--surface);
+  /* the name as a quiet full-width mass, not loud */
+  color: color-mix(in srgb, var(--ink) 16%, var(--bg));
+}
+
+.meta {
+  margin-top: clamp(24px, 4vh, 48px);
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 16px;
+  color: var(--muted);
+  font-size: var(--step-small);
+}
+
+.credit {
+  max-width: 44ch;
 }

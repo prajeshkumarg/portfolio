@@ -1,55 +1,44 @@
-import type { CSSProperties } from 'react';
 import Image from 'next/image';
-import SectionHeader from '@/components/SectionHeader/SectionHeader';
 import { projects } from '@/content';
 import styles from './Projects.module.css';
 
 /*
- * Big alternating project rows: a numbered index, the screenshot on one side and
- * the write-up on the other, sides swapping down the list. Each is a full-card
- * link. No hover-to-swap JS — every project is laid out and readable at rest.
+ * Projects — the real work, large. Each project is a wide row: the screenshot
+ * on one side (sides alternate so neighbouring rows differ), the name, one
+ * sentence, the stack as plain words, and a link. The screenshots are the
+ * page's dominant pictures; they count toward the imagery floor.
  */
 export default function Projects() {
   return (
-    <section id="projects" className={styles.section}>
-      <SectionHeader section="projects" />
-      <ol className={styles.list}>
-        {projects.map((project, index) => {
-          const ratio = project.image
-            ? ({ '--ratio': `${project.image.width} / ${project.image.height}` } as CSSProperties)
-            : undefined;
-          return (
-            <li key={project.title} className={styles.item} data-reveal>
-              <a className={styles.card} href={project.href} target="_blank" rel="noreferrer">
-                <div className={styles.media} style={ratio}>
-                  {project.image ? (
-                    <Image
-                      className={styles.image}
-                      src={project.image}
-                      alt={project.imageAlt ?? ''}
-                      fill
-                      sizes="(max-width: 860px) 100vw, 560px"
-                    />
-                  ) : null}
-                </div>
-                <div className={styles.text}>
-                  <span className={styles.index}>{String(index + 1).padStart(2, '0')}</span>
-                  <h3 className={styles.title}>{project.title}</h3>
-                  <p className={styles.body}>{project.body}</p>
-                  <ul className={styles.tags}>
-                    {project.tags.map((tag) => (
-                      <li key={tag} className={styles.tag}>
-                        {tag}
-                      </li>
-                    ))}
-                  </ul>
-                  <span className={styles.link}>{project.linkLabel}</span>
-                </div>
-              </a>
+    <section id="projects" className={styles.section} aria-labelledby="projects-h">
+      <div className="wrap">
+        <h2 id="projects-h" className={styles.heading} data-reveal>
+          Things I have built
+        </h2>
+        <ol className={styles.list}>
+          {projects.map((p) => (
+            <li key={p.title} className={styles.row} data-reveal>
+              {p.image ? (
+                <figure className={styles.media}>
+                  <Image
+                    src={p.image}
+                    alt={p.imageAlt ?? `${p.title} screenshot`}
+                    sizes="(max-width: 860px) 100vw, 55vw"
+                  />
+                </figure>
+              ) : null}
+              <div className={styles.text}>
+                <h3 className={styles.title}>{p.title}</h3>
+                <p className={styles.body}>{p.body}</p>
+                <p className={styles.stack}>{p.tags.join('  ·  ')}</p>
+                <a className={styles.link} href={p.href} target="_blank" rel="noreferrer">
+                  {p.linkLabel}
+                </a>
+              </div>
             </li>
-          );
-        })}
-      </ol>
+          ))}
+        </ol>
+      </div>
     </section>
   );
 }

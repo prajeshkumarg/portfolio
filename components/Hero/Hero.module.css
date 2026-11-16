@@ -1,0 +1,180 @@
+/* Hero — flat green-black field, name in two inks, one kinetic role line. */
+
+.hero {
+  position: relative;
+  min-height: 100svh;
+  padding: clamp(20px, 4vw, 40px) var(--margin) clamp(40px, 6vh, 72px);
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  background: var(--bg);
+}
+
+/* top row: monogram left, three links right, all small */
+.top {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  font-size: var(--step-small);
+}
+
+.monogram {
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+.links {
+  display: flex;
+  gap: clamp(16px, 2vw, 28px);
+}
+
+.links a {
+  color: var(--muted);
+  transition: color var(--t-fast) var(--ease-out);
+}
+
+.links a:hover {
+  color: var(--ink);
+}
+
+/* the name: two lines, line-height 0.82, flush left, pointer-reactive weight */
+.name {
+  --name-weight: 600;
+  align-self: start;
+  margin-top: 8vh;
+  font-weight: var(--name-weight);
+  font-variation-settings: 'wght' var(--name-weight);
+  letter-spacing: -0.04em;
+  line-height: 0.82;
+  font-size: clamp(5rem, 15vw, 14.375rem);
+  transition: font-weight 0.3s var(--ease-out);
+}
+
+.line {
+  display: block;
+  overflow: hidden; /* masks the rising line for the reveal */
+}
+
+.line > span {
+  display: block;
+}
+
+.lineTwo {
+  color: var(--ink-dim);
+}
+
+/* bottom row: kinetic role line left-weighted, button right */
+.foot {
+  align-self: end;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: end;
+  gap: clamp(20px, 4vw, 48px);
+}
+
+/* the role line is the hero's signature: a rotating word re-set in place */
+.role {
+  grid-column: 1;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.35em;
+  color: var(--ink);
+  font-size: var(--step-lead);
+  letter-spacing: -0.01em;
+}
+
+.roleStatic {
+  color: var(--muted);
+}
+
+/* the rotator holds every word stacked; only the active one shows, masked */
+.roleRotator {
+  position: relative;
+  display: inline-grid;
+  overflow: hidden;
+  min-width: 7ch;
+}
+
+.roleWord {
+  grid-area: 1 / 1;
+  font-weight: 600;
+  color: var(--accent);
+  transform: translateY(110%);
+  opacity: 0;
+  transition: transform 0.5s var(--ease-out), opacity 0.5s var(--ease-out);
+}
+
+.roleWord[data-on='true'] {
+  transform: translateY(0);
+  opacity: 1;
+}
+
+/* no-JS fallback: the first word is painted by the server with data-on, so it
+   shows even if the client never hydrates. */
+
+.cta {
+  grid-column: 2;
+  display: inline-flex;
+  align-items: center;
+  padding: 0.85em 1.5em;
+  background: var(--accent);
+  color: var(--accent-ink);
+  font-size: var(--step-body);
+  font-weight: 500;
+  border-radius: 0; /* one square-cornered button for the whole page */
+  transition: transform var(--t-fast) var(--ease-out), opacity var(--t-fast) var(--ease-out);
+}
+
+.cta:hover {
+  transform: translateY(-2px);
+}
+
+.cta:active {
+  transform: translateY(0);
+}
+
+/* Masked-reveal start state while the motion bundle loads; GSAP owns it after.
+   Dropped after 3s if the bundle never boots, and never added under reduced
+   motion, so the content always ends visible. */
+:global(html.motion) [data-hero-pending] .line > span {
+  transform: translateY(105%);
+}
+
+:global(html.motion) [data-hero-pending] .role,
+:global(html.motion) [data-hero-pending] .cta {
+  opacity: 0;
+}
+
+/* no-JS / reduced motion: show the first role word without the rotator */
+@media (prefers-reduced-motion: reduce) {
+  .roleWord {
+    transform: none;
+    opacity: 0;
+  }
+
+  .roleWord:first-child {
+    opacity: 1;
+  }
+
+  .name {
+    transition: none;
+  }
+}
+
+/* phone: name stays two lines + two inks, role + button stack left */
+@media (max-width: 720px) {
+  .name {
+    margin-top: 10vh;
+    font-size: 21vw;
+  }
+
+  .foot {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+
+  .cta {
+    grid-column: 1;
+    justify-self: start;
+  }
+}

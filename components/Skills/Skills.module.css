@@ -1,47 +1,57 @@
+/* Skills — grouped capability columns. */
+
 .section {
-  padding-block: var(--space-section);
+  padding-block: var(--gap-section);
 }
 
-.table {
+.heading {
+  margin-bottom: clamp(48px, 7vh, 80px);
+  font-weight: 600;
+  letter-spacing: -0.04em;
+  line-height: 0.95;
+  font-size: var(--step-mid);
+}
+
+.groups {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 40px clamp(32px, 3vw, 56px);
+  grid-template-columns: repeat(4, 1fr);
+  gap: clamp(28px, 4vw, 64px);
 }
 
-.groupLabel {
-  padding-bottom: 14px;
-  border-bottom: 1px solid var(--border-on-ink);
-  font-family: var(--font-mono), monospace;
-  font-size: var(--text-mono-sm);
+.group {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.label {
+  color: var(--accent);
+  font-size: var(--step-small);
   font-weight: 500;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: var(--color-on-ink-accent);
+  letter-spacing: 0.01em;
 }
 
 .items {
-  margin: 0;
-  padding: 0;
-  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
 }
 
 .item {
-  padding: 11px 0;
-  border-bottom: 1px solid var(--border-on-ink);
-  font-size: var(--text-card-body);
-  font-weight: 500;
+  color: var(--ink);
+  font-size: var(--step-lead);
   letter-spacing: -0.01em;
-  color: var(--color-on-ink);
 }
 
-@media (max-width: 900px) {
-  .table {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+@media (max-width: 860px) {
+  .groups {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 32px;
   }
 }
 
 @media (max-width: 480px) {
-  .table {
+  .groups {
     grid-template-columns: 1fr;
   }
 }

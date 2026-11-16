@@ -1,83 +1,66 @@
+/* Education — two rows, degree large, mark on a plate. */
+
 .section {
-  scroll-margin-top: var(--scroll-offset);
-  padding: var(--space-section-sm) 0;
+  padding-block: var(--gap-section);
 }
 
-.rows {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 22px;
-  margin: 0;
-  padding: 0;
-  list-style: none;
+.heading {
+  margin-bottom: clamp(40px, 6vh, 72px);
+  font-weight: 600;
+  letter-spacing: -0.04em;
+  line-height: 0.95;
+  font-size: var(--step-mid);
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(40px, 6vh, 72px);
 }
 
 .row {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-  padding: 28px;
-  background: var(--glass-fill);
-  border: 1px solid var(--glass-border);
-  -webkit-backdrop-filter: blur(var(--glass-blur));
-  backdrop-filter: blur(var(--glass-blur));
-  border-radius: var(--radius-card);
-  box-shadow: var(--shadow-glass);
-  transition:
-    border-color var(--t-card) var(--ease-out),
-    box-shadow var(--t-card) var(--ease-out),
-    transform var(--t-card) var(--ease-out);
+  display: grid;
+  grid-template-columns: 56px 1fr;
+  gap: clamp(20px, 3vw, 40px);
+  align-items: start;
 }
 
-.row:hover {
-  transform: translateY(-4px);
-  border-color: var(--border-accent);
-  box-shadow: var(--shadow-glass-hover);
-}
-
-/* logos are dark marks — plate them white so they read on the dark glass.
-   height fixed, width follows the file's aspect ratio */
 .logo {
-  align-self: flex-start;
-  width: auto;
-  height: 32px;
-  max-width: 180px;
+  width: 56px;
+  height: 56px;
   object-fit: contain;
-  object-position: left center;
-  padding: 8px 12px;
-  border-radius: 8px;
   background: #fff;
-  box-sizing: content-box;
-}
-
-.body {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
+  padding: 8px;
 }
 
 .degree {
-  font-size: var(--text-org);
   font-weight: 600;
-  letter-spacing: -0.02em;
-  color: var(--color-ink);
+  letter-spacing: -0.03em;
+  line-height: 1.05;
+  font-size: clamp(1.5rem, 3vw, 2.25rem);
 }
 
-.institution {
-  font-size: var(--text-card-body-sm);
-  color: var(--color-muted);
+.inst {
+  margin-top: 0.3em;
+  color: var(--ink);
+  font-size: var(--step-body);
 }
 
 .meta {
-  margin-top: auto;
-  font-family: var(--font-mono), monospace;
-  font-size: var(--text-mono-meta);
-  letter-spacing: 0.1em;
-  color: var(--color-faint);
+  margin-top: 0.4em;
+  color: var(--muted);
+  font-size: var(--step-small);
+  letter-spacing: 0.01em;
 }
 
-@media (max-width: 700px) {
-  .rows {
-    grid-template-columns: 1fr;
+@media (max-width: 480px) {
+  .row {
+    grid-template-columns: 48px 1fr;
+    gap: 16px;
+  }
+
+  .logo {
+    width: 48px;
+    height: 48px;
   }
 }

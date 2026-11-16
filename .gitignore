@@ -16,3 +16,6 @@ public/design-removebg-preview.png
 
 # Kiro Crew local CLI settings
 .kiro/settings/
+
+# taste-skill working output (direction sheet, inspector screenshots)
+.taste-skill/

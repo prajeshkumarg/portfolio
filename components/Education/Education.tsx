@@ -1,33 +1,33 @@
 import Image from 'next/image';
-import SectionHeader from '@/components/SectionHeader/SectionHeader';
 import { education } from '@/content';
 import styles from './Education.module.css';
 
+/*
+ * Education — two rows, each the degree large with the institution and dates
+ * beneath. The mark sits at the left on a white plate. No cards.
+ */
 export default function Education() {
   return (
-    <section id="education" className={styles.section}>
-      <SectionHeader section="education" />
-      <ul className={styles.rows}>
-        {education.map((entry) => (
-          <li key={entry.institution} className={styles.row} data-reveal>
-            {/* no frame — the mark keeps its own shape (plated only if it has a baked-in field) */}
-            {entry.logo ? (
-              <Image
-                className={styles.logo}
-                src={entry.logo}
-                alt=""
-                sizes="180px"
-                data-plate={entry.logoPlate ? 'true' : undefined}
-              />
-            ) : null}
-            <div className={styles.body}>
-              <h3 className={styles.degree}>{entry.degree}</h3>
-              <p className={styles.institution}>{entry.institution}</p>
-            </div>
-            <p className={styles.meta}>{entry.meta}</p>
-          </li>
-        ))}
-      </ul>
+    <section id="education" className={styles.section} aria-labelledby="edu-h">
+      <div className="wrap">
+        <h2 id="edu-h" className={styles.heading} data-reveal>
+          Where I studied
+        </h2>
+        <ol className={styles.list}>
+          {education.map((e) => (
+            <li key={e.institution} className={styles.row} data-reveal>
+              {e.logo ? (
+                <Image className={styles.logo} src={e.logo} alt={`${e.institution} logo`} sizes="56px" />
+              ) : null}
+              <div className={styles.text}>
+                <h3 className={styles.degree}>{e.degree}</h3>
+                <p className={styles.inst}>{e.institution}</p>
+                <p className={styles.meta}>{e.meta}</p>
+              </div>
+            </li>
+          ))}
+        </ol>
+      </div>
     </section>
   );
 }
