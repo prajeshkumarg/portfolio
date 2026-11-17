@@ -5,7 +5,7 @@
   min-height: 100svh;
   padding: clamp(20px, 4vw, 40px) var(--margin) clamp(64px, 12vh, 128px);
   display: grid;
-  grid-template-rows: auto 1fr auto;
+  grid-template-rows: auto auto 1fr auto;
   background: var(--bg);
 }
 
@@ -73,6 +73,17 @@
 
 .lineTwo {
   color: var(--ink-dim);
+}
+
+/* jade "Current:" line directly under the name */
+.current {
+  position: relative;
+  z-index: 1;
+  margin-top: clamp(16px, 2.2vh, 28px);
+  color: var(--accent);
+  font-size: var(--step-lead);
+  font-weight: 500;
+  letter-spacing: -0.01em;
 }
 
 /* bottom row: kinetic role line left-weighted, button right */

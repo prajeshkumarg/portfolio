@@ -68,6 +68,10 @@ export default function Hero() {
         </span>
       </h1>
 
+      <p className={styles.current} data-hero-lede>
+        Current: MSCS@NYU, SDE Intern@Amazon, SWE@Shell
+      </p>
+
       <div className={styles.foot}>
         <p className={styles.role} data-hero-lede>
           <span className={styles.roleStatic}>Software engineer —</span>{' '}
