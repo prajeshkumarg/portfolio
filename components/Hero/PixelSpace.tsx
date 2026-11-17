@@ -156,7 +156,7 @@ export default function PixelSpace() {
     const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
     const C2 = SCENE / 2;
 
-    const HOLD = 2800;
+    const HOLD = 3800;
     const FADE = 700;
 
     const buf = document.createElement('canvas');
