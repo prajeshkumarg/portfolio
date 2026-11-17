@@ -42,7 +42,7 @@
 
 .item[data-active='true'],
 .item:hover {
-  color: var(--ink);
+  color: var(--accent);
 }
 
 .name {
@@ -109,7 +109,7 @@
 }
 
 .stack {
-  color: var(--accent);
+  color: var(--lava);
   font-size: var(--step-small);
   letter-spacing: 0.01em;
 }

@@ -173,36 +173,56 @@ export default function PixelSpace() {
 
     const RX = 34; // accretion-disc radii
     const RY = 12; // flattened -> edge-on tilt
-    const EH = 9; // event-horizon (black core) radius
+    const EH = 11; // event-horizon (black core) radius
+    const TILT = -0.26; // whole disc tilts down to the left
+    const DISC_DY = -5; // raise the disc so its line crosses the hole higher
 
     const draw = (t: number) => {
       ctx.clearRect(0, 0, SCENE, SCENE);
-      const spin = reduced ? 0 : t / 1400;
+      const spin = reduced ? 0 : t / 650; // faster orbit
 
-      // faint lensing glow behind
-      disc(C2, C2, EH + 14, 'rgba(159,199,184,0.05)');
+      // tilt everything (disc + halo) down-left; the black core stays centred
+      ctx.save();
+      ctx.translate(C2, C2);
+      ctx.rotate(TILT);
+      ctx.translate(-C2, -C2);
 
-      // BACK half of the accretion disc (drawn first, behind the hole)
-      ring(RX, RY, C.jadeShade, Math.PI, Math.PI * 2);
-      ring(RX - 4, RY - 2, C.jade, Math.PI, Math.PI * 2);
+      // a tilted ellipse helper, centred on the hole but lifted by DISC_DY
+      const dring = (rx: number, ry: number, col: string, from: number, to: number, step = 0.04) => {
+        for (let a = from; a < to; a += step) {
+          px(C2 + Math.cos(a) * rx, C2 + DISC_DY + Math.sin(a) * ry, col);
+        }
+      };
 
-      // the event horizon: a solid black disc with a thin bright photon ring
+      // BACK half of the edge-on disc (behind the hole)
+      dring(RX, RY, C.jadeShade, Math.PI, Math.PI * 2);
+      dring(RX - 4, RY - 2, C.jade, Math.PI, Math.PI * 2);
+
+      // lensed PHOTON HALO over the top and under the bottom of the hole
+      ring(EH + 4, EH + 4, C.jadeLite, 0, Math.PI * 2, 0.05);
+      ring(EH + 5, EH + 5, C.bone, Math.PI * 1.15, Math.PI * 1.85, 0.05);
+      ring(EH + 5, EH + 5, C.bone, Math.PI * 0.15, Math.PI * 0.85, 0.05);
+
+      // the event horizon
       disc(C2, C2, EH, '#05080a');
-      ring(EH + 1, EH + 1, C.jadeLite, 0, Math.PI * 2, 0.08); // photon sphere
+      ring(EH + 1, EH + 1, C.jadeLite, 0, Math.PI * 2, 0.08);
 
-      // FRONT half of the disc (over the hole's lower edge)
-      ring(RX, RY, C.jade, 0, Math.PI);
-      ring(RX - 4, RY - 2, C.jadeLite, 0, Math.PI);
+      // FRONT half of the edge-on disc (crosses in front of the hole)
+      dring(RX, RY, C.jade, 0, Math.PI);
+      dring(RX - 4, RY - 2, C.jadeLite, 0, Math.PI);
+      dring(RX - 1, RY - 1, C.bone, 0.2, Math.PI - 0.2, 0.06);
 
-      // hot spots orbiting on the disc
-      for (let i = 0; i < 3; i++) {
-        const a = spin * (1 + i * 0.3) + (i * Math.PI * 2) / 3;
-        const r = RX - 2 - i * 3;
+      // hot spots orbiting on the disc (faster, more of them)
+      for (let i = 0; i < 5; i++) {
+        const a = spin * (1 + i * 0.25) + (i * Math.PI * 2) / 5;
+        const r = RX - 2 - i * 2.4;
         const x = C2 + Math.cos(a) * r;
-        const y = C2 + Math.sin(a) * (r * (RY / RX));
+        const y = C2 + DISC_DY + Math.sin(a) * (r * (RY / RX));
         px(x, y, C.bone);
         px(x + 1, y, C.jadeLite);
       }
+
+      ctx.restore();
     };
 
     let raf = 0;
