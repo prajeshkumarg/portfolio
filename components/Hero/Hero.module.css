@@ -40,17 +40,17 @@
 
 /* the name: two lines, line-height 0.82, flush left, pointer-reactive weight */
 .name {
-  --name-weight: 600;
   position: relative;
   z-index: 1;
   align-self: start;
   margin-top: 8vh;
-  font-weight: var(--name-weight);
-  font-variation-settings: 'wght' var(--name-weight);
+  font-weight: 600;
   letter-spacing: -0.04em;
   line-height: 0.9; /* a touch looser so ascenders are not shaved by the mask */
   font-size: clamp(5rem, 15vw, 14.375rem);
-  transition: font-weight 0.3s var(--ease-out);
+  /* optical alignment: pull the display left so the P/K glyph edge lines up
+     with the welcome/role text below, not the glyph's left side-bearing */
+  margin-left: -0.04em;
 }
 
 /* The reveal mask clips the rising line. With tight leading the clip box is
