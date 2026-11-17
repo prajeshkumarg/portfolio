@@ -48,9 +48,6 @@
   letter-spacing: -0.04em;
   line-height: 0.9; /* a touch looser so ascenders are not shaved by the mask */
   font-size: clamp(5rem, 15vw, 14.375rem);
-  /* optical alignment: pull the display left so the P/K glyph edge lines up
-     with the welcome/role text below, not the glyph's left side-bearing */
-  margin-left: -0.04em;
 }
 
 /* The reveal mask clips the rising line. With tight leading the clip box is
