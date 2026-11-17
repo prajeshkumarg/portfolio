@@ -43,46 +43,70 @@ export default function PixelSpace() {
     const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
     const rng = mulberry32(99173);
 
-    // the galaxy canvas is low-res and stretched over the whole hero, so pixels
-    // stay chunky. width:height tracks a wide hero (~2:1).
-    const GW = 160;
-    const GH = 84;
+    // Higher-res so the nebula haze is smooth; stretched over the whole hero.
+    const GW = 320;
+    const GH = 170;
     canvas.width = GW;
     canvas.height = GH;
-    ctx.imageSmoothingEnabled = false;
 
-    // Density falls off GRADUALLY with distance from the planet, in every
-    // direction: dense near it, thinning out everywhere further away. The
-    // planet sits in the right half, vertically centred, so the galaxy centre
-    // in this low-res field is about (0.8 * GW, 0.5 * GH).
+    // the Milky-Way band: a diagonal axis crossing the field, with a bright
+    // core near the planet (right side). Stars and haze gather along this axis.
+    const core = { x: GW * 0.78, y: GH * 0.42 };
+    const ang = -0.42; // band tilt (radians), rising to the right
+    const ax = Math.cos(ang), ay = Math.sin(ang);
+    const bandDist = (x: number, y: number) => {
+      const dx = x - core.x, dy = y - core.y;
+      return Math.abs(dx * -ay + dy * ax); // perpendicular to the band axis
+    };
+    const alongDist = (x: number, y: number) => {
+      const dx = x - core.x, dy = y - core.y;
+      return dx * ax + dy * ay; // along the band axis
+    };
+
+    // ---- stars: clustered along the band, denser toward the core ----
+    // Exclusion zones (in 0..1 of GW/GH) where text lives — no stars there, so
+    // nothing sits on the name, nav, monogram or the foot row.
+    const EXCLUDE = [
+      { x0: 0.0, y0: 0.08, x1: 0.5, y1: 0.72 }, // the big name block (left)
+      { x0: 0.0, y0: 0.0, x1: 0.12, y1: 0.1 }, // monogram top-left
+      { x0: 0.82, y0: 0.0, x1: 1.0, y1: 0.1 }, // nav top-right
+      { x0: 0.0, y0: 0.82, x1: 0.42, y1: 1.0 }, // foot role line bottom-left
+      { x0: 0.78, y0: 0.82, x1: 1.0, y1: 1.0 }, // the CTA bottom-right
+    ];
+    const inText = (x: number, y: number) => {
+      const nx = x / GW, ny = y / GH;
+      return EXCLUDE.some((r) => nx >= r.x0 && nx <= r.x1 && ny >= r.y0 && ny <= r.y1);
+    };
+
     type Star = { x: number; y: number; period: number; phase: number; bright: boolean; blink: boolean };
-    const cxG = GW * 0.8;
-    const cyG = GH * 0.5;
-    const maxD = Math.hypot(GW, GH); // furthest possible distance
     const stars: Star[] = [];
-    for (let i = 0; i < 420; i++) {
-      const x = Math.floor(rng() * GW);
-      const y = Math.floor(rng() * GH);
-      // normalised distance from the planet, 0 (at it) .. ~1 (far corner)
-      const d = Math.hypot(x - cxG, y - cyG) / maxD;
-      // keep-probability high near the planet, smoothly decaying with distance
-      const keep = Math.max(0.02, Math.pow(1 - d, 2.4));
+    const BAND = GH * 0.5;
+    for (let i = 0; i < 1100; i++) {
+      const x = rng() * GW;
+      const y = rng() * GH;
+      if (inText(x, y)) continue; // never over the text
+      const perp = bandDist(x, y);
+      const along = Math.abs(alongDist(x, y));
+      const pBand = Math.exp(-(perp * perp) / (2 * (BAND * 0.42) ** 2));
+      const pCore = Math.exp(-(along * along) / (2 * (GW * 0.5) ** 2));
+      const keep = 0.04 + 0.96 * pBand * (0.45 + 0.55 * pCore);
       if (rng() > keep) continue;
       stars.push({
-        x,
-        y,
-        period: 1200 + rng() * 2800,
+        x, y,
+        period: 1400 + rng() * 2800,
         phase: rng() * Math.PI * 2,
-        bright: rng() > 0.82,
+        bright: rng() > 0.86,
         blink: false,
       });
     }
-    // a few far-out blinkers: sparse points that fade out and reappear
-    // elsewhere, so the empty edges still feel alive
-    for (let i = 0; i < 8; i++) {
+    for (let i = 0; i < 10; i++) {
+      let x = rng() * GW, y = rng() * GH, tries = 0;
+      while (inText(x, y) && tries++ < 8) {
+        x = rng() * GW;
+        y = rng() * GH;
+      }
       stars.push({
-        x: Math.floor(rng() * GW),
-        y: Math.floor(rng() * GH),
+        x, y,
         period: 2600 + rng() * 3200,
         phase: rng() * Math.PI * 2,
         bright: rng() > 0.5,
@@ -90,11 +114,36 @@ export default function PixelSpace() {
       });
     }
 
-    // one or two motes near the right/core, drifting slowly
+    // soft drifting motes along the band
     const motes = [
-      { x: GW * 0.82, y: GH * 0.25, vx: -0.03, vy: 0.012, size: 2 },
-      { x: GW * 0.7, y: GH * 0.7, vx: -0.02, vy: -0.014, size: 1 },
+      { x: GW * 0.6, y: GH * 0.55, vx: 0.06, vy: 0.06 * Math.tan(ang) },
+      { x: GW * 0.4, y: GH * 0.66, vx: 0.045, vy: 0.045 * Math.tan(ang) },
     ];
+
+    // paint the nebula haze once into an offscreen buffer (static glow)
+    const haze = document.createElement('canvas');
+    haze.width = GW;
+    haze.height = GH;
+    const hctx = haze.getContext('2d')!;
+    hctx.save();
+    hctx.translate(core.x, core.y);
+    hctx.rotate(ang);
+    const bandGrad = hctx.createLinearGradient(-GW * 0.7, 0, GW * 0.5, 0);
+    bandGrad.addColorStop(0, 'rgba(159,199,184,0)');
+    bandGrad.addColorStop(0.5, 'rgba(159,199,184,0.10)');
+    bandGrad.addColorStop(0.78, 'rgba(207,230,220,0.16)');
+    bandGrad.addColorStop(1, 'rgba(159,199,184,0)');
+    hctx.fillStyle = bandGrad;
+    hctx.beginPath();
+    hctx.ellipse(0, 0, GW * 0.6, GH * 0.16, 0, 0, Math.PI * 2);
+    hctx.fill();
+    hctx.restore();
+    const g = hctx.createRadialGradient(core.x, core.y, 0, core.x, core.y, GH * 0.5);
+    g.addColorStop(0, 'rgba(207,230,220,0.26)');
+    g.addColorStop(0.4, 'rgba(159,199,184,0.12)');
+    g.addColorStop(1, 'rgba(159,199,184,0)');
+    hctx.fillStyle = g;
+    hctx.fillRect(0, 0, GW, GH);
 
     const px = (x: number, y: number, col: string) => {
       ctx.fillStyle = col;
@@ -103,44 +152,47 @@ export default function PixelSpace() {
 
     const draw = (t: number) => {
       ctx.clearRect(0, 0, GW, GH);
+      ctx.drawImage(haze, 0, 0); // the galactic glow (CSS-blurred for softness)
+
       for (const s of stars) {
         const tw = reduced ? 1 : 0.5 + 0.5 * Math.sin(t / s.period + s.phase);
         if (s.blink) {
-          // blinkers go fully invisible; when dark, relocate so they reappear
-          // somewhere new on the left — presence that moves, not a fixed twinkle
           if (tw < 0.12 && !reduced) {
-            s.x = Math.floor(rng() * GW);
-            s.y = Math.floor(rng() * GH);
+            let nx = rng() * GW, ny = rng() * GH, tries = 0;
+            while (inText(nx, ny) && tries++ < 8) {
+              nx = rng() * GW;
+              ny = rng() * GH;
+            }
+            s.x = nx;
+            s.y = ny;
             s.bright = rng() > 0.5;
           }
           if (tw > 0.72) px(s.x, s.y, s.bright ? C.star : C.starDim);
           continue;
         }
-        if (tw > 0.4) px(s.x, s.y, s.bright ? C.star : C.starDim);
-        if (s.bright && tw > 0.85) {
+        if (tw > 0.42) px(s.x, s.y, s.bright ? C.star : C.starDim);
+        if (s.bright && tw > 0.86) {
           px(s.x + 1, s.y, C.starDim);
           px(s.x - 1, s.y, C.starDim);
           px(s.x, s.y + 1, C.starDim);
           px(s.x, s.y - 1, C.starDim);
         }
       }
-      // motes drift and wrap; a soft 4-pixel plus so they read as moving bodies
+
       for (const m of motes) {
         if (!reduced) {
           m.x += m.vx;
           m.y += m.vy;
-          if (m.x < GW * 0.5) m.x = GW; // stay in the right half
-          if (m.x > GW) m.x = GW * 0.5;
-          if (m.y < 0) m.y = GH;
-          if (m.y > GH) m.y = 0;
+          if (m.x > GW || m.y < 0 || m.y > GH) {
+            m.x = GW * 0.3;
+            m.y = GH * 0.72;
+          }
         }
         px(m.x, m.y, C.bone);
-        if (m.size >= 2) {
-          px(m.x + 1, m.y, C.starDim);
-          px(m.x - 1, m.y, C.starDim);
-          px(m.x, m.y + 1, C.starDim);
-          px(m.x, m.y - 1, C.starDim);
-        }
+        px(m.x + 1, m.y, C.starDim);
+        px(m.x - 1, m.y, C.starDim);
+        px(m.x, m.y + 1, C.starDim);
+        px(m.x, m.y - 1, C.starDim);
       }
     };
 

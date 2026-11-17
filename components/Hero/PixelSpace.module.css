@@ -2,7 +2,8 @@
    .galaxy spans the whole hero (stars + motes behind everything), and
    .canvas is the ringed-planet scene in the right half. */
 
-/* the galaxy starfield fills the entire hero, behind the name and nav */
+/* the galaxy starfield + Milky-Way haze fills the entire hero, behind the name
+   and nav. Smoothed (not pixelated) so the nebula glow reads soft. */
 .galaxy {
   position: absolute;
   inset: 0;
@@ -11,9 +12,8 @@
   z-index: 0; /* behind the name text (z-index 1) */
   pointer-events: none;
   background: transparent;
-  image-rendering: pixelated;
-  image-rendering: crisp-edges;
-  opacity: 0.9;
+  filter: blur(0.3px);
+  opacity: 0.95;
 }
 
 .canvas {

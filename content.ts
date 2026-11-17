@@ -2,7 +2,7 @@ import type { Education, Experience, Project, SkillGroup, SocialLink } from './t
 import amazonLogo from './public/logos/amazon.png';
 import shellLogo from './public/logos/shell.png';
 import nyuLogo from './public/logos/nyu.png';
-import anylangArch from './public/projects/anylang-arch.png';
+import anylangArch from './public/projects/anylang-arch.svg';
 import miniTensorCompilerOutput from './public/projects/minicompiler.png';
 import repoScoutShot from './public/projects/repo-scout.png';
 import heroPortrait from './public/image.png';
