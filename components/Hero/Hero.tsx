@@ -13,17 +13,22 @@
  * reduced motion.
  */
 
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { site } from '@/content';
 import PixelSpace from './PixelSpace';
 import styles from './Hero.module.css';
 
+const ROLES = ['systems', 'compilers', 'security'];
+
 export default function Hero() {
+  const [i, setI] = useState(0);
   const nameRef = useRef<HTMLHeadingElement>(null);
 
   useEffect(() => {
     const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
     if (reduced) return;
+
+    const id = setInterval(() => setI((n) => (n + 1) % ROLES.length), 2200);
 
     // pointer-reactive weight: the name leans heavier toward the cursor.
     const el = nameRef.current;
@@ -37,6 +42,7 @@ export default function Hero() {
     window.addEventListener('pointermove', onMove);
 
     return () => {
+      clearInterval(id);
       window.removeEventListener('pointermove', onMove);
     };
   }, []);
@@ -62,15 +68,28 @@ export default function Hero() {
         </span>
       </h1>
 
-      <p className={styles.current} data-hero-lede>
-        Current: MSCS@NYU, SDE Intern@Amazon, SWE@Shell
-      </p>
-
       <div className={styles.foot}>
-        <p className={styles.role} data-hero-lede>
-          Welcome to my corner of the internet. This is where I build things,
-          chase ideas, and write about what I learn along the way.
-        </p>
+        <div className={styles.footText}>
+          <p className={styles.role} data-hero-lede>
+            <span className={styles.roleStatic}>Software engineer —</span>{' '}
+            <span className={styles.roleRotator} aria-live="polite">
+              {ROLES.map((r, n) => (
+                <span
+                  key={r}
+                  className={styles.roleWord}
+                  data-on={n === i ? 'true' : undefined}
+                  aria-hidden={n === i ? undefined : 'true'}
+                >
+                  {r}
+                </span>
+              ))}
+            </span>
+          </p>
+          <p className={styles.welcome} data-hero-lede>
+            Welcome to my corner of the internet. This is where I build things,
+            chase ideas, and write about what I learn along the way.
+          </p>
+        </div>
         <a className={styles.cta} href="#work" data-hero-lede>
           See my work
         </a>
