@@ -51,26 +51,41 @@ export default function PixelSpace() {
     canvas.height = GH;
     ctx.imageSmoothingEnabled = false;
 
-    // stars spread across the whole field, denser toward the right (the galaxy
-    // "core" near the planet) but present everywhere, including over the name
-    const stars = Array.from({ length: 130 }, () => {
-      // bias x toward the right a little so it reads as a galaxy drift
+    // Right side (around the planet) is a dense, steadily-twinkling core.
+    // Left side (near the name) gets only a FEW "blinkers": stars that fade all
+    // the way out, then reappear at a new random left spot — alive but sparse.
+    type Star = { x: number; y: number; period: number; phase: number; bright: boolean; blink: boolean };
+    const stars: Star[] = [];
+    for (let i = 0; i < 150; i++) {
       const r = rng();
-      const x = Math.floor((0.15 + 0.85 * (r * r * 0.5 + rng() * 0.5)) * GW);
-      return {
+      const x = Math.floor(Math.pow(r, 0.5) * GW);
+      if (x < GW * 0.45 && rng() > 0.22) continue; // thin the left heavily
+      stars.push({
         x: Math.min(GW - 1, x),
         y: Math.floor(rng() * GH),
         period: 1200 + rng() * 2800,
         phase: rng() * Math.PI * 2,
-        bright: rng() > 0.8,
-      };
-    });
+        bright: rng() > 0.82,
+        blink: false,
+      });
+    }
+    // a handful of left-side blinkers, placed anywhere in the left ~45%
+    const LEFT = GW * 0.45;
+    for (let i = 0; i < 9; i++) {
+      stars.push({
+        x: Math.floor(rng() * LEFT),
+        y: Math.floor(rng() * GH),
+        period: 2600 + rng() * 3200, // slow fade in/out
+        phase: rng() * Math.PI * 2,
+        bright: rng() > 0.5,
+        blink: true,
+      });
+    }
 
-    // one or two motes: brighter pixels that drift slowly across the whole hero,
-    // passing over the name and nav
+    // one or two motes near the right/core, drifting slowly
     const motes = [
-      { x: GW * 0.9, y: GH * 0.2, vx: -0.05, vy: 0.012, size: 2 },
-      { x: GW * 0.5, y: GH * 0.75, vx: -0.03, vy: -0.016, size: 1 },
+      { x: GW * 0.82, y: GH * 0.25, vx: -0.03, vy: 0.012, size: 2 },
+      { x: GW * 0.7, y: GH * 0.7, vx: -0.02, vy: -0.014, size: 1 },
     ];
 
     const px = (x: number, y: number, col: string) => {
@@ -82,6 +97,17 @@ export default function PixelSpace() {
       ctx.clearRect(0, 0, GW, GH);
       for (const s of stars) {
         const tw = reduced ? 1 : 0.5 + 0.5 * Math.sin(t / s.period + s.phase);
+        if (s.blink) {
+          // blinkers go fully invisible; when dark, relocate so they reappear
+          // somewhere new on the left — presence that moves, not a fixed twinkle
+          if (tw < 0.12 && !reduced) {
+            s.x = Math.floor(rng() * GW * 0.45);
+            s.y = Math.floor(rng() * GH);
+            s.bright = rng() > 0.5;
+          }
+          if (tw > 0.72) px(s.x, s.y, s.bright ? C.star : C.starDim);
+          continue;
+        }
         if (tw > 0.4) px(s.x, s.y, s.bright ? C.star : C.starDim);
         if (s.bright && tw > 0.85) {
           px(s.x + 1, s.y, C.starDim);
@@ -95,8 +121,8 @@ export default function PixelSpace() {
         if (!reduced) {
           m.x += m.vx;
           m.y += m.vy;
-          if (m.x < 0) m.x = GW;
-          if (m.x > GW) m.x = 0;
+          if (m.x < GW * 0.5) m.x = GW; // stay in the right half
+          if (m.x > GW) m.x = GW * 0.5;
           if (m.y < 0) m.y = GH;
           if (m.y > GH) m.y = 0;
         }
