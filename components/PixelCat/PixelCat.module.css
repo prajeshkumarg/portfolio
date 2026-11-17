@@ -1,0 +1,20 @@
+/* PixelCat — fixed to the right edge, follows the scroll down the page. */
+
+.cat {
+  position: fixed;
+  right: clamp(10px, 2vw, 32px);
+  top: 50vh; /* JS keeps it centred + nudged by scroll */
+  z-index: 40;
+  pointer-events: none;
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+  filter: drop-shadow(0 0 6px rgba(91, 214, 255, 0.5)); /* neon glow */
+  transition: top 0.08s linear;
+}
+
+/* needs the right margin; hide where it would overlap content */
+@media (max-width: 900px) {
+  .cat {
+    display: none;
+  }
+}

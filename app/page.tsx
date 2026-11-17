@@ -6,6 +6,7 @@ import Education from '@/components/Education/Education';
 import Contact from '@/components/Contact/Contact';
 import Footer from '@/components/Footer/Footer';
 import Motion from '@/components/Motion/Motion';
+import PixelCat from '@/components/PixelCat/PixelCat';
 
 export default function Page() {
   return (
@@ -20,6 +21,7 @@ export default function Page() {
       </main>
       <Footer />
       <Motion />
+      <PixelCat />
     </>
   );
 }

@@ -142,7 +142,7 @@ export default function PixelSpace() {
     return () => cancelAnimationFrame(raf);
   }, []);
 
-  // ---- the galaxy: a slowly turning pixel spiral in the right half ----
+  // ---- the scene: a pixel BLACK HOLE in the right half ----
   useEffect(() => {
     const canvas = sceneRef.current;
     if (!canvas) return;
@@ -153,7 +153,6 @@ export default function PixelSpace() {
     ctx.imageSmoothingEnabled = false;
 
     const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
-    const rng = mulberry32(5150);
     const C2 = SCENE / 2;
 
     const px = (x: number, y: number, col: string) => {
@@ -165,56 +164,44 @@ export default function PixelSpace() {
         for (let x = -r; x <= r; x++)
           if (x * x + y * y <= r * r) px(cx + x, cy + y, col);
     };
-
-    // pre-generate the spiral: for each arm, a run of particles placed along a
-    // logarithmic spiral with a little scatter, coloured by distance from core
-    const ARMS = 2;
-    const particles: { ang: number; rad: number; col: string }[] = [];
-    for (let arm = 0; arm < ARMS; arm++) {
-      const base = (arm / ARMS) * Math.PI * 2;
-      for (let i = 0; i < 150; i++) {
-        const tpar = i / 150;
-        const rad = 6 + tpar * (SCENE * 0.46); // grows outward
-        // logarithmic spiral: angle advances with radius
-        const ang = base + tpar * 3.1 + (rng() - 0.5) * 0.5;
-        const radJ = rad + (rng() - 0.5) * 6;
-        // colour: bright core -> jade mid -> faint rim
-        const col =
-          tpar < 0.18 ? C.jadeLite : tpar < 0.55 ? C.jade : rng() > 0.5 ? C.jadeShade : C.starDim;
-        particles.push({ ang, rad: radJ, col });
+    // an elliptical ring of a given radius, thickness and tilt (ry/rx)
+    const ring = (rx: number, ry: number, col: string, from: number, to: number, step = 0.04) => {
+      for (let a = from; a < to; a += step) {
+        px(C2 + Math.cos(a) * rx, C2 + Math.sin(a) * ry, col);
       }
-    }
-    // a scatter of loose stars in the disc so arms aren't the only thing
-    const dust: { ang: number; rad: number; col: string }[] = [];
-    for (let i = 0; i < 90; i++) {
-      dust.push({
-        ang: rng() * Math.PI * 2,
-        rad: 8 + rng() * SCENE * 0.46,
-        col: rng() > 0.7 ? C.star : C.jadeShade,
-      });
-    }
+    };
+
+    const RX = 34; // accretion-disc radii
+    const RY = 12; // flattened -> edge-on tilt
+    const EH = 9; // event-horizon (black core) radius
 
     const draw = (t: number) => {
       ctx.clearRect(0, 0, SCENE, SCENE);
-      const spin = reduced ? 0.6 : t / 9000; // slow turn
+      const spin = reduced ? 0 : t / 1400;
 
-      // bright glowing core
-      disc(C2, C2, 6, C.jadeLite);
-      disc(C2, C2, 3, C.bone);
+      // faint lensing glow behind
+      disc(C2, C2, EH + 14, 'rgba(159,199,184,0.05)');
 
-      // spiral arms
-      for (const p of particles) {
-        const a = p.ang + spin;
-        const x = C2 + Math.cos(a) * p.rad;
-        const y = C2 + Math.sin(a) * p.rad * 0.64; // flatten slightly -> disc tilt
-        if (x >= 0 && x < SCENE && y >= 0 && y < SCENE) px(x, y, p.col);
-      }
-      // loose dust, turning a touch slower for parallax
-      for (const p of dust) {
-        const a = p.ang + spin * 0.6;
-        const x = C2 + Math.cos(a) * p.rad;
-        const y = C2 + Math.sin(a) * p.rad * 0.64;
-        if (x >= 0 && x < SCENE && y >= 0 && y < SCENE) px(x, y, p.col);
+      // BACK half of the accretion disc (drawn first, behind the hole)
+      ring(RX, RY, C.jadeShade, Math.PI, Math.PI * 2);
+      ring(RX - 4, RY - 2, C.jade, Math.PI, Math.PI * 2);
+
+      // the event horizon: a solid black disc with a thin bright photon ring
+      disc(C2, C2, EH, '#05080a');
+      ring(EH + 1, EH + 1, C.jadeLite, 0, Math.PI * 2, 0.08); // photon sphere
+
+      // FRONT half of the disc (over the hole's lower edge)
+      ring(RX, RY, C.jade, 0, Math.PI);
+      ring(RX - 4, RY - 2, C.jadeLite, 0, Math.PI);
+
+      // hot spots orbiting on the disc
+      for (let i = 0; i < 3; i++) {
+        const a = spin * (1 + i * 0.3) + (i * Math.PI * 2) / 3;
+        const r = RX - 2 - i * 3;
+        const x = C2 + Math.cos(a) * r;
+        const y = C2 + Math.sin(a) * (r * (RY / RX));
+        px(x, y, C.bone);
+        px(x + 1, y, C.jadeLite);
       }
     };
 
