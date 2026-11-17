@@ -67,7 +67,7 @@ export default function PixelSpace() {
 
     type Star = { x: number; y: number; period: number; phase: number; bright: boolean; blink: boolean };
     const stars: Star[] = [];
-    for (let i = 0; i < 520; i++) {
+    for (let i = 0; i < 390; i++) {
       const x = Math.floor(rng() * GW);
       const y = Math.floor(rng() * GH);
       if (inText(x, y)) continue;
@@ -262,24 +262,16 @@ export default function PixelSpace() {
       disc(cx + Math.cos(a) * 49, cy + Math.sin(a) * 24, 4, C.bone);
     };
 
-    // 3. a rocket hovering
-    const sceneRocket = (c: CanvasRenderingContext2D, t: number) => {
-      const { px } = mk(c);
-      const s = 1.6; // scale the sprite up for the larger canvas
-      const bx = Math.round(C2 - 7 + (reduced ? 0 : Math.sin(t / 900) * 8));
-      const by = Math.round(C2 + 10 + (reduced ? 0 : Math.cos(t / 1100) * 8));
-      const blk = (gx: number, gy: number, col: string) => {
-        for (let yy = 0; yy < s; yy++) for (let xx = 0; xx < s; xx++) px(bx + gx * s + xx, by + gy * s + yy, col);
-      };
-      for (let i = 0; i < 9; i++) blk(i, -i, C.bone);
-      for (let i = 2; i < 8; i++) blk(i, -i + 1, C.jade);
-      blk(9, -9, C.jadeLite);
-      blk(0, 1, C.jadeShade);
-      blk(1, -2, C.jadeShade);
-      if (reduced || Math.sin(t / 90) > 0) {
-        blk(-1, 1, C.rust);
-        blk(-2, 2, C.star);
-      }
+    // 3. a crescent moon (no comet)
+    const sceneMoon = (c: CanvasRenderingContext2D, _t: number) => {
+      const { disc } = mk(c);
+      const mx = Math.round(SCENE * 0.52), my = C2;
+      disc(mx, my, 26, C.jade, C.jadeShade);
+      // carve the crescent by erasing an offset disc
+      c.save();
+      c.globalCompositeOperation = 'destination-out';
+      disc(mx + 13, my - 5, 24, '#000');
+      c.restore();
     };
 
     // 4. a mini solar system
@@ -294,7 +286,7 @@ export default function PixelSpace() {
       disc(C2 + Math.cos(o2) * 47, C2 + Math.sin(o2) * 47, 6, C.jade, C.jadeShade);
     };
 
-    const scenes = [sceneBlackHole, sceneRingedPlanet, sceneRocket, sceneSystem];
+    const scenes = [sceneBlackHole, sceneRingedPlanet, sceneMoon, sceneSystem];
 
     const blitScene = (idx: number, t: number, alpha: number) => {
       if (alpha <= 0.01) return;
