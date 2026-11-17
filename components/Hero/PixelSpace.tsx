@@ -16,7 +16,7 @@
 import { useEffect, useRef } from 'react';
 import styles from './PixelSpace.module.css';
 
-const SCENE = 96; // scene canvas resolution
+const SCENE = 150; // scene canvas resolution (higher -> the black hole reads defined)
 
 const C = {
   star: '#e3e2da',
@@ -181,108 +181,120 @@ export default function PixelSpace() {
       return { px, disc, ellipse };
     };
 
-    // 1. the Interstellar black hole
+    // a dedicated HI-RES buffer for the black hole, so its rings read smooth
+    // and defined rather than coarsely pixelated like the other 8-bit scenes.
+    const HR = 3; // 3x resolution
+    const hbuf = document.createElement('canvas');
+    hbuf.width = SCENE * HR;
+    hbuf.height = SCENE * HR;
+    const hbctx = hbuf.getContext('2d')!;
+
+    // 1. the Interstellar black hole — drawn hi-res into hbuf, then blitted
+    // smoothly onto the scene so it looks more defined than 8-bit.
     const sceneBlackHole = (c: CanvasRenderingContext2D, t: number) => {
-      const { px, disc, ellipse } = mk(c);
-      const RX = 34, RY = 11, EH = 11, TILT = -0.26, DISC_DY = -4;
+      const S = SCENE * HR;
+      const O = S / 2;
+      hbctx.clearRect(0, 0, S, S);
+      const RX = 34 * HR, RY = 11 * HR, EH = 11 * HR, TILT = -0.26, DISC_DY = -4 * HR;
       const spin = reduced ? 0 : t / 650;
-      c.save();
-      c.translate(C2, C2);
-      c.rotate(TILT);
-      c.translate(-C2, -C2);
-      const dring = (rx: number, ry: number, col: string, from: number, to: number, step = 0.035) => {
-        for (let a = from; a < to; a += step) px(C2 + Math.cos(a) * rx, C2 + DISC_DY + Math.sin(a) * ry, col);
+      const hp = (x: number, y: number, col: string, w = HR) => {
+        hbctx.fillStyle = col;
+        hbctx.fillRect(Math.round(x), Math.round(y), w, w);
       };
+      hbctx.save();
+      hbctx.translate(O, O);
+      hbctx.rotate(TILT);
+      hbctx.translate(-O, -O);
+      const dring = (rx: number, ry: number, col: string, from: number, to: number) => {
+        const step = 0.9 / Math.max(rx, 1); // fine step -> continuous ring
+        for (let a = from; a < to; a += step) hp(O + Math.cos(a) * rx, O + DISC_DY + Math.sin(a) * ry, col);
+      };
+      // back of the disc
       dring(RX, RY, C.jadeShade, Math.PI, Math.PI * 2);
-      dring(RX - 4, RY - 2, C.jade, Math.PI, Math.PI * 2);
-      const topR = EH + 9;
-      for (let a = Math.PI; a < Math.PI * 2; a += 0.03) {
-        const x = C2 + Math.cos(a) * topR;
-        const y = C2 + DISC_DY - 2 + Math.sin(a) * (topR * 0.92);
-        const crown = Math.sin(a) < -0.45;
-        px(x, y, crown ? C.bone : C.jadeLite);
-        if (crown) px(x, y - 1, C.jadeLite);
+      dring(RX - 4 * HR, RY - 2 * HR, C.jade, Math.PI, Math.PI * 2);
+      // lensed halo over the top
+      const topR = EH + 9 * HR;
+      for (let a = Math.PI; a < Math.PI * 2; a += 0.6 / Math.max(topR, 1)) {
+        const x = O + Math.cos(a) * topR;
+        const y = O + DISC_DY - 2 * HR + Math.sin(a) * (topR * 0.92);
+        hp(x, y, Math.sin(a) < -0.45 ? C.bone : C.jadeLite);
       }
-      for (let a = 0; a < Math.PI; a += 0.03) {
-        const x = C2 + Math.cos(a) * (EH + 7);
-        const y = C2 + DISC_DY + 2 + Math.sin(a) * ((EH + 7) * 0.9);
-        px(x, y, Math.sin(a) > 0.5 ? C.bone : C.jadeLite);
+      for (let a = 0; a < Math.PI; a += 0.6 / Math.max(EH + 7 * HR, 1)) {
+        const x = O + Math.cos(a) * (EH + 7 * HR);
+        const y = O + DISC_DY + 2 * HR + Math.sin(a) * ((EH + 7 * HR) * 0.9);
+        hp(x, y, Math.sin(a) > 0.5 ? C.bone : C.jadeLite);
       }
-      ellipse(C2, C2 + DISC_DY, EH + 3, EH + 3, C.bone);
-      ellipse(C2, C2 + DISC_DY, EH + 2, EH + 2, C.jadeLite);
-      disc(C2, C2 + DISC_DY, EH, '#05080a');
-      ellipse(C2, C2 + DISC_DY, EH + 1, EH + 1, C.bone);
+      // hot core rim
+      const hdisc = (cx: number, cy: number, r: number, col: string) => {
+        hbctx.fillStyle = col;
+        hbctx.beginPath();
+        hbctx.arc(cx, cy, r, 0, Math.PI * 2);
+        hbctx.fill();
+      };
+      hdisc(O, O + DISC_DY, EH + 3 * HR, C.bone);
+      hdisc(O, O + DISC_DY, EH + 1.5 * HR, C.jadeLite);
+      hdisc(O, O + DISC_DY, EH, '#05080a');
+      // front of the disc, brightest
       dring(RX, RY, C.jade, 0, Math.PI);
-      dring(RX - 4, RY - 2, C.jadeLite, 0, Math.PI);
-      dring(RX - 1, RY - 1, C.bone, 0.15, Math.PI - 0.15, 0.05);
+      dring(RX - 4 * HR, RY - 2 * HR, C.jadeLite, 0, Math.PI);
+      dring(RX - 1 * HR, RY - 1 * HR, C.bone, 0.15, Math.PI - 0.15);
+      // orbiting hot spots
       for (let i = 0; i < 5; i++) {
         const a = spin * (1 + i * 0.25) + (i * Math.PI * 2) / 5;
-        const r = RX - 2 - i * 2.4;
-        px(C2 + Math.cos(a) * r, C2 + DISC_DY + Math.sin(a) * (r * (RY / RX)), C.bone);
+        const r = RX - 2 * HR - i * 2.4 * HR;
+        hp(O + Math.cos(a) * r, O + DISC_DY + Math.sin(a) * (r * (RY / RX)), C.bone, HR + 1);
       }
-      c.restore();
+      hbctx.restore();
+      // blit smoothly (downscaled) -> defined, anti-aliased black hole
+      c.imageSmoothingEnabled = true;
+      c.drawImage(hbuf, 0, 0, SCENE, SCENE);
+      c.imageSmoothingEnabled = false;
     };
 
     // 2. ringed planet with a moon
     const sceneRingedPlanet = (c: CanvasRenderingContext2D, t: number) => {
       const { disc, ellipse } = mk(c);
       const cx = Math.round(SCENE * 0.54), cy = C2;
-      ellipse(cx, cy, 25, 25 * 0.34, C.jadeLite);
-      disc(cx, cy, 17, C.jade, C.jadeShade);
-      ellipse(cx, cy, 25, 25 * 0.34, C.jadeLite, 0, Math.PI);
+      ellipse(cx, cy, 40, 40 * 0.34, C.jadeLite);
+      disc(cx, cy, 27, C.jade, C.jadeShade);
+      ellipse(cx, cy, 40, 40 * 0.34, C.jadeLite, 0, Math.PI);
       const a = reduced ? -0.7 : t / 2600;
-      disc(cx + Math.cos(a) * 31, cy + Math.sin(a) * 15, 3, C.bone);
+      disc(cx + Math.cos(a) * 49, cy + Math.sin(a) * 24, 4, C.bone);
     };
 
     // 3. a rocket hovering
     const sceneRocket = (c: CanvasRenderingContext2D, t: number) => {
       const { px } = mk(c);
-      const x = Math.round(C2 - 4 + (reduced ? 0 : Math.sin(t / 900) * 5));
-      const y = Math.round(C2 + 6 + (reduced ? 0 : Math.cos(t / 1100) * 5));
-      for (let i = 0; i < 9; i++) px(x + i, y - i, C.bone);
-      for (let i = 2; i < 8; i++) px(x + i, y - i + 1, C.jade);
-      px(x + 9, y - 9, C.jadeLite);
-      px(x, y + 1, C.jadeShade);
-      px(x + 1, y - 2, C.jadeShade);
+      const s = 1.6; // scale the sprite up for the larger canvas
+      const bx = Math.round(C2 - 7 + (reduced ? 0 : Math.sin(t / 900) * 8));
+      const by = Math.round(C2 + 10 + (reduced ? 0 : Math.cos(t / 1100) * 8));
+      const blk = (gx: number, gy: number, col: string) => {
+        for (let yy = 0; yy < s; yy++) for (let xx = 0; xx < s; xx++) px(bx + gx * s + xx, by + gy * s + yy, col);
+      };
+      for (let i = 0; i < 9; i++) blk(i, -i, C.bone);
+      for (let i = 2; i < 8; i++) blk(i, -i + 1, C.jade);
+      blk(9, -9, C.jadeLite);
+      blk(0, 1, C.jadeShade);
+      blk(1, -2, C.jadeShade);
       if (reduced || Math.sin(t / 90) > 0) {
-        px(x - 1, y + 1, C.rust);
-        px(x - 2, y + 2, C.star);
+        blk(-1, 1, C.rust);
+        blk(-2, 2, C.star);
       }
     };
 
-    // 4. crescent moon + orbiting comet
-    const sceneComet = (c: CanvasRenderingContext2D, t: number) => {
-      const { disc, px } = mk(c);
-      const mx = Math.round(SCENE * 0.54), my = C2;
-      disc(mx, my, 16, C.jade, C.jadeShade);
-      c.save();
-      c.globalCompositeOperation = 'destination-out';
-      disc(mx + 8, my - 3, 15, '#000');
-      c.restore();
-      const a = reduced ? -0.6 : t / 1500;
-      const cxp = Math.round(mx + Math.cos(a) * 30);
-      const cyp = Math.round(my + Math.sin(a) * 22);
-      const tx = -Math.sin(a), ty = Math.cos(a);
-      for (let i = 0; i < 9; i++) {
-        const bx = Math.round(cxp - tx * i), by = Math.round(cyp - ty * i);
-        if (bx >= 0 && bx < SCENE && by >= 0 && by < SCENE) px(bx, by, i < 3 ? C.bone : C.jadeLite);
-      }
-      px(cxp, cyp, C.star);
-    };
-
-    // 5. a mini solar system
+    // 4. a mini solar system
     const sceneSystem = (c: CanvasRenderingContext2D, t: number) => {
       const { disc, ellipse } = mk(c);
-      disc(C2, C2, 6, C.jadeLite, C.jade);
+      disc(C2, C2, 9, C.jadeLite, C.jade);
       const o1 = reduced ? 0.4 : t / 1800;
       const o2 = reduced ? 2.1 : -t / 2800;
-      ellipse(C2, C2, 18, 18, C.jadeShade);
-      ellipse(C2, C2, 30, 30, C.jadeShade);
-      disc(C2 + Math.cos(o1) * 18, C2 + Math.sin(o1) * 18, 3, C.bone);
-      disc(C2 + Math.cos(o2) * 30, C2 + Math.sin(o2) * 30, 4, C.jade, C.jadeShade);
+      ellipse(C2, C2, 28, 28, C.jadeShade);
+      ellipse(C2, C2, 47, 47, C.jadeShade);
+      disc(C2 + Math.cos(o1) * 28, C2 + Math.sin(o1) * 28, 4, C.bone);
+      disc(C2 + Math.cos(o2) * 47, C2 + Math.sin(o2) * 47, 6, C.jade, C.jadeShade);
     };
 
-    const scenes = [sceneBlackHole, sceneRingedPlanet, sceneRocket, sceneComet, sceneSystem];
+    const scenes = [sceneBlackHole, sceneRingedPlanet, sceneRocket, sceneSystem];
 
     const blitScene = (idx: number, t: number, alpha: number) => {
       if (alpha <= 0.01) return;
