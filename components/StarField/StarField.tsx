@@ -83,18 +83,22 @@ export default function StarField() {
       });
     }
 
-    // an extra CLUSTER of stars around the hero planet (right side, centred in
-    // the first viewport) so the scene sits in a field of stars, not bare space
+    // a RING of stars hugging the planet's edge, evenly all the way around
+    // (left, right, top, bottom, diagonals) — not a disc the planet covers, so
+    // it does not read as just top/bottom bands.
     const planetNx = 0.8;
     const planetNy = (window.innerHeight * 0.5) / H;
-    const spread = (window.innerHeight * 0.5) / H;
-    for (let i = 0; i < 110; i++) {
+    const vh = window.innerHeight;
+    const planetR = (vh * 0.2) / H; // approx planet radius as a page fraction
+    const aspect = window.innerWidth / H; // to keep the ring circular on screen
+    for (let i = 0; i < 240; i++) {
       const ang = rng() * Math.PI * 2;
-      const rad = Math.pow(rng(), 0.6) * spread;
-      const nx = planetNx + Math.cos(ang) * rad * 0.9;
-      const ny = planetNy + Math.sin(ang) * rad;
-      if (nx < 0.5 || nx > 1) continue;
-      const big = rng() > 0.76;
+      // distance just outside the planet, fading outward
+      const dist = planetR * (1.05 + Math.pow(rng(), 1.5) * 1.8);
+      const nx = planetNx + (Math.cos(ang) * dist) / aspect; // /aspect -> round on screen
+      const ny = planetNy + Math.sin(ang) * dist;
+      if (nx < 0.5 || nx > 1 || ny < 0) continue;
+      const big = rng() > 0.78;
       stars.push({
         nx,
         ny,
@@ -112,7 +116,7 @@ export default function StarField() {
     const moonNx = planetNx - 0.055;
     const moonNy = planetNy + (window.innerHeight * 0.06) / H;
     const moonSpread = (window.innerHeight * 0.16) / H;
-    for (let i = 0; i < 34; i++) {
+    for (let i = 0; i < 60; i++) {
       const ang = rng() * Math.PI * 2;
       const rad = Math.pow(rng(), 0.5) * moonSpread;
       const nx = moonNx + Math.cos(ang) * rad * 0.9;
