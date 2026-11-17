@@ -68,16 +68,41 @@ export default function StarField() {
       if (nx > 0.3 && nx < 0.7 && rng() > 0.25) {
         nx = rng() < 0.5 ? rng() * 0.3 : 0.7 + rng() * 0.3;
       }
-      const big = rng() > 0.86; // a few larger stars
+      const big = rng() > 0.8; // more larger stars than before
       stars.push({
         nx,
         ny: rng(),
-        r: big ? 1.6 + rng() * 1.1 : 0.6 + rng() * 0.8, // mix of tiny and a few larger
+        r: big ? 1.8 + rng() * 1.4 : 0.6 + rng() * 0.9, // bigger big-stars, more visible
         period: 1800 + rng() * 3600,
         phase: rng() * Math.PI * 2,
-        op: 0.22 + rng() * 0.7, // wide opacity range
+        op: big ? 0.6 + rng() * 0.4 : 0.22 + rng() * 0.6, // big stars brighter
         col: PALETTE[Math.floor(rng() * PALETTE.length)],
-        sparkle: big && rng() > 0.4, // only some big stars sparkle
+        sparkle: big && rng() > 0.4,
+      });
+    }
+
+    // an extra CLUSTER of stars around the hero planet (right side, centred in
+    // the first viewport) so the scene sits in a field of stars, not bare space
+    const planetNx = 0.8;
+    const planetNy = (window.innerHeight * 0.5) / H; // planet's y as a page fraction
+    const spread = (window.innerHeight * 0.5) / H; // cluster radius in page-fraction
+    for (let i = 0; i < 70; i++) {
+      // gaussian-ish spread around the planet
+      const ang = rng() * Math.PI * 2;
+      const rad = Math.pow(rng(), 0.6) * spread;
+      const nx = planetNx + Math.cos(ang) * rad * 0.9;
+      const ny = planetNy + Math.sin(ang) * rad;
+      if (nx < 0.5 || nx > 1) continue; // keep them on the right, off the name
+      const big = rng() > 0.8;
+      stars.push({
+        nx,
+        ny,
+        r: big ? 1.8 + rng() * 1.3 : 0.6 + rng() * 0.9,
+        period: 1600 + rng() * 3000,
+        phase: rng() * Math.PI * 2,
+        op: big ? 0.6 + rng() * 0.4 : 0.3 + rng() * 0.55,
+        col: PALETTE[Math.floor(rng() * PALETTE.length)],
+        sparkle: big && rng() > 0.4,
       });
     }
 
