@@ -37,11 +37,11 @@ export default function StarField() {
         document.documentElement.scrollHeight,
         window.innerHeight,
       );
-      const ar = docH / window.innerWidth || 2;
+      const ar = (docH * 1.3) / window.innerWidth || 2; // 1.3x so parallax never reveals a gap
       GH = Math.round(GW * ar);
       canvas.width = GW;
       canvas.height = GH;
-      canvas.style.height = `${docH}px`; // span the whole document, scroll with it
+      canvas.style.height = `${docH * 1.3}px`;
       ctx.imageSmoothingEnabled = false;
     };
     size();
@@ -50,7 +50,7 @@ export default function StarField() {
     // avoiding the central 40% where content text usually sits
     type Star = { nx: number; ny: number; period: number; phase: number; op: number; dim: boolean };
     const stars: Star[] = [];
-    const COUNT = Math.round(GH * 1.6); // density scales with full page height
+    const COUNT = Math.round(GH * 0.9); // sparser (was 1.6)
     for (let i = 0; i < COUNT; i++) {
       // push x toward the sides: pick from [0,0.3] or [0.7,1] most of the time
       let nx = rng();
@@ -99,6 +99,14 @@ export default function StarField() {
     const t1 = setTimeout(size, 400);
     const t2 = setTimeout(size, 1200);
 
+    // parallax: shift the whole field by a fraction of the scroll so the stars
+    // drift at a slower rate than the content, reading as a distant layer.
+    const onScroll = () => {
+      canvas.style.transform = `translateY(${window.scrollY * 0.25}px)`;
+    };
+    onScroll();
+    window.addEventListener('scroll', onScroll, { passive: true });
+
     if (reduced) {
       draw(0);
     } else {
@@ -111,6 +119,7 @@ export default function StarField() {
     return () => {
       cancelAnimationFrame(raf);
       window.removeEventListener('resize', onResize);
+      window.removeEventListener('scroll', onScroll);
       clearTimeout(t1);
       clearTimeout(t2);
     };
