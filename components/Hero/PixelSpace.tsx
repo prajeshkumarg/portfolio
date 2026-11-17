@@ -29,119 +29,7 @@ const C = {
 };
 
 export default function PixelSpace() {
-  const galaxyRef = useRef<HTMLCanvasElement>(null);
   const sceneRef = useRef<HTMLCanvasElement>(null);
-
-  // ---- background starfield across the whole hero ----
-  useEffect(() => {
-    const canvas = galaxyRef.current;
-    if (!canvas) return;
-    const ctx = canvas.getContext('2d');
-    if (!ctx) return;
-    const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
-    const rng = mulberry32(99173);
-
-    const GW = 160;
-    const GH = 84;
-    canvas.width = GW;
-    canvas.height = GH;
-    ctx.imageSmoothingEnabled = false;
-
-    // stars thin out gradually with distance from the galaxy (right side)
-    const cxG = GW * 0.8;
-    const cyG = GH * 0.5;
-    const maxD = Math.hypot(GW, GH);
-
-    // keep stars off the text
-    const EXCLUDE = [
-      { x0: 0.0, y0: 0.08, x1: 0.5, y1: 0.8 },
-      { x0: 0.0, y0: 0.0, x1: 0.12, y1: 0.1 },
-      { x0: 0.82, y0: 0.0, x1: 1.0, y1: 0.1 },
-      { x0: 0.0, y0: 0.78, x1: 0.5, y1: 1.0 },
-      { x0: 0.78, y0: 0.82, x1: 1.0, y1: 1.0 },
-    ];
-    const inText = (x: number, y: number) => {
-      const nx = x / GW, ny = y / GH;
-      return EXCLUDE.some((r) => nx >= r.x0 && nx <= r.x1 && ny >= r.y0 && ny <= r.y1);
-    };
-
-    type Star = { x: number; y: number; period: number; phase: number; bright: boolean; blink: boolean };
-    const stars: Star[] = [];
-    for (let i = 0; i < 390; i++) {
-      const x = Math.floor(rng() * GW);
-      const y = Math.floor(rng() * GH);
-      if (inText(x, y)) continue;
-      const d = Math.hypot(x - cxG, y - cyG) / maxD;
-      const keep = Math.max(0.03, Math.pow(1 - d, 2.2));
-      if (rng() > keep) continue;
-      stars.push({
-        x, y,
-        period: 1400 + rng() * 2800,
-        phase: rng() * Math.PI * 2,
-        bright: rng() > 0.84,
-        blink: false,
-      });
-    }
-    for (let i = 0; i < 10; i++) {
-      let x = Math.floor(rng() * GW), y = Math.floor(rng() * GH), tries = 0;
-      while (inText(x, y) && tries++ < 8) {
-        x = Math.floor(rng() * GW);
-        y = Math.floor(rng() * GH);
-      }
-      stars.push({
-        x, y,
-        period: 2600 + rng() * 3200,
-        phase: rng() * Math.PI * 2,
-        bright: rng() > 0.5,
-        blink: true,
-      });
-    }
-
-    const px = (x: number, y: number, col: string) => {
-      ctx.fillStyle = col;
-      ctx.fillRect(Math.round(x), Math.round(y), 1, 1);
-    };
-
-    const draw = (t: number) => {
-      ctx.clearRect(0, 0, GW, GH);
-      for (const s of stars) {
-        const tw = reduced ? 1 : 0.5 + 0.5 * Math.sin(t / s.period + s.phase);
-        if (s.blink) {
-          if (tw < 0.12 && !reduced) {
-            let nx = Math.floor(rng() * GW), ny = Math.floor(rng() * GH), tries = 0;
-            while (inText(nx, ny) && tries++ < 8) {
-              nx = Math.floor(rng() * GW);
-              ny = Math.floor(rng() * GH);
-            }
-            s.x = nx;
-            s.y = ny;
-            s.bright = rng() > 0.5;
-          }
-          if (tw > 0.72) px(s.x, s.y, s.bright ? C.star : C.starDim);
-          continue;
-        }
-        if (tw > 0.42) px(s.x, s.y, s.bright ? C.star : C.starDim);
-        if (s.bright && tw > 0.85) {
-          px(s.x + 1, s.y, C.starDim);
-          px(s.x - 1, s.y, C.starDim);
-          px(s.x, s.y + 1, C.starDim);
-          px(s.x, s.y - 1, C.starDim);
-        }
-      }
-    };
-
-    let raf = 0;
-    if (reduced) {
-      draw(0);
-    } else {
-      const loop = (now: number) => {
-        draw(now);
-        raf = requestAnimationFrame(loop);
-      };
-      raf = requestAnimationFrame(loop);
-    }
-    return () => cancelAnimationFrame(raf);
-  }, []);
 
   // ---- the scene: cycles through space artworks in the right half ----
   useEffect(() => {
@@ -322,12 +210,7 @@ export default function PixelSpace() {
     return () => cancelAnimationFrame(raf);
   }, []);
 
-  return (
-    <>
-      <canvas ref={galaxyRef} className={styles.galaxy} aria-hidden="true" />
-      <canvas ref={sceneRef} className={styles.canvas} aria-hidden="true" />
-    </>
-  );
+  return <canvas ref={sceneRef} className={styles.canvas} aria-hidden="true" />;
 }
 
 function mulberry32(seed: number) {

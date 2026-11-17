@@ -46,23 +46,38 @@ export default function StarField() {
     };
     size();
 
-    // sparse stars biased toward the side margins; normalized coords
-    type Star = { nx: number; ny: number; r: number; period: number; phase: number; op: number; dim: boolean };
+    // sparse stars biased toward the side margins; varied size, shade, opacity
+    // and an occasional faint colour (jade / soft blue) for depth and interest.
+    type Star = {
+      nx: number; ny: number; r: number; period: number; phase: number;
+      op: number; col: string; sparkle: boolean;
+    };
+    const PALETTE = [
+      '#e8e6dc', // bone (most common)
+      '#e8e6dc',
+      '#e8e6dc',
+      '#9aa09a', // grey
+      '#9fc7b8', // jade tint
+      '#b8c6d6', // faint cool blue
+      '#cfe6dc', // pale jade-white
+    ];
     const stars: Star[] = [];
-    const COUNT = Math.round((H / 10) * 1.1); // sparse, scales with page height
+    const COUNT = Math.round((H / 10) * 1.1);
     for (let i = 0; i < COUNT; i++) {
       let nx = rng();
       if (nx > 0.3 && nx < 0.7 && rng() > 0.25) {
         nx = rng() < 0.5 ? rng() * 0.3 : 0.7 + rng() * 0.3;
       }
+      const big = rng() > 0.86; // a few larger stars
       stars.push({
         nx,
         ny: rng(),
-        r: 0.7 + rng() * 0.9, // small sharp radius in CSS px (0.7–1.6)
+        r: big ? 1.6 + rng() * 1.1 : 0.6 + rng() * 0.8, // mix of tiny and a few larger
         period: 1800 + rng() * 3600,
         phase: rng() * Math.PI * 2,
-        op: 0.3 + rng() * 0.6,
-        dim: rng() > 0.5,
+        op: 0.22 + rng() * 0.7, // wide opacity range
+        col: PALETTE[Math.floor(rng() * PALETTE.length)],
+        sparkle: big && rng() > 0.4, // only some big stars sparkle
       });
     }
 
@@ -80,14 +95,14 @@ export default function StarField() {
         const y = s.ny * H;
         const tw = reduced ? 1 : 0.55 + 0.45 * Math.sin(t / s.period + s.phase);
         const a = s.op * tw;
-        if (a < 0.06) continue;
+        if (a < 0.05) continue;
         ctx.globalAlpha = a;
-        dot(x, y, s.r, s.dim ? '#8aa89c' : '#e3e2da');
+        dot(x, y, s.r, s.col);
 
-        // crisp 4-point sparkle on bright stars at the twinkle peak: thin rays
-        if (!reduced && !s.dim && tw > 0.94) {
+        // crisp sparkle on the designated sparkle stars at the twinkle peak
+        if (!reduced && s.sparkle && tw > 0.94) {
           const k = (tw - 0.94) / 0.06;
-          const len = 2.6 + s.r * 2.4; // ray length in CSS px
+          const len = 2.6 + s.r * 2.4;
           ctx.globalAlpha = k * 0.9;
           ctx.strokeStyle = '#ffffff';
           ctx.lineWidth = 0.7;
@@ -97,7 +112,6 @@ export default function StarField() {
           ctx.moveTo(x, y - len);
           ctx.lineTo(x, y + len);
           ctx.stroke();
-          // faint diagonal rays, shorter
           ctx.globalAlpha = k * 0.4;
           const d = len * 0.6;
           ctx.beginPath();
@@ -106,7 +120,6 @@ export default function StarField() {
           ctx.moveTo(x + d, y - d);
           ctx.lineTo(x - d, y + d);
           ctx.stroke();
-          // bright core
           ctx.globalAlpha = k;
           dot(x, y, s.r + 0.4, '#ffffff');
         }
