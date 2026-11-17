@@ -8,5 +8,5 @@
   width: 100%;
   z-index: 0; /* behind content, above the body background */
   pointer-events: none;
-  opacity: 0.9;
+  opacity: 1;
 }
