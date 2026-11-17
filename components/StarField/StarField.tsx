@@ -107,6 +107,30 @@ export default function StarField() {
       });
     }
 
+    // a small tight cluster right around the MOON (lower-left of the planet),
+    // so it sits in its own little pocket of stars, not bare space
+    const moonNx = planetNx - 0.055;
+    const moonNy = planetNy + (window.innerHeight * 0.06) / H;
+    const moonSpread = (window.innerHeight * 0.16) / H;
+    for (let i = 0; i < 34; i++) {
+      const ang = rng() * Math.PI * 2;
+      const rad = Math.pow(rng(), 0.5) * moonSpread;
+      const nx = moonNx + Math.cos(ang) * rad * 0.9;
+      const ny = moonNy + Math.sin(ang) * rad;
+      if (nx < 0.5 || nx > 1) continue;
+      const big = rng() > 0.82;
+      stars.push({
+        nx,
+        ny,
+        r: big ? 2.2 + rng() * 1.4 : 1.0 + rng() * 0.9,
+        period: 1600 + rng() * 3000,
+        phase: rng() * Math.PI * 2,
+        op: big ? 0.75 + rng() * 0.25 : 0.45 + rng() * 0.5,
+        col: PALETTE[Math.floor(rng() * PALETTE.length)],
+        sparkle: big && rng() > 0.5,
+      });
+    }
+
     const dot = (x: number, y: number, r: number, col: string) => {
       ctx.fillStyle = col;
       ctx.beginPath();
