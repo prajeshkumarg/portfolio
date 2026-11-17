@@ -64,9 +64,11 @@ export default function StarField() {
     const stars: Star[] = [];
     const COUNT = Math.round((H / 10) * 1.6); // more stars overall
     for (let i = 0; i < COUNT; i++) {
+      // allow stars across the full width (incl. the centre gap); only nudge a
+      // small share out of the middle so the field is even, not segregated.
       let nx = rng();
-      if (nx > 0.3 && nx < 0.7 && rng() > 0.25) {
-        nx = rng() < 0.5 ? rng() * 0.3 : 0.7 + rng() * 0.3;
+      if (nx > 0.35 && nx < 0.65 && rng() > 0.75) {
+        nx = rng() < 0.5 ? rng() * 0.35 : 0.65 + rng() * 0.35;
       }
       const big = rng() > 0.78;
       stars.push({
