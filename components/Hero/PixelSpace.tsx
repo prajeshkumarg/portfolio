@@ -25,6 +25,7 @@ const C = {
   jadeShade: '#5f8f7e',
   jadeLite: '#cfe6dc',
   bone: '#e3e2da',
+  rust: '#c58a6d',
 };
 
 export default function PixelSpace() {
@@ -142,7 +143,7 @@ export default function PixelSpace() {
     return () => cancelAnimationFrame(raf);
   }, []);
 
-  // ---- the scene: a pixel BLACK HOLE in the right half ----
+  // ---- the scene: cycles through space artworks in the right half ----
   useEffect(() => {
     const canvas = sceneRef.current;
     if (!canvas) return;
@@ -155,85 +156,165 @@ export default function PixelSpace() {
     const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
     const C2 = SCENE / 2;
 
-    const px = (x: number, y: number, col: string) => {
-      ctx.fillStyle = col;
-      ctx.fillRect(Math.round(x), Math.round(y), 1, 1);
-    };
-    const disc = (cx: number, cy: number, r: number, col: string) => {
-      for (let y = -r; y <= r; y++)
-        for (let x = -r; x <= r; x++)
-          if (x * x + y * y <= r * r) px(cx + x, cy + y, col);
-    };
-    // an elliptical ring of a given radius, thickness and tilt (ry/rx)
-    const ring = (rx: number, ry: number, col: string, from: number, to: number, step = 0.04) => {
-      for (let a = from; a < to; a += step) {
-        px(C2 + Math.cos(a) * rx, C2 + Math.sin(a) * ry, col);
-      }
-    };
+    const HOLD = 2800;
+    const FADE = 700;
 
-    const RX = 34; // accretion-disc radii
-    const RY = 12; // flattened -> edge-on tilt
-    const EH = 11; // event-horizon (black core) radius
-    const TILT = -0.26; // whole disc tilts down to the left
-    const DISC_DY = -5; // raise the disc so its line crosses the hole higher
+    const buf = document.createElement('canvas');
+    buf.width = SCENE;
+    buf.height = SCENE;
+    const bctx = buf.getContext('2d')!;
+    bctx.imageSmoothingEnabled = false;
 
-    const draw = (t: number) => {
-      ctx.clearRect(0, 0, SCENE, SCENE);
-      const spin = reduced ? 0 : t / 650; // faster orbit
-
-      // tilt everything (disc + halo) down-left; the black core stays centred
-      ctx.save();
-      ctx.translate(C2, C2);
-      ctx.rotate(TILT);
-      ctx.translate(-C2, -C2);
-
-      // a tilted ellipse helper, centred on the hole but lifted by DISC_DY
-      const dring = (rx: number, ry: number, col: string, from: number, to: number, step = 0.04) => {
-        for (let a = from; a < to; a += step) {
-          px(C2 + Math.cos(a) * rx, C2 + DISC_DY + Math.sin(a) * ry, col);
-        }
+    const mk = (c: CanvasRenderingContext2D) => {
+      const px = (x: number, y: number, col: string) => {
+        c.fillStyle = col;
+        c.fillRect(Math.round(x), Math.round(y), 1, 1);
       };
+      const disc = (cx: number, cy: number, r: number, col: string, shade?: string) => {
+        for (let y = -r; y <= r; y++)
+          for (let x = -r; x <= r; x++)
+            if (x * x + y * y <= r * r) px(cx + x, cy + y, shade && x + y > r * 0.4 ? shade : col);
+      };
+      const ellipse = (cx: number, cy: number, rx: number, ry: number, col: string, from = 0, to = Math.PI * 2, step = 0.05) => {
+        for (let a = from; a < to; a += step) px(cx + Math.cos(a) * rx, cy + Math.sin(a) * ry, col);
+      };
+      return { px, disc, ellipse };
+    };
 
-      // BACK half of the edge-on disc (behind the hole)
+    // 1. the Interstellar black hole
+    const sceneBlackHole = (c: CanvasRenderingContext2D, t: number) => {
+      const { px, disc, ellipse } = mk(c);
+      const RX = 34, RY = 11, EH = 11, TILT = -0.26, DISC_DY = -4;
+      const spin = reduced ? 0 : t / 650;
+      c.save();
+      c.translate(C2, C2);
+      c.rotate(TILT);
+      c.translate(-C2, -C2);
+      const dring = (rx: number, ry: number, col: string, from: number, to: number, step = 0.035) => {
+        for (let a = from; a < to; a += step) px(C2 + Math.cos(a) * rx, C2 + DISC_DY + Math.sin(a) * ry, col);
+      };
       dring(RX, RY, C.jadeShade, Math.PI, Math.PI * 2);
       dring(RX - 4, RY - 2, C.jade, Math.PI, Math.PI * 2);
-
-      // lensed PHOTON HALO over the top and under the bottom of the hole
-      ring(EH + 4, EH + 4, C.jadeLite, 0, Math.PI * 2, 0.05);
-      ring(EH + 5, EH + 5, C.bone, Math.PI * 1.15, Math.PI * 1.85, 0.05);
-      ring(EH + 5, EH + 5, C.bone, Math.PI * 0.15, Math.PI * 0.85, 0.05);
-
-      // the event horizon
-      disc(C2, C2, EH, '#05080a');
-      ring(EH + 1, EH + 1, C.jadeLite, 0, Math.PI * 2, 0.08);
-
-      // FRONT half of the edge-on disc (crosses in front of the hole)
+      const topR = EH + 9;
+      for (let a = Math.PI; a < Math.PI * 2; a += 0.03) {
+        const x = C2 + Math.cos(a) * topR;
+        const y = C2 + DISC_DY - 2 + Math.sin(a) * (topR * 0.92);
+        const crown = Math.sin(a) < -0.45;
+        px(x, y, crown ? C.bone : C.jadeLite);
+        if (crown) px(x, y - 1, C.jadeLite);
+      }
+      for (let a = 0; a < Math.PI; a += 0.03) {
+        const x = C2 + Math.cos(a) * (EH + 7);
+        const y = C2 + DISC_DY + 2 + Math.sin(a) * ((EH + 7) * 0.9);
+        px(x, y, Math.sin(a) > 0.5 ? C.bone : C.jadeLite);
+      }
+      ellipse(C2, C2 + DISC_DY, EH + 3, EH + 3, C.bone);
+      ellipse(C2, C2 + DISC_DY, EH + 2, EH + 2, C.jadeLite);
+      disc(C2, C2 + DISC_DY, EH, '#05080a');
+      ellipse(C2, C2 + DISC_DY, EH + 1, EH + 1, C.bone);
       dring(RX, RY, C.jade, 0, Math.PI);
       dring(RX - 4, RY - 2, C.jadeLite, 0, Math.PI);
-      dring(RX - 1, RY - 1, C.bone, 0.2, Math.PI - 0.2, 0.06);
-
-      // hot spots orbiting on the disc (faster, more of them)
+      dring(RX - 1, RY - 1, C.bone, 0.15, Math.PI - 0.15, 0.05);
       for (let i = 0; i < 5; i++) {
         const a = spin * (1 + i * 0.25) + (i * Math.PI * 2) / 5;
         const r = RX - 2 - i * 2.4;
-        const x = C2 + Math.cos(a) * r;
-        const y = C2 + DISC_DY + Math.sin(a) * (r * (RY / RX));
-        px(x, y, C.bone);
-        px(x + 1, y, C.jadeLite);
+        px(C2 + Math.cos(a) * r, C2 + DISC_DY + Math.sin(a) * (r * (RY / RX)), C.bone);
       }
+      c.restore();
+    };
 
-      ctx.restore();
+    // 2. ringed planet with a moon
+    const sceneRingedPlanet = (c: CanvasRenderingContext2D, t: number) => {
+      const { disc, ellipse } = mk(c);
+      const cx = Math.round(SCENE * 0.54), cy = C2;
+      ellipse(cx, cy, 25, 25 * 0.34, C.jadeLite);
+      disc(cx, cy, 17, C.jade, C.jadeShade);
+      ellipse(cx, cy, 25, 25 * 0.34, C.jadeLite, 0, Math.PI);
+      const a = reduced ? -0.7 : t / 2600;
+      disc(cx + Math.cos(a) * 31, cy + Math.sin(a) * 15, 3, C.bone);
+    };
+
+    // 3. a rocket hovering
+    const sceneRocket = (c: CanvasRenderingContext2D, t: number) => {
+      const { px } = mk(c);
+      const x = Math.round(C2 - 4 + (reduced ? 0 : Math.sin(t / 900) * 5));
+      const y = Math.round(C2 + 6 + (reduced ? 0 : Math.cos(t / 1100) * 5));
+      for (let i = 0; i < 9; i++) px(x + i, y - i, C.bone);
+      for (let i = 2; i < 8; i++) px(x + i, y - i + 1, C.jade);
+      px(x + 9, y - 9, C.jadeLite);
+      px(x, y + 1, C.jadeShade);
+      px(x + 1, y - 2, C.jadeShade);
+      if (reduced || Math.sin(t / 90) > 0) {
+        px(x - 1, y + 1, C.rust);
+        px(x - 2, y + 2, C.star);
+      }
+    };
+
+    // 4. crescent moon + orbiting comet
+    const sceneComet = (c: CanvasRenderingContext2D, t: number) => {
+      const { disc, px } = mk(c);
+      const mx = Math.round(SCENE * 0.54), my = C2;
+      disc(mx, my, 16, C.jade, C.jadeShade);
+      c.save();
+      c.globalCompositeOperation = 'destination-out';
+      disc(mx + 8, my - 3, 15, '#000');
+      c.restore();
+      const a = reduced ? -0.6 : t / 1500;
+      const cxp = Math.round(mx + Math.cos(a) * 30);
+      const cyp = Math.round(my + Math.sin(a) * 22);
+      const tx = -Math.sin(a), ty = Math.cos(a);
+      for (let i = 0; i < 9; i++) {
+        const bx = Math.round(cxp - tx * i), by = Math.round(cyp - ty * i);
+        if (bx >= 0 && bx < SCENE && by >= 0 && by < SCENE) px(bx, by, i < 3 ? C.bone : C.jadeLite);
+      }
+      px(cxp, cyp, C.star);
+    };
+
+    // 5. a mini solar system
+    const sceneSystem = (c: CanvasRenderingContext2D, t: number) => {
+      const { disc, ellipse } = mk(c);
+      disc(C2, C2, 6, C.jadeLite, C.jade);
+      const o1 = reduced ? 0.4 : t / 1800;
+      const o2 = reduced ? 2.1 : -t / 2800;
+      ellipse(C2, C2, 18, 18, C.jadeShade);
+      ellipse(C2, C2, 30, 30, C.jadeShade);
+      disc(C2 + Math.cos(o1) * 18, C2 + Math.sin(o1) * 18, 3, C.bone);
+      disc(C2 + Math.cos(o2) * 30, C2 + Math.sin(o2) * 30, 4, C.jade, C.jadeShade);
+    };
+
+    const scenes = [sceneBlackHole, sceneRingedPlanet, sceneRocket, sceneComet, sceneSystem];
+
+    const blitScene = (idx: number, t: number, alpha: number) => {
+      if (alpha <= 0.01) return;
+      bctx.clearRect(0, 0, SCENE, SCENE);
+      scenes[idx](bctx, t);
+      ctx.globalAlpha = alpha;
+      ctx.drawImage(buf, 0, 0);
+      ctx.globalAlpha = 1;
     };
 
     let raf = 0;
-    if (reduced) draw(0);
-    else {
-      const loop = (now: number) => {
-        draw(now);
-        raf = requestAnimationFrame(loop);
-      };
-      raf = requestAnimationFrame(loop);
-    }
+    const frame = (now: number) => {
+      ctx.clearRect(0, 0, SCENE, SCENE);
+      if (reduced) {
+        scenes[0](ctx, now);
+        return;
+      }
+      const cycle = HOLD + FADE;
+      const idx = Math.floor(now / cycle) % scenes.length;
+      const nextIdx = (idx + 1) % scenes.length;
+      const inCycle = now % cycle;
+      if (inCycle < HOLD) {
+        scenes[idx](ctx, now);
+      } else {
+        const k = (inCycle - HOLD) / FADE;
+        blitScene(idx, now, 1 - k);
+        blitScene(nextIdx, now, k);
+      }
+      raf = requestAnimationFrame(frame);
+    };
+    if (reduced) frame(performance.now());
+    else raf = requestAnimationFrame(frame);
     return () => cancelAnimationFrame(raf);
   }, []);
 
