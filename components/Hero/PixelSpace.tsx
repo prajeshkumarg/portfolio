@@ -54,10 +54,10 @@ export default function PixelSpace() {
 
     // keep stars off the text
     const EXCLUDE = [
-      { x0: 0.0, y0: 0.08, x1: 0.5, y1: 0.72 },
+      { x0: 0.0, y0: 0.08, x1: 0.5, y1: 0.8 },
       { x0: 0.0, y0: 0.0, x1: 0.12, y1: 0.1 },
       { x0: 0.82, y0: 0.0, x1: 1.0, y1: 0.1 },
-      { x0: 0.0, y0: 0.82, x1: 0.42, y1: 1.0 },
+      { x0: 0.0, y0: 0.78, x1: 0.5, y1: 1.0 },
       { x0: 0.78, y0: 0.82, x1: 1.0, y1: 1.0 },
     ];
     const inText = (x: number, y: number) => {
