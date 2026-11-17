@@ -3,6 +3,7 @@ import 'lenis/dist/lenis.css';
 import './globals.css';
 
 export const metadata: Metadata = {
+  metadataBase: new URL('https://prajeshkumar.com'),
   title: 'Prajesh Kumar — software engineer',
   description:
     'Software engineer. Amazon, NYU Courant, Shell. I build systems, compilers, and the security that holds them together — and I am looking for a 2027 SDE role.',
