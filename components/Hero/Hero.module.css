@@ -6,7 +6,7 @@
   padding: clamp(20px, 4vw, 40px) var(--margin) clamp(64px, 12vh, 128px);
   display: grid;
   grid-template-rows: auto auto 1fr auto;
-  background: var(--bg);
+  background: transparent; /* the full-page StarField shows through continuously */
 }
 
 /* top row: monogram left, three links right, all small */

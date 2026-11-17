@@ -69,6 +69,16 @@ export default function StarField() {
         ctx.globalAlpha = a;
         ctx.fillStyle = s.dim ? '#8aa89c' : '#e3e2da';
         ctx.fillRect(Math.round(s.x), Math.round(s.y), 1, 1);
+        // a little shine: at the peak of the twinkle a bright star flashes a
+        // 4-point sparkle for an instant
+        if (!reduced && !s.dim && tw > 0.95) {
+          ctx.globalAlpha = (tw - 0.95) / 0.05;
+          ctx.fillStyle = '#ffffff';
+          ctx.fillRect(Math.round(s.x) + 1, Math.round(s.y), 1, 1);
+          ctx.fillRect(Math.round(s.x) - 1, Math.round(s.y), 1, 1);
+          ctx.fillRect(Math.round(s.x), Math.round(s.y) + 1, 1, 1);
+          ctx.fillRect(Math.round(s.x), Math.round(s.y) - 1, 1, 1);
+        }
       }
       ctx.globalAlpha = 1;
     };
