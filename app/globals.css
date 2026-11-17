@@ -124,6 +124,12 @@ img {
   padding-inline: var(--margin);
 }
 
+/* sections sit above the fixed StarField background */
+main {
+  position: relative;
+  z-index: 1;
+}
+
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;

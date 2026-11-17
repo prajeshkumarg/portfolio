@@ -6,10 +6,12 @@ import Education from '@/components/Education/Education';
 import Contact from '@/components/Contact/Contact';
 import Footer from '@/components/Footer/Footer';
 import Motion from '@/components/Motion/Motion';
+import StarField from '@/components/StarField/StarField';
 
 export default function Page() {
   return (
     <>
+      <StarField />
       <Hero />
       <main>
         <Experience />
