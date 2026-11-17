@@ -112,9 +112,9 @@
   z-index: 1;
   margin-top: clamp(16px, 2.4vh, 30px);
   max-width: 54ch;
-  color: var(--muted);
+  color: var(--ink);
   font-size: var(--step-body);
-  line-height: 1.45;
+  line-height: 1.5;
 }
 
 .roleStatic {
