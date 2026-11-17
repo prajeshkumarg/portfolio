@@ -8,7 +8,5 @@
   width: 100%;
   z-index: 0; /* behind content, above the body background */
   pointer-events: none;
-  image-rendering: pixelated;
-  image-rendering: crisp-edges;
-  opacity: 0.85;
+  opacity: 0.9;
 }

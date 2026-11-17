@@ -1,15 +1,14 @@
 'use client';
 
 /*
- * StarField — a sparse, full-page star layer fixed behind everything. It gives
- * the whole site (not just the hero) a faint scattered-stars background that
- * shows through the side margins and gaps of every section as you scroll.
+ * StarField — a sparse, full-page star layer behind everything. It gives the
+ * whole site a faint scattered-stars background in the margins and gaps, and
+ * scrolls with the page (with a slight parallax).
  *
- * Density is low (~10% of the hero field), stars sit mostly toward the sides
- * and vary in opacity so it reads as depth, not noise. It is a fixed background
- * at a low z-index with pointer-events off; section content sits above it on
- * the opaque-ish dark ground, so stars fall in the margins, never over text.
- * Off under prefers-reduced-motion (painted once, no twinkle).
+ * Rendered at full device resolution with smoothing on, so stars are small,
+ * SHARP round points (not chunky pixel squares). Density is low and biased to
+ * the side margins; opacity varies for depth. Bright stars flash a crisp
+ * 4-point sparkle at their twinkle peak. Off under prefers-reduced-motion.
  */
 
 import { useEffect, useRef } from 'react';
@@ -26,38 +25,32 @@ export default function StarField() {
     const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
     const rng = mulberry32(31337);
 
-    // low-res field stretched over the FULL PAGE (document height), so it
-    // scrolls with the content instead of staying pinned to the viewport.
-    const GW = 165; // +10% resolution -> stars render ~10% smaller
-    let GH = 198;
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    let W = window.innerWidth; // CSS px
+    let H = 0; // CSS px, document height
 
     const size = () => {
-      // Measure the PAGE height without the canvas's own contribution: zero it
-      // first, read the document height, then size the canvas to that. Without
-      // this, the absolute canvas inflates scrollHeight and each re-measure
-      // grows the page further, leaving dead space below the footer.
-      canvas.style.height = '0px';
+      canvas.style.height = '0px'; // measure page without the canvas's own height
       const docH = Math.max(
         document.body.scrollHeight,
         document.documentElement.scrollHeight,
         window.innerHeight,
       );
-      const ar = docH / window.innerWidth || 2;
-      GH = Math.round(GW * ar);
-      canvas.width = GW;
-      canvas.height = GH;
-      canvas.style.height = `${docH}px`;
-      ctx.imageSmoothingEnabled = false;
+      W = window.innerWidth;
+      H = docH;
+      canvas.width = Math.round(W * dpr);
+      canvas.height = Math.round(H * dpr);
+      canvas.style.width = `${W}px`;
+      canvas.style.height = `${H}px`;
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0); // draw in CSS px, crisp on hi-dpi
     };
     size();
 
-    // sparse stars biased toward the left and right thirds (the side margins),
-    // avoiding the central 40% where content text usually sits
-    type Star = { nx: number; ny: number; period: number; phase: number; op: number; dim: boolean };
+    // sparse stars biased toward the side margins; normalized coords
+    type Star = { nx: number; ny: number; r: number; period: number; phase: number; op: number; dim: boolean };
     const stars: Star[] = [];
-    const COUNT = Math.round(GH * 0.8); // sparse; density tuned for the field
+    const COUNT = Math.round((H / 10) * 1.1); // sparse, scales with page height
     for (let i = 0; i < COUNT; i++) {
-      // push x toward the sides: pick from [0,0.3] or [0.7,1] most of the time
       let nx = rng();
       if (nx > 0.3 && nx < 0.7 && rng() > 0.25) {
         nx = rng() < 0.5 ? rng() * 0.3 : 0.7 + rng() * 0.3;
@@ -65,42 +58,57 @@ export default function StarField() {
       stars.push({
         nx,
         ny: rng(),
+        r: 0.7 + rng() * 0.9, // small sharp radius in CSS px (0.7–1.6)
         period: 1800 + rng() * 3600,
         phase: rng() * Math.PI * 2,
-        op: 0.25 + rng() * 0.6,
+        op: 0.3 + rng() * 0.6,
         dim: rng() > 0.5,
       });
     }
 
+    const dot = (x: number, y: number, r: number, col: string) => {
+      ctx.fillStyle = col;
+      ctx.beginPath();
+      ctx.arc(x, y, r, 0, Math.PI * 2);
+      ctx.fill();
+    };
+
     const draw = (t: number) => {
-      ctx.clearRect(0, 0, GW, GH);
+      ctx.clearRect(0, 0, W, H);
       for (const s of stars) {
-        const x = Math.round(s.nx * GW);
-        const y = Math.round(s.ny * GH);
+        const x = s.nx * W;
+        const y = s.ny * H;
         const tw = reduced ? 1 : 0.55 + 0.45 * Math.sin(t / s.period + s.phase);
         const a = s.op * tw;
         if (a < 0.06) continue;
         ctx.globalAlpha = a;
-        ctx.fillStyle = s.dim ? '#8aa89c' : '#e3e2da';
-        ctx.fillRect(x, y, 1, 1);
-        // a defined bit-art sparkle at the twinkle peak: a bright 4-point plus
-        // PLUS two diagonal rays, for an 8-point star
-        if (!reduced && !s.dim && tw > 0.95) {
-          const k = (tw - 0.95) / 0.05;
-          ctx.fillStyle = '#ffffff';
+        dot(x, y, s.r, s.dim ? '#8aa89c' : '#e3e2da');
+
+        // crisp 4-point sparkle on bright stars at the twinkle peak: thin rays
+        if (!reduced && !s.dim && tw > 0.94) {
+          const k = (tw - 0.94) / 0.06;
+          const len = 2.6 + s.r * 2.4; // ray length in CSS px
+          ctx.globalAlpha = k * 0.9;
+          ctx.strokeStyle = '#ffffff';
+          ctx.lineWidth = 0.7;
+          ctx.beginPath();
+          ctx.moveTo(x - len, y);
+          ctx.lineTo(x + len, y);
+          ctx.moveTo(x, y - len);
+          ctx.lineTo(x, y + len);
+          ctx.stroke();
+          // faint diagonal rays, shorter
+          ctx.globalAlpha = k * 0.4;
+          const d = len * 0.6;
+          ctx.beginPath();
+          ctx.moveTo(x - d, y - d);
+          ctx.lineTo(x + d, y + d);
+          ctx.moveTo(x + d, y - d);
+          ctx.lineTo(x - d, y + d);
+          ctx.stroke();
+          // bright core
           ctx.globalAlpha = k;
-          // plus arms
-          ctx.fillRect(x + 1, y, 1, 1);
-          ctx.fillRect(x - 1, y, 1, 1);
-          ctx.fillRect(x, y + 1, 1, 1);
-          ctx.fillRect(x, y - 1, 1, 1);
-          // diagonal rays (dimmer), so it reads as an 8-point bit-art sparkle
-          ctx.globalAlpha = k * 0.5;
-          ctx.fillStyle = '#cfe6dc';
-          ctx.fillRect(x + 1, y + 1, 1, 1);
-          ctx.fillRect(x - 1, y - 1, 1, 1);
-          ctx.fillRect(x + 1, y - 1, 1, 1);
-          ctx.fillRect(x - 1, y + 1, 1, 1);
+          dot(x, y, s.r + 0.4, '#ffffff');
         }
       }
       ctx.globalAlpha = 1;
@@ -109,12 +117,10 @@ export default function StarField() {
     let raf = 0;
     const onResize = () => size();
     window.addEventListener('resize', onResize);
-    // catch late layout growth (fonts, images) so the field covers the full page
     const t1 = setTimeout(size, 400);
     const t2 = setTimeout(size, 1200);
 
-    // parallax: shift the whole field by a fraction of the scroll so the stars
-    // drift at a slower rate than the content, reading as a distant layer.
+    // parallax: the field drifts slower than the content
     const onScroll = () => {
       canvas.style.transform = `translateY(${window.scrollY * 0.25}px)`;
     };
