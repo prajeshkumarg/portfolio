@@ -28,8 +28,8 @@ export default function StarField() {
 
     // low-res field stretched over the FULL PAGE (document height), so it
     // scrolls with the content instead of staying pinned to the viewport.
-    const GW = 150;
-    let GH = 180;
+    const GW = 165; // +10% resolution -> stars render ~10% smaller
+    let GH = 198;
 
     const size = () => {
       // Measure the PAGE height without the canvas's own contribution: zero it
@@ -55,7 +55,7 @@ export default function StarField() {
     // avoiding the central 40% where content text usually sits
     type Star = { nx: number; ny: number; period: number; phase: number; op: number; dim: boolean };
     const stars: Star[] = [];
-    const COUNT = Math.round(GH * 0.9); // sparser (was 1.6)
+    const COUNT = Math.round(GH * 0.8); // sparse; density tuned for the field
     for (let i = 0; i < COUNT; i++) {
       // push x toward the sides: pick from [0,0.3] or [0.7,1] most of the time
       let nx = rng();
@@ -83,15 +83,24 @@ export default function StarField() {
         ctx.globalAlpha = a;
         ctx.fillStyle = s.dim ? '#8aa89c' : '#e3e2da';
         ctx.fillRect(x, y, 1, 1);
-        // a little shine: at the peak of the twinkle a bright star flashes a
-        // 4-point sparkle for an instant
+        // a defined bit-art sparkle at the twinkle peak: a bright 4-point plus
+        // PLUS two diagonal rays, for an 8-point star
         if (!reduced && !s.dim && tw > 0.95) {
-          ctx.globalAlpha = (tw - 0.95) / 0.05;
+          const k = (tw - 0.95) / 0.05;
           ctx.fillStyle = '#ffffff';
+          ctx.globalAlpha = k;
+          // plus arms
           ctx.fillRect(x + 1, y, 1, 1);
           ctx.fillRect(x - 1, y, 1, 1);
           ctx.fillRect(x, y + 1, 1, 1);
           ctx.fillRect(x, y - 1, 1, 1);
+          // diagonal rays (dimmer), so it reads as an 8-point bit-art sparkle
+          ctx.globalAlpha = k * 0.5;
+          ctx.fillStyle = '#cfe6dc';
+          ctx.fillRect(x + 1, y + 1, 1, 1);
+          ctx.fillRect(x - 1, y - 1, 1, 1);
+          ctx.fillRect(x + 1, y - 1, 1, 1);
+          ctx.fillRect(x - 1, y + 1, 1, 1);
         }
       }
       ctx.globalAlpha = 1;
