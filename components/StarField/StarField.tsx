@@ -32,16 +32,21 @@ export default function StarField() {
     let GH = 180;
 
     const size = () => {
+      // Measure the PAGE height without the canvas's own contribution: zero it
+      // first, read the document height, then size the canvas to that. Without
+      // this, the absolute canvas inflates scrollHeight and each re-measure
+      // grows the page further, leaving dead space below the footer.
+      canvas.style.height = '0px';
       const docH = Math.max(
         document.body.scrollHeight,
         document.documentElement.scrollHeight,
         window.innerHeight,
       );
-      const ar = (docH * 1.3) / window.innerWidth || 2; // 1.3x so parallax never reveals a gap
+      const ar = docH / window.innerWidth || 2;
       GH = Math.round(GW * ar);
       canvas.width = GW;
       canvas.height = GH;
-      canvas.style.height = `${docH * 1.3}px`;
+      canvas.style.height = `${docH}px`;
       ctx.imageSmoothingEnabled = false;
     };
     size();
