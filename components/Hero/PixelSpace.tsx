@@ -51,31 +51,39 @@ export default function PixelSpace() {
     canvas.height = GH;
     ctx.imageSmoothingEnabled = false;
 
-    // Right side (around the planet) is a dense, steadily-twinkling core.
-    // Left side (near the name) gets only a FEW "blinkers": stars that fade all
-    // the way out, then reappear at a new random left spot — alive but sparse.
+    // Density falls off GRADUALLY with distance from the planet, in every
+    // direction: dense near it, thinning out everywhere further away. The
+    // planet sits in the right half, vertically centred, so the galaxy centre
+    // in this low-res field is about (0.8 * GW, 0.5 * GH).
     type Star = { x: number; y: number; period: number; phase: number; bright: boolean; blink: boolean };
+    const cxG = GW * 0.8;
+    const cyG = GH * 0.5;
+    const maxD = Math.hypot(GW, GH); // furthest possible distance
     const stars: Star[] = [];
-    for (let i = 0; i < 150; i++) {
-      const r = rng();
-      const x = Math.floor(Math.pow(r, 0.5) * GW);
-      if (x < GW * 0.45 && rng() > 0.22) continue; // thin the left heavily
+    for (let i = 0; i < 420; i++) {
+      const x = Math.floor(rng() * GW);
+      const y = Math.floor(rng() * GH);
+      // normalised distance from the planet, 0 (at it) .. ~1 (far corner)
+      const d = Math.hypot(x - cxG, y - cyG) / maxD;
+      // keep-probability high near the planet, smoothly decaying with distance
+      const keep = Math.max(0.02, Math.pow(1 - d, 2.4));
+      if (rng() > keep) continue;
       stars.push({
-        x: Math.min(GW - 1, x),
-        y: Math.floor(rng() * GH),
+        x,
+        y,
         period: 1200 + rng() * 2800,
         phase: rng() * Math.PI * 2,
         bright: rng() > 0.82,
         blink: false,
       });
     }
-    // a handful of left-side blinkers, placed anywhere in the left ~45%
-    const LEFT = GW * 0.45;
-    for (let i = 0; i < 9; i++) {
+    // a few far-out blinkers: sparse points that fade out and reappear
+    // elsewhere, so the empty edges still feel alive
+    for (let i = 0; i < 8; i++) {
       stars.push({
-        x: Math.floor(rng() * LEFT),
+        x: Math.floor(rng() * GW),
         y: Math.floor(rng() * GH),
-        period: 2600 + rng() * 3200, // slow fade in/out
+        period: 2600 + rng() * 3200,
         phase: rng() * Math.PI * 2,
         bright: rng() > 0.5,
         blink: true,
@@ -101,7 +109,7 @@ export default function PixelSpace() {
           // blinkers go fully invisible; when dark, relocate so they reappear
           // somewhere new on the left — presence that moves, not a fixed twinkle
           if (tw < 0.12 && !reduced) {
-            s.x = Math.floor(rng() * GW * 0.45);
+            s.x = Math.floor(rng() * GW);
             s.y = Math.floor(rng() * GH);
             s.bright = rng() > 0.5;
           }

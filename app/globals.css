@@ -22,6 +22,8 @@
   --muted: #94a09a; /* secondary notes, meta — ~5:1 on bg */
   --accent: #9fc7b8; /* pale jade — the contact/primary button */
   --accent-ink: #0d1412; /* ink on the jade button */
+  --lava: #d2693a; /* clay / lava — the hero CTA */
+  --lava-ink: #140a06; /* ink on the lava button */
 
   /* ---- type: Switzer, one face ---- */
   --font: 'Switzer', system-ui, -apple-system, sans-serif;

@@ -132,8 +132,8 @@
   display: inline-flex;
   align-items: center;
   padding: 0.85em 1.5em;
-  background: var(--ink); /* bone fill — stands out from the jade scene */
-  color: var(--bg);
+  background: var(--lava); /* clay / lava — warm against the dark, jade scene */
+  color: var(--lava-ink);
   font-size: var(--step-body);
   font-weight: 600;
   border-radius: 0; /* one square-cornered button for the whole page */
@@ -143,7 +143,7 @@
 
 .cta:hover {
   transform: translateY(-2px);
-  background: var(--accent);
+  background: #e07a44; /* a touch brighter lava on hover */
 }
 
 .cta:active {
