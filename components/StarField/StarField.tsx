@@ -26,24 +26,31 @@ export default function StarField() {
     const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
     const rng = mulberry32(31337);
 
-    // low-res field stretched over the viewport; chunky pixel stars
+    // low-res field stretched over the FULL PAGE (document height), so it
+    // scrolls with the content instead of staying pinned to the viewport.
     const GW = 150;
     let GH = 180;
 
     const size = () => {
-      const ar = window.innerHeight / window.innerWidth || 1.2;
+      const docH = Math.max(
+        document.body.scrollHeight,
+        document.documentElement.scrollHeight,
+        window.innerHeight,
+      );
+      const ar = docH / window.innerWidth || 2;
       GH = Math.round(GW * ar);
       canvas.width = GW;
       canvas.height = GH;
+      canvas.style.height = `${docH}px`; // span the whole document, scroll with it
       ctx.imageSmoothingEnabled = false;
     };
     size();
 
     // sparse stars biased toward the left and right thirds (the side margins),
     // avoiding the central 40% where content text usually sits
-    type Star = { x: number; y: number; period: number; phase: number; op: number; dim: boolean };
+    type Star = { nx: number; ny: number; period: number; phase: number; op: number; dim: boolean };
     const stars: Star[] = [];
-    const COUNT = 90; // sparse over a tall page
+    const COUNT = Math.round(GH * 1.6); // density scales with full page height
     for (let i = 0; i < COUNT; i++) {
       // push x toward the sides: pick from [0,0.3] or [0.7,1] most of the time
       let nx = rng();
@@ -51,11 +58,11 @@ export default function StarField() {
         nx = rng() < 0.5 ? rng() * 0.3 : 0.7 + rng() * 0.3;
       }
       stars.push({
-        x: nx * GW,
-        y: rng() * GH,
+        nx,
+        ny: rng(),
         period: 1800 + rng() * 3600,
         phase: rng() * Math.PI * 2,
-        op: 0.25 + rng() * 0.6, // varied base opacity
+        op: 0.25 + rng() * 0.6,
         dim: rng() > 0.5,
       });
     }
@@ -63,21 +70,23 @@ export default function StarField() {
     const draw = (t: number) => {
       ctx.clearRect(0, 0, GW, GH);
       for (const s of stars) {
+        const x = Math.round(s.nx * GW);
+        const y = Math.round(s.ny * GH);
         const tw = reduced ? 1 : 0.55 + 0.45 * Math.sin(t / s.period + s.phase);
         const a = s.op * tw;
         if (a < 0.06) continue;
         ctx.globalAlpha = a;
         ctx.fillStyle = s.dim ? '#8aa89c' : '#e3e2da';
-        ctx.fillRect(Math.round(s.x), Math.round(s.y), 1, 1);
+        ctx.fillRect(x, y, 1, 1);
         // a little shine: at the peak of the twinkle a bright star flashes a
         // 4-point sparkle for an instant
         if (!reduced && !s.dim && tw > 0.95) {
           ctx.globalAlpha = (tw - 0.95) / 0.05;
           ctx.fillStyle = '#ffffff';
-          ctx.fillRect(Math.round(s.x) + 1, Math.round(s.y), 1, 1);
-          ctx.fillRect(Math.round(s.x) - 1, Math.round(s.y), 1, 1);
-          ctx.fillRect(Math.round(s.x), Math.round(s.y) + 1, 1, 1);
-          ctx.fillRect(Math.round(s.x), Math.round(s.y) - 1, 1, 1);
+          ctx.fillRect(x + 1, y, 1, 1);
+          ctx.fillRect(x - 1, y, 1, 1);
+          ctx.fillRect(x, y + 1, 1, 1);
+          ctx.fillRect(x, y - 1, 1, 1);
         }
       }
       ctx.globalAlpha = 1;
@@ -86,6 +95,9 @@ export default function StarField() {
     let raf = 0;
     const onResize = () => size();
     window.addEventListener('resize', onResize);
+    // catch late layout growth (fonts, images) so the field covers the full page
+    const t1 = setTimeout(size, 400);
+    const t2 = setTimeout(size, 1200);
 
     if (reduced) {
       draw(0);
@@ -99,6 +111,8 @@ export default function StarField() {
     return () => {
       cancelAnimationFrame(raf);
       window.removeEventListener('resize', onResize);
+      clearTimeout(t1);
+      clearTimeout(t2);
     };
   }, []);
 

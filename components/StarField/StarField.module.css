@@ -1,10 +1,11 @@
-/* StarField — a fixed, full-viewport star layer behind the whole page. */
+/* StarField — an absolute, full-PAGE star layer behind content that scrolls
+   with the page (not pinned to the viewport). */
 
 .field {
-  position: fixed;
-  inset: 0;
-  width: 100vw;
-  height: 100vh;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
   z-index: 0; /* behind content, above the body background */
   pointer-events: none;
   image-rendering: pixelated;
