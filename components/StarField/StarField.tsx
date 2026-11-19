@@ -15,6 +15,12 @@
  * (the [data-star-scene] canvas, measured with getBoundingClientRect and
  * re-measured on resize / font load), in pixels around its centre, so the
  * falloff is round at every viewport size.
+ *
+ * Stars never draw over the UI: every [data-star-avoid] element (hero top bar,
+ * name, welcome line, role line, CTA) is measured into an exclusion rect, padded
+ * 8px, and re-measured on resize / font load. Because the field drifts against
+ * the page while scrolling, the test runs at draw time against each star's
+ * current position.
  */
 
 import { useEffect, useRef } from 'react';
@@ -65,6 +71,28 @@ export default function StarField() {
       '#b8c6d6', // faint cool blue
       '#cfe6dc', // pale jade-white
     ];
+    // exclusion rects in page coordinates, padded; re-measured with the page
+    const PAD = 8;
+    let avoid: { x0: number; y0: number; x1: number; y1: number }[] = [];
+    const measureAvoid = () => {
+      avoid = Array.from(document.querySelectorAll<HTMLElement>('[data-star-avoid]')).map((el) => {
+        const r = el.getBoundingClientRect();
+        return {
+          x0: r.left + window.scrollX - PAD,
+          y0: r.top + window.scrollY - PAD,
+          x1: r.right + window.scrollX + PAD,
+          y1: r.bottom + window.scrollY + PAD,
+        };
+      });
+    };
+    // a star (plus its sparkle arms, if any) overlapping any exclusion rect
+    const blocked = (x: number, y: number, reach: number) => {
+      for (const a of avoid) {
+        if (x > a.x0 - reach && x < a.x1 + reach && y > a.y0 - reach && y < a.y1 + reach) return true;
+      }
+      return false;
+    };
+
     // (re)built whenever the page is re-measured, so the scene cluster follows it
     let stars: Star[] = [];
     const build = () => {
@@ -145,9 +173,11 @@ export default function StarField() {
 
     const draw = (t: number) => {
       ctx.clearRect(0, 0, W, H);
+      const drift = window.scrollY * 0.25; // the canvas is translated by this (parallax)
       for (const s of stars) {
         const x = s.nx * W;
         const y = s.ny * H;
+        if (blocked(x, y + drift, s.sparkle ? 14 : s.r)) continue;
         const tw = reduced ? 1 : 0.55 + 0.45 * Math.sin(t / s.period + s.phase);
         const a = s.op * tw;
         if (a < 0.05) continue;
@@ -185,12 +215,14 @@ export default function StarField() {
     let raf = 0;
     const measure = () => {
       size();
+      measureAvoid();
       build();
     };
     const onResize = measure;
     window.addEventListener('resize', onResize);
     const t1 = setTimeout(measure, 400);
     const t2 = setTimeout(measure, 1200);
+    const t3 = setTimeout(measure, 2600); // after the hero intro has settled
     document.fonts?.ready.then(measure); // Switzer loads late and moves the layout
 
     // parallax: the field drifts slower than the content
@@ -200,6 +232,7 @@ export default function StarField() {
     onScroll();
     window.addEventListener('scroll', onScroll, { passive: true });
 
+    measureAvoid();
     build();
     if (reduced) {
       draw(0);
@@ -216,6 +249,7 @@ export default function StarField() {
       window.removeEventListener('scroll', onScroll);
       clearTimeout(t1);
       clearTimeout(t2);
+      clearTimeout(t3);
     };
   }, []);
 

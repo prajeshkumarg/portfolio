@@ -33,7 +33,7 @@ export default function Hero() {
   return (
     <header id="top" className={styles.hero} data-hero-pending>
       <PixelSpace />
-      <div className={styles.top}>
+      <div className={styles.top} data-star-avoid>
         <span className={styles.monogram}>{site.wordmark}</span>
         <nav className={styles.links} aria-label="Primary">
           <a href="#work">Work</a>
@@ -43,7 +43,7 @@ export default function Hero() {
       </div>
 
       <div className={styles.main}>
-        <h1 className={styles.name}>
+        <h1 className={styles.name} data-star-avoid>
           <span className={styles.line} data-hero-line>
             <span>Prajesh</span>
           </span>
@@ -52,13 +52,13 @@ export default function Hero() {
           </span>
         </h1>
 
-        <p className={styles.welcome} data-hero-lede>
+        <p className={styles.welcome} data-hero-lede data-star-avoid>
           Welcome to my corner of the internet. This is where I build things,
           chase ideas, and write about what I learn along the way.
         </p>
 
         <div className={styles.foot}>
-          <p className={styles.role} data-hero-lede>
+          <p className={styles.role} data-hero-lede data-star-avoid>
             <span className={styles.roleStatic}>Software engineer —</span>{' '}
             <span className={styles.roleRotator} aria-live="polite">
               {ROLES.map((r, n) => (
@@ -73,7 +73,7 @@ export default function Hero() {
               ))}
             </span>
           </p>
-          <a className={styles.cta} href="#work" data-hero-lede>
+          <a className={styles.cta} href="#work" data-hero-lede data-star-avoid>
             See my work
           </a>
         </div>
