@@ -2,20 +2,26 @@
 
 /*
  * Projects — a split index/preview. Left: the list of project names. Right: a
- * sticky preview that shows the hovered (or focused) project's screenshot, its
- * one-line description and its stack. Defaults to the first project; the
- * preview follows hover/focus on desktop. On phone it collapses to stacked
- * rows, each with its own inline image, so nothing depends on hover.
+ * sticky preview that shows the hovered (or focused) project's architecture
+ * diagram, its one-line description and its stack. Defaults to the first
+ * project; the preview follows hover/focus on desktop. On phone it collapses
+ * to stacked rows, each with its own inline diagram, so nothing depends on
+ * hover.
+ *
+ * Each diagram is a hand-authored inline SVG in the shared --viz-* system
+ * (no screenshots). Only the active diagram animates its edges and key-idea
+ * pulse; motion is disabled under prefers-reduced-motion in the CSS.
  */
 
 import { useState } from 'react';
-import Image from 'next/image';
 import { projects } from '@/content';
+import { diagrams } from './diagrams';
 import styles from './Projects.module.css';
 
 export default function Projects() {
   const [active, setActive] = useState(0);
   const current = projects[active];
+  const CurrentDiagram = diagrams[current.diagram];
 
   return (
     <section id="projects" className={styles.section} aria-labelledby="projects-h">
@@ -27,51 +33,45 @@ export default function Projects() {
         <div className={styles.split} data-reveal>
           {/* left: the index of names */}
           <ol className={styles.list}>
-            {projects.map((p, i) => (
-              <li key={p.title}>
-                <a
-                  className={styles.item}
-                  href={p.href}
-                  target="_blank"
-                  rel="noreferrer"
-                  data-active={i === active ? 'true' : undefined}
-                  onMouseEnter={() => setActive(i)}
-                  onFocus={() => setActive(i)}
-                >
-                  <span className={styles.name}>{p.title}</span>
-                  <span className={styles.arrow} aria-hidden="true">
-                    ↗
-                  </span>
-                </a>
-                {/* phone-only inline preview for this project */}
-                <div className={styles.inline}>
-                  {p.image ? (
-                    <figure className={styles.inlineMedia}>
-                      <Image src={p.image} alt={p.imageAlt ?? `${p.title} screenshot`} sizes="100vw" />
-                    </figure>
-                  ) : null}
-                  <p className={styles.caption}>{p.body}</p>
-                  <p className={styles.stack}>{p.tags.join('  ·  ')}</p>
-                </div>
-              </li>
-            ))}
+            {projects.map((p, i) => {
+              const Diagram = diagrams[p.diagram];
+              return (
+                <li key={p.title}>
+                  <a
+                    className={styles.item}
+                    href={p.href}
+                    target="_blank"
+                    rel="noreferrer"
+                    data-active={i === active ? 'true' : undefined}
+                    onMouseEnter={() => setActive(i)}
+                    onFocus={() => setActive(i)}
+                  >
+                    <span className={styles.name}>{p.title}</span>
+                    <span className={styles.arrow} aria-hidden="true">
+                      ↗
+                    </span>
+                  </a>
+                  {/* phone-only inline preview for this project */}
+                  <div className={styles.inline}>
+                    <div className={styles.viz}>
+                      <Diagram />
+                    </div>
+                    <p className={styles.caption}>{p.body}</p>
+                    <p className={styles.stack}>{p.tags.join(' · ')}</p>
+                  </div>
+                </li>
+              );
+            })}
           </ol>
 
           {/* right: the sticky preview of the active project */}
           <div className={styles.preview} aria-hidden="true">
             <div className={styles.previewInner}>
-              {current.image ? (
-                <figure className={styles.media}>
-                  <Image
-                    key={current.title}
-                    src={current.image}
-                    alt={current.imageAlt ?? `${current.title} screenshot`}
-                    sizes="(min-width: 860px) 45vw, 100vw"
-                  />
-                </figure>
-              ) : null}
+              <div className={`${styles.viz} ${styles.vizActive}`}>
+                <CurrentDiagram key={current.title} />
+              </div>
               <p className={styles.caption}>{current.body}</p>
-              <p className={styles.stack}>{current.tags.join('  ·  ')}</p>
+              <p className={styles.stack}>{current.tags.join(' · ')}</p>
             </div>
           </div>
         </div>

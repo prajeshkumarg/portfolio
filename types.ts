@@ -28,6 +28,8 @@ export type Experience = {
   logoPlate?: boolean;
 };
 
+import type { DiagramKey } from './components/Projects/diagrams';
+
 export type Project = {
   /** Stack and tools, rendered as tag pills. */
   tags: string[];
@@ -36,14 +38,11 @@ export type Project = {
   linkLabel: string;
   href: string;
   /**
-   * Statically imported screenshot or diagram, shown below the description. The
-   * slot is reserved either way, so cards keep the same height before and after
-   * the images land, and the intrinsic dimensions drive the slot's aspect ratio
-   * so nothing gets cropped.
+   * The architecture diagram shown beside the project — an inline SVG React
+   * component keyed here and resolved through components/Projects/diagrams.
+   * Each diagram is hand-authored in the shared --viz-* system (no screenshots).
    */
-  image?: StaticImageData;
-  /** Describes what the image shows. Required whenever `image` is set. */
-  imageAlt?: string;
+  diagram: DiagramKey;
 };
 
 export type SkillGroup = {

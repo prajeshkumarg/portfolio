@@ -2,9 +2,6 @@ import type { Education, Experience, Project, SkillGroup, SocialLink } from './t
 import amazonLogo from './public/logos/amazon.png';
 import shellLogo from './public/logos/shell.png';
 import nyuLogo from './public/logos/nyu.png';
-import anylangArch from './public/projects/anylang-arch.svg';
-import miniTensorCompilerOutput from './public/projects/minicompiler.png';
-import repoScoutShot from './public/projects/repo-scout.png';
 import heroPortrait from './public/image.png';
 import vitLogo from './public/logos/vit.webp';
 
@@ -113,32 +110,26 @@ export const projects: Project[] = [
   {
     tags: ['Python', 'FastAPI', 'React', 'TypeScript', 'RAG', 'pgvector', 'Redis'],
     title: 'repo-scout',
-    body: 'Ask questions about any codebase and get answers with citations. Instead of returning snippets that only look similar, an agent walks the code — handler to service to model — and every claim it makes carries a file:line range you can open.',
+    body: 'Ask questions about any codebase and get answers with citations. An agent walks the code, handler to service to model, and every claim carries a file:line range you can open.',
     linkLabel: 'repo-scout.live ↗',
     href: 'https://repo-scout.live/',
-    image: repoScoutShot,
-    imageAlt:
-      'The repo-scout landing page: a GitHub URL field with a “Read it” button, and four steps — paste a repo, we read it, ask in English, get proof.',
+    diagram: 'repo-scout',
   },
   {
     tags: ['C++', 'MLIR', 'LLVM', 'JIT'],
     title: 'MiniTensorCompiler',
-    body: 'A tensor language that compiles to LLVM. It fuses and folds operations, catches dimension mismatches at compile time instead of at runtime, and targets both native and JIT execution.',
+    body: 'A tensor language that compiles to LLVM through MLIR. It fuses and folds operations, catches shape mismatches at compile time, and runs native or JIT.',
     linkLabel: 'github ↗',
     href: 'https://github.com/prajeshkumarg/MiniTensorCompiler',
-    image: miniTensorCompilerOutput,
-    imageAlt:
-      'Terminal output showing a tensor program lowered first to the ts-mlir dialect, then to LLVM MLIR.',
+    diagram: 'mini-tensor-compiler',
   },
   {
     tags: ['OCaml', 'RISC-V', 'CFG analysis'],
     title: 'AnyLang',
-    body: 'A four-stage compiler that lowers a typed language to RISC-V assembly, optimizes it with control-flow-graph analysis, and verifies the output against a simulator I wrote by hand.',
+    body: 'A four-stage compiler that lowers a typed language to RISC-V, optimizes it with control-flow-graph analysis, and verifies the output on a simulator I wrote by hand.',
     linkLabel: 'github ↗',
     href: 'https://github.com/prajeshkumarg/anylang',
-    image: anylangArch,
-    imageAlt:
-      'Pipeline diagram: Fish and Scish front ends lower through Cish to a RISC-V AST, then to 32-bit machine code and a simulator.',
+    diagram: 'anylang',
   },
 ];
 

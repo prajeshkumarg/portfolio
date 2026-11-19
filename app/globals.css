@@ -26,6 +26,18 @@
   --lava: #d2693a; /* clay / lava — the hero CTA */
   --lava-ink: #140a06; /* ink on the lava button */
 
+  /* ---- diagram palette ---- role colours for the Projects architecture
+     diagrams. Each is tuned to clear ~4.5:1 on --bg so a 1.5px stroke and a
+     13px+ label read at preview size. Colour is by ROLE, identical across
+     every diagram, so the section reads as one system. ---- */
+  --viz-jade: #9fc7b8; /* output / answer / codegen */
+  --viz-sky: #7fb3e6; /* input / user / source */
+  --viz-amber: #e8b45a; /* storage / index / IR */
+  --viz-violet: #b49cf0; /* processing / agent / compiler passes */
+  --viz-rose: #e88a9a; /* key-idea node */
+  --viz-lava: #d2693a; /* alt key-idea node */
+  --viz-line: #8a8f86; /* muted bone — edges and arrowheads */
+
   /* ---- type: Switzer, one face ---- */
   --font: 'Switzer', system-ui, -apple-system, sans-serif;
 

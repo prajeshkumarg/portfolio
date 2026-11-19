@@ -1,4 +1,4 @@
-/* Projects — split index (left) + sticky preview (right). */
+/* Projects — split index (left) + sticky diagram preview (right). */
 
 .section {
   padding-block: var(--gap-section);
@@ -64,7 +64,9 @@
   transform: translate(2px, -2px);
 }
 
-/* right: the sticky preview */
+/* right: the sticky preview. Its top aligns with the first row's top rule
+   (the list has no leading padding, so top:0 at the split row lines them up),
+   and it stays in view while the shorter list scrolls past. */
 .preview {
   position: sticky;
   top: clamp(40px, 12vh, 120px);
@@ -73,32 +75,22 @@
 .previewInner {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 18px;
 }
 
-.media,
-.inlineMedia {
-  margin: 0;
+/* the diagram sits directly on the page background — no frame, no plate */
+.viz {
   width: 100%;
-  padding: clamp(10px, 1.2vw, 16px);
-  background: var(--surface); /* a lighter plate, so a dark screenshot stops melting into the page */
-  border: 1px solid var(--hairline);
 }
 
-.media :global(img),
-.inlineMedia :global(img) {
+.viz svg {
+  display: block;
   width: 100%;
   height: auto;
-  aspect-ratio: 3 / 2; /* whole screenshot, never cropped */
-  object-fit: contain;
-  display: block;
+  animation: vizFade 0.4s var(--ease-out);
 }
 
-.media :global(img) {
-  animation: fadeIn 0.4s var(--ease-out);
-}
-
-@keyframes fadeIn {
+@keyframes vizFade {
   from {
     opacity: 0;
   }
@@ -107,22 +99,55 @@
   }
 }
 
-/* description + stack under the preview: full ink, comfortable measure */
+/* description under the diagram: muted, comfortable measure, 2–3 lines */
 .caption {
   max-width: 52ch;
-  color: var(--ink-dim);
+  color: var(--muted);
   font-size: var(--step-body);
   line-height: 1.5;
 }
 
+/* tags: muted, separated by " · ", not lava */
 .stack {
-  color: var(--lava);
-  font-size: var(--step-card);
+  color: var(--muted);
+  font-size: var(--step-small);
   line-height: 1.5;
   letter-spacing: 0.01em;
 }
 
-/* phone-only inline block (image + description + stack) is hidden on desktop */
+/* ---- diagram motion (only on .vizActive; off under reduced-motion) ---- */
+
+/* edges flow: a dashed stroke whose offset animates so data moves along the
+   pipeline. At rest (non-active diagrams) edges are solid. */
+.vizActive :global(.vizEdge) {
+  stroke-dasharray: 7 6;
+  animation: vizFlow 1.1s linear infinite;
+}
+
+@keyframes vizFlow {
+  to {
+    stroke-dashoffset: -13;
+  }
+}
+
+/* the key-idea node's stroke pulses gently */
+.vizActive :global(.vizKeyNode) {
+  animation: vizPulse 2.4s var(--ease-out) infinite;
+}
+
+@keyframes vizPulse {
+  0%,
+  100% {
+    stroke-opacity: 1;
+    stroke-width: 1.5;
+  }
+  50% {
+    stroke-opacity: 0.55;
+    stroke-width: 2.4;
+  }
+}
+
+/* phone-only inline block (diagram + description + stack); hidden on desktop */
 .inline {
   display: none;
 }
@@ -133,7 +158,7 @@
     gap: 0;
   }
 
-  /* no sticky preview on phone — each row shows its own image inline */
+  /* no sticky preview on phone — each row shows its own diagram inline */
   .preview {
     display: none;
   }
@@ -141,7 +166,22 @@
   .inline {
     display: flex;
     flex-direction: column;
-    gap: 14px;
+    gap: 16px;
     margin-bottom: clamp(24px, 4vh, 36px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .viz svg {
+    animation: none;
+  }
+
+  .vizActive :global(.vizEdge) {
+    stroke-dasharray: none;
+    animation: none;
+  }
+
+  .vizActive :global(.vizKeyNode) {
+    animation: none;
   }
 }
