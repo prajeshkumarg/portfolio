@@ -55,6 +55,9 @@
   z-index: 1;
   font-weight: 600;
   letter-spacing: -0.04em;
+  /* pull the box left by the P/K side bearing so the letter stems, not the
+     glyph boxes, sit on the same left edge as the welcome and role text */
+  margin-left: -0.06em;
   line-height: 0.9; /* a touch looser so ascenders are not shaved by the mask */
   font-size: clamp(5rem, 15vw, 14.375rem);
 }
