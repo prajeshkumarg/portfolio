@@ -107,9 +107,9 @@
   line-height: 1.5;
 }
 
-/* tags: muted, separated by " · ", not lava */
+/* tags under the diagram: clay, separated by " · " */
 .stack {
-  color: var(--muted);
+  color: var(--lava);
   font-size: var(--step-small);
   line-height: 1.5;
   letter-spacing: 0.01em;
