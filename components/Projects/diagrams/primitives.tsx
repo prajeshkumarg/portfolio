@@ -64,7 +64,7 @@ export function Node({
         x={x + w / 2}
         y={labelY}
         fill="var(--ink)"
-        fontSize="15"
+        fontSize="18"
         fontWeight="600"
         textAnchor="middle"
         dominantBaseline="middle"
@@ -74,9 +74,9 @@ export function Node({
       {sub ? (
         <text
           x={x + w / 2}
-          y={y + h / 2 + 15}
+          y={y + h / 2 + 17}
           fill="var(--muted)"
-          fontSize="13"
+          fontSize="14.5"
           textAnchor="middle"
           dominantBaseline="middle"
         >

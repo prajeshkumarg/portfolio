@@ -41,7 +41,7 @@ function IconNode({
   isKey?: boolean;
 }) {
   const tx = x + 58; // text starts to the right of the icon
-  const titleY = sub ? y + h / 2 - 3 : y + h / 2 + 1;
+  const titleY = sub ? y + h / 2 - 5 : y + h / 2 + 1;
   return (
     <g>
       <rect
@@ -60,11 +60,11 @@ function IconNode({
       <g transform={`translate(${x + 18}, ${y + h / 2 - 14})`} stroke={color} fill="none" strokeWidth="1.8">
         {icon}
       </g>
-      <text x={tx} y={titleY} fill="var(--ink)" fontSize="15" fontWeight="600" dominantBaseline="middle">
+      <text x={tx} y={titleY} fill="var(--ink)" fontSize="18" fontWeight="600" dominantBaseline="middle">
         {title}
       </text>
       {sub ? (
-        <text x={tx} y={y + h / 2 + 15} fill="var(--muted)" fontSize="13" dominantBaseline="middle">
+        <text x={tx} y={y + h / 2 + 17} fill="var(--muted)" fontSize="14.5" dominantBaseline="middle">
           {sub}
         </text>
       ) : null}
@@ -144,13 +144,13 @@ export default function RepoScout() {
       <ArrowDefs id={M} />
 
       {/* ---- layer labels, like an architecture diagram's bands ---- */}
-      <text x={24} y={30} fill="var(--muted)" fontSize="12" letterSpacing="2" fontWeight="600">
+      <text x={24} y={30} fill="var(--muted)" fontSize="13.5" letterSpacing="2" fontWeight="600">
         INGEST
       </text>
-      <text x={24} y={214} fill="var(--muted)" fontSize="12" letterSpacing="2" fontWeight="600">
+      <text x={24} y={214} fill="var(--muted)" fontSize="13.5" letterSpacing="2" fontWeight="600">
         INDEX
       </text>
-      <text x={24} y={366} fill="var(--muted)" fontSize="12" letterSpacing="2" fontWeight="600">
+      <text x={24} y={366} fill="var(--muted)" fontSize="13.5" letterSpacing="2" fontWeight="600">
         QUERY
       </text>
       {/* faint band separators */}

@@ -64,11 +64,11 @@ function Stage({
         strokeWidth="1.5"
         className={isKey ? 'vizKeyNode' : undefined}
       />
-      <text x={x + 16} y={sub || chips ? y + 24 : y + h / 2 + 5} fill="var(--ink)" fontSize="15" fontWeight="600">
+      <text x={x + 16} y={sub || chips ? y + 26 : y + h / 2 + 6} fill="var(--ink)" fontSize="18" fontWeight="600">
         {title}
       </text>
       {sub ? (
-        <text x={x + 16} y={y + 42} fill="var(--muted)" fontSize="13">
+        <text x={x + 16} y={y + 46} fill="var(--muted)" fontSize="14.5">
           {sub}
         </text>
       ) : null}
@@ -76,14 +76,14 @@ function Stage({
         <g>
           {chips.map((c, i) => {
             // lay chips out left→right, wrapping by a rough char width
-            const cw = c.length * 7.2 + 18;
-            const prior = chips.slice(0, i).reduce((a, s) => a + s.length * 7.2 + 18 + 8, 0);
+            const cw = c.length * 8 + 20;
+            const prior = chips.slice(0, i).reduce((a, s) => a + s.length * 8 + 20 + 9, 0);
             const cx = x + 16 + prior;
-            const cy = y + h - 30;
+            const cy = y + h - 33;
             return (
               <g key={c}>
-                <rect x={cx} y={cy} width={cw} height={21} rx="5" fill={color} fillOpacity="0.16" stroke={color} strokeWidth="1" strokeOpacity="0.5" />
-                <text x={cx + cw / 2} y={cy + 14.5} fill="var(--ink-dim)" fontSize="12" fontFamily="var(--font)" textAnchor="middle">
+                <rect x={cx} y={cy} width={cw} height={24} rx="5" fill={color} fillOpacity="0.16" stroke={color} strokeWidth="1" strokeOpacity="0.5" />
+                <text x={cx + cw / 2} y={cy + 16.5} fill="var(--ink-dim)" fontSize="13.5" fontFamily="var(--font)" textAnchor="middle">
                   {c}
                 </text>
               </g>
@@ -95,87 +95,77 @@ function Stage({
   );
 }
 
-/* a small lowering-step label that sits on an edge between two stages */
-function StepLabel({ x, y, text }: { x: number; y: number; text: string }) {
-  return (
-    <text x={x} y={y} fill="var(--muted)" fontSize="11.5" fontStyle="italic">
-      {text}
-    </text>
-  );
-}
-
+/* The MLIR lowering stack, top to bottom. */
 export default function MiniTensorCompiler() {
   return (
-    <svg viewBox="0 0 800 560" role="img" aria-label="MiniTensorCompiler architecture">
+    <svg viewBox="0 0 800 552" role="img" aria-label="MiniTensorCompiler architecture">
       <title>MiniTensorCompiler architecture</title>
       <ArrowDefs id={M} />
 
       {/* frontend source */}
-      <Stage x={150} y={16} w={500} h={56} color={SRC} title="TensorScript source" sub="fn mlp(x: tensor<4x8xf32>) → …  ·  typed tensor language" />
-      <StepLabel x={408} y={92} text="recursive-descent parser · direct MLIR emission" />
-      <Edge d="M400 72 L400 108" markerId={M} />
+      <Stage x={130} y={14} w={540} h={62} color={SRC} title="TensorScript source" sub="typed tensor language — parsed straight to MLIR" />
+      <Edge d="M400 76 L400 100" markerId={M} />
 
       {/* ts.* dialect — high-level IR with op chips */}
       <Stage
-        x={120}
-        y={108}
-        w={560}
-        h={78}
+        x={110}
+        y={100}
+        w={580}
+        h={86}
         color={IR}
         title="ts.* dialect"
-        sub="high-level IR — one op per tensor operation"
-        chips={['ts.matmul', 'ts.add', 'ts.relu', 'ts.transpose', 'ts.reduce_sum']}
+        sub="high-level IR, one op per tensor operation"
+        chips={['ts.matmul', 'ts.add', 'ts.relu', 'ts.transpose']}
       />
-      <Edge d="M400 186 L400 222" markerId={M} />
+      <Edge d="M400 186 L400 214" markerId={M} />
 
       {/* the three optimization passes, broken out as a band */}
-      <text x={120} y={214} fill="var(--muted)" fontSize="11" letterSpacing="1.5" fontWeight="600">
+      <text x={110} y={206} fill="var(--muted)" fontSize="13" letterSpacing="1.5" fontWeight="600">
         OPTIMIZATION PASSES
       </text>
-      <Stage x={120} y={222} w={168} h={64} color={PASS} title="Shape inference" sub="validate dims" />
-      <Stage x={302} y={222} w={168} h={64} color={PASS} title="Constant folding" sub="fold at compile time" />
+      <Stage x={110} y={214} w={178} h={66} color={PASS} title="Shape inference" sub="validate dims" />
+      <Stage x={302} y={214} w={178} h={66} color={PASS} title="Constant folding" sub="fold at compile time" />
       <Stage
-        x={484}
-        y={222}
+        x={494}
+        y={214}
         w={196}
-        h={64}
+        h={66}
         color={KEY}
         title="Operator fusion"
         sub="matmul+relu → fused op"
         isKey
       />
-      <Edge d="M400 286 L400 322" markerId={M} />
+      <Edge d="M400 280 L400 308" markerId={M} />
 
       {/* Linalg on tensors */}
       <Stage
-        x={120}
-        y={322}
-        w={560}
-        h={78}
+        x={110}
+        y={308}
+        w={580}
+        h={86}
         color={IR}
         title="Linalg on tensors"
-        sub="affine maps over iteration domains"
+        sub="bufferized, lowered through SCF to control flow"
         chips={['linalg.matmul', 'linalg.generic', 'linalg.fill']}
       />
-      <StepLabel x={408} y={420} text="one-shot bufferization (tensor → memref) · Linalg→SCF→CF" />
-      <Edge d="M400 400 L400 436" markerId={M} />
+      <Edge d="M400 394 L400 422" markerId={M} />
 
       {/* LLVM dialect */}
       <Stage
-        x={120}
-        y={436}
-        w={560}
-        h={60}
+        x={110}
+        y={422}
+        w={580}
+        h={62}
         color={LOWER}
         title="LLVM dialect"
-        sub="explicit load / store / branch — MLIR → LLVM IR"
+        sub="explicit load / store / branch → LLVM IR"
       />
 
       {/* two output targets */}
-      <Edge d="M250 496 L250 516 L190 516 L190 520" markerId={M} />
-      <Edge d="M550 496 L550 516 L610 516 L610 520" markerId={M} />
-      <Stage x={40} y={520} w={300} h={32} color={OUT} title="Native machine code" />
-      <Stage x={460} y={520} w={300} h={32} color={OUT} title="JIT · LLVM ExecutionEngine" />
+      <Edge d="M260 484 L260 500 L200 500 L200 506" markerId={M} />
+      <Edge d="M540 484 L540 500 L600 500 L600 506" markerId={M} />
+      <Stage x={40} y={506} w={312} h={36} color={OUT} title="Native machine code" />
+      <Stage x={448} y={506} w={312} h={36} color={OUT} title="JIT · ExecutionEngine" />
     </svg>
   );
 }
