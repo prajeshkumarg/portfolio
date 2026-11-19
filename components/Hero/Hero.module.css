@@ -5,7 +5,7 @@
   min-height: 100svh;
   padding: clamp(20px, 4vw, 40px) var(--margin) clamp(64px, 12vh, 128px);
   display: grid;
-  grid-template-rows: auto auto 1fr auto;
+  grid-template-rows: auto 1fr;
   background: transparent; /* the full-page StarField shows through continuously */
 }
 
@@ -38,12 +38,21 @@
   color: var(--ink);
 }
 
+/* name + welcome + role line + CTA read as ONE group under the top bar, centred
+   in the space below it so the hero still fills the first viewport */
+.main {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+}
+
 /* the name: two lines, line-height 0.82, flush left, pointer-reactive weight */
 .name {
   position: relative;
   z-index: 1;
-  align-self: start;
-  margin-top: 8vh;
   font-weight: 600;
   letter-spacing: -0.04em;
   line-height: 0.9; /* a touch looser so ascenders are not shaved by the mask */
@@ -72,28 +81,21 @@
   color: var(--ink-dim);
 }
 
-/* bottom row: kinetic role line left-weighted, button right */
+/* role line + button: one row directly under the welcome paragraph (wraps to
+   two stacked lines when there is not room) */
 .foot {
   position: relative;
   z-index: 1;
-  align-self: end;
-  display: grid;
-  grid-template-columns: 1fr auto;
-  align-items: end;
-  gap: clamp(20px, 4vw, 48px);
-}
-
-/* left column of the foot: the rotating role line */
-.footText {
-  grid-column: 1;
   display: flex;
-  flex-direction: column;
-  gap: clamp(10px, 1.6vh, 18px);
+  flex-wrap: wrap;
+  align-items: center;
+  column-gap: clamp(24px, 3vw, 44px);
+  row-gap: 18px;
+  margin-top: clamp(18px, 2.6vh, 30px);
 }
 
 /* the role line is the hero's signature: a rotating word re-set in place */
 .role {
-  grid-column: 1;
   display: flex;
   flex-wrap: wrap;
   align-items: baseline;
@@ -107,7 +109,7 @@
 .welcome {
   position: relative;
   z-index: 1;
-  margin-top: clamp(16px, 2.4vh, 30px);
+  margin-top: clamp(20px, 3vh, 36px);
   max-width: 54ch;
   color: var(--ink);
   font-size: var(--step-body);
@@ -144,7 +146,6 @@
    shows even if the client never hydrates. */
 
 .cta {
-  grid-column: 2;
   display: inline-flex;
   align-items: center;
   padding: 0.85em 1.5em;
@@ -199,14 +200,12 @@
 @media (max-width: 1024px) {
   .name {
     font-size: clamp(4rem, 13vw, 9rem);
-    margin-top: 6vh;
   }
 }
 
 /* phone: name stays two lines + two inks, role + button stack left */
 @media (max-width: 720px) {
   .name {
-    margin-top: 10vh;
     font-size: 19vw;
   }
 
@@ -215,13 +214,8 @@
   }
 
   .foot {
-    grid-template-columns: 1fr;
-    gap: 20px;
-  }
-
-  .cta {
-    grid-column: 1;
-    justify-self: start;
+    flex-direction: column;
+    align-items: flex-start;
   }
 }
 

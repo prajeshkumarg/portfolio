@@ -42,39 +42,41 @@ export default function Hero() {
         </nav>
       </div>
 
-      <h1 className={styles.name}>
-        <span className={styles.line} data-hero-line>
-          <span>Prajesh</span>
-        </span>
-        <span className={`${styles.line} ${styles.lineTwo}`} data-hero-line>
-          <span>Kumar</span>
-        </span>
-      </h1>
-
-      <p className={styles.welcome} data-hero-lede>
-        Welcome to my corner of the internet. This is where I build things,
-        chase ideas, and write about what I learn along the way.
-      </p>
-
-      <div className={styles.foot}>
-        <p className={styles.role} data-hero-lede>
-          <span className={styles.roleStatic}>Software engineer —</span>{' '}
-          <span className={styles.roleRotator} aria-live="polite">
-            {ROLES.map((r, n) => (
-              <span
-                key={r}
-                className={styles.roleWord}
-                data-on={n === i ? 'true' : undefined}
-                aria-hidden={n === i ? undefined : 'true'}
-              >
-                {r}
-              </span>
-            ))}
+      <div className={styles.main}>
+        <h1 className={styles.name}>
+          <span className={styles.line} data-hero-line>
+            <span>Prajesh</span>
           </span>
+          <span className={`${styles.line} ${styles.lineTwo}`} data-hero-line>
+            <span>Kumar</span>
+          </span>
+        </h1>
+
+        <p className={styles.welcome} data-hero-lede>
+          Welcome to my corner of the internet. This is where I build things,
+          chase ideas, and write about what I learn along the way.
         </p>
-        <a className={styles.cta} href="#work" data-hero-lede>
-          See my work
-        </a>
+
+        <div className={styles.foot}>
+          <p className={styles.role} data-hero-lede>
+            <span className={styles.roleStatic}>Software engineer —</span>{' '}
+            <span className={styles.roleRotator} aria-live="polite">
+              {ROLES.map((r, n) => (
+                <span
+                  key={r}
+                  className={styles.roleWord}
+                  data-on={n === i ? 'true' : undefined}
+                  aria-hidden={n === i ? undefined : 'true'}
+                >
+                  {r}
+                </span>
+              ))}
+            </span>
+          </p>
+          <a className={styles.cta} href="#work" data-hero-lede>
+            See my work
+          </a>
+        </div>
       </div>
     </header>
   );
