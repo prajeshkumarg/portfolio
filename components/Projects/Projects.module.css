@@ -117,7 +117,7 @@
 
 .stack {
   color: var(--lava);
-  font-size: var(--step-small);
+  font-size: var(--step-card);
   line-height: 1.5;
   letter-spacing: 0.01em;
 }

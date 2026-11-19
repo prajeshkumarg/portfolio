@@ -29,8 +29,10 @@
   /* ---- type: Switzer, one face ---- */
   --font: 'Switzer', system-ui, -apple-system, sans-serif;
 
-  /* five steps, far apart — one very large, one small, little between */
+  /* six steps — one very large, one small, little between; --step-small is for
+   quiet chrome (footer, nav) only, card text starts at --step-card */
   --step-small: clamp(0.8125rem, 0.79rem + 0.1vw, 0.875rem); /* 13–14px */
+  --step-card: clamp(0.9375rem, 0.91rem + 0.1vw, 1rem); /* 15–16px card body, the floor for reading text */
   --step-body: clamp(1.0625rem, 1rem + 0.25vw, 1.1875rem); /* 17–19px */
   --step-lead: clamp(1.25rem, 1.1rem + 0.7vw, 1.625rem); /* 20–26px */
   --step-mid: clamp(2rem, 1.3rem + 3.2vw, 4rem); /* 32–64px section specimens */

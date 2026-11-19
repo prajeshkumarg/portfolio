@@ -62,13 +62,15 @@
   margin-top: 0.3em;
   color: var(--ink);
   font-size: var(--step-body);
+  line-height: 1.4;
 }
 
 .meta {
   margin-top: 0.5em;
   color: var(--muted);
-  font-size: var(--step-small);
-  letter-spacing: 0.02em;
+  font-size: var(--step-card);
+  line-height: 1.5;
+  letter-spacing: 0.01em;
 }
 
 @media (max-width: 560px) {
