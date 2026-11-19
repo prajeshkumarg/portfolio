@@ -38,6 +38,15 @@
   --viz-lava: #d2693a; /* alt key-idea node */
   --viz-line: #8a8f86; /* muted bone — edges and arrowheads */
 
+  /* MiniTensorCompiler runs its own cooler palette so the MLIR stack reads as
+     a distinct system from the other two diagrams. Same ~4.5:1-on-bg tuning. */
+  --viz-mtc-source: #86d3c6; /* frontend / source — teal */
+  --viz-mtc-ir: #6fb7d8; /* IR dialects — steel cyan */
+  --viz-mtc-pass: #c79af0; /* passes — orchid */
+  --viz-mtc-lower: #e0a8d8; /* lowering / conversion — mauve pink */
+  --viz-mtc-out: #8fd48a; /* codegen / execute — spring green */
+  --viz-mtc-key: #f0a24e; /* key idea — warm amber-orange */
+
   /* ---- type: Switzer, one face ---- */
   --font: 'Switzer', system-ui, -apple-system, sans-serif;
 
