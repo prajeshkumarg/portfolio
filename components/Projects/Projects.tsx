@@ -44,11 +44,15 @@ export default function Projects() {
                   </span>
                 </a>
                 {/* phone-only inline preview for this project */}
-                {p.image ? (
-                  <figure className={styles.inlineMedia}>
-                    <Image src={p.image} alt={p.imageAlt ?? `${p.title} screenshot`} sizes="100vw" />
-                  </figure>
-                ) : null}
+                <div className={styles.inline}>
+                  {p.image ? (
+                    <figure className={styles.inlineMedia}>
+                      <Image src={p.image} alt={p.imageAlt ?? `${p.title} screenshot`} sizes="100vw" />
+                    </figure>
+                  ) : null}
+                  <p className={styles.caption}>{p.body}</p>
+                  <p className={styles.stack}>{p.tags.join('  ·  ')}</p>
+                </div>
               </li>
             ))}
           </ol>
@@ -62,7 +66,7 @@ export default function Projects() {
                     key={current.title}
                     src={current.image}
                     alt={current.imageAlt ?? `${current.title} screenshot`}
-                    sizes="50vw"
+                    sizes="(min-width: 860px) 45vw, 100vw"
                   />
                 </figure>
               ) : null}

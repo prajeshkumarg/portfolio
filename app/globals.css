@@ -18,6 +18,7 @@
   --surface: #16211e; /* panels, a step up with the same cast */
   --surface-2: #0a100e; /* one step darker, for an inverted band */
   --ink: #e8e6dc; /* bone — running text and display */
+  --hairline: rgba(232, 230, 220, 0.16); /* 1px frame on media that sits on dark */
   --ink-dim: #c7c6bd; /* second display ink (hero line two) */
   --muted: #94a09a; /* secondary notes, meta — ~5:1 on bg */
   --accent: #9fc7b8; /* pale jade — the contact/primary button */
