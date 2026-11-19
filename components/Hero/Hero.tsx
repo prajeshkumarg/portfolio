@@ -1,34 +1,29 @@
-'use client';
-
 /*
  * Hero — the one unique moment on the page. The name is huge and two-ink; under
- * it sit a welcome line, then a role line that re-sets a rotating word in place
- * ("systems", "compilers", "security" — a masked swap) beside the lava CTA. Name,
- * welcome, role and CTA are one group, centred under the top bar. The pixel scene
- * (PixelSpace) sits on the right on desktop and in its own row on phones.
+ * it sits a "Right now" block (what Prajesh is working on, from `now` in
+ * content.ts), a one-line summary, and two buttons: "See my work" (lava) and a
+ * quiet Résumé link. The pixel scene (PixelSpace) sits on the right on desktop
+ * and in its own row on phones.
  *
- * Client because of the rotating word. Elements marked data-star-avoid are
- * measured by StarField so background stars never draw over them. Everything
- * degrades to a static, readable hero with no JS and under reduced motion.
+ * A Server Component (PixelSpace is the client piece). Elements
+ * marked data-star-avoid are measured by StarField so background stars never
+ * draw over them. Everything degrades to a static, readable hero with no JS and
+ * under reduced motion.
  */
 
-import { useEffect, useState } from 'react';
-import { site } from '@/content';
+import { site, now, nowCopy } from '@/content';
 import PixelSpace from './PixelSpace';
 import styles from './Hero.module.css';
 
-const ROLES = ['systems', 'compilers', 'security'];
+// "2026-11-19" -> "Nov 19, 2026", formatted in UTC so the day never shifts
+const updatedLabel = new Date(`${now.updated}T00:00:00Z`).toLocaleDateString('en-US', {
+  month: 'short',
+  day: 'numeric',
+  year: 'numeric',
+  timeZone: 'UTC',
+});
 
 export default function Hero() {
-  const [i, setI] = useState(0);
-
-  useEffect(() => {
-    const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
-    if (reduced) return;
-    const id = setInterval(() => setI((n) => (n + 1) % ROLES.length), 2200);
-    return () => clearInterval(id);
-  }, []);
-
   return (
     <header id="top" className={styles.hero} data-hero-pending>
       <PixelSpace />
@@ -51,30 +46,39 @@ export default function Hero() {
           </span>
         </h1>
 
-        <p className={styles.welcome} data-hero-lede data-star-avoid>
-          Welcome to my corner of the internet. This is where I build things,
-          chase ideas, and write about what I learn along the way.
-        </p>
-
-        <div className={styles.foot}>
-          <p className={styles.role} data-hero-lede data-star-avoid>
-            <span className={styles.roleStatic}>Software engineer —</span>{' '}
-            <span className={styles.roleRotator} aria-live="polite">
-              {ROLES.map((r, n) => (
-                <span
-                  key={r}
-                  className={styles.roleWord}
-                  data-on={n === i ? 'true' : undefined}
-                  aria-hidden={n === i ? undefined : 'true'}
-                >
-                  {r}
-                </span>
-              ))}
-            </span>
+        <section className={styles.now} aria-labelledby="now-h" data-hero-lede data-star-avoid>
+          <h2 id="now-h" className={styles.nowHeading}>
+            {nowCopy.heading}
+          </h2>
+          <ul className={styles.nowList}>
+            {now.items.slice(0, 4).map((item) => (
+              <li key={item.id} className={styles.nowRow}>
+                {item.href ? (
+                  <a className={`${styles.nowName} ${styles.nowLink}`} href={item.href}>
+                    {item.name}
+                  </a>
+                ) : (
+                  <span className={styles.nowName}>{item.name}</span>
+                )}
+                <span className={styles.nowStatus}>{item.status}</span>
+              </li>
+            ))}
+          </ul>
+          <p className={styles.updated}>
+            {nowCopy.updatedLabel} <time dateTime={now.updated}>{updatedLabel}</time>
           </p>
-          <a className={styles.cta} href="#work" data-hero-lede data-star-avoid>
-            See my work
-          </a>
+        </section>
+
+        <div className={styles.foot} data-hero-lede data-star-avoid>
+          <p className={styles.summary}>{nowCopy.summary}</p>
+          <div className={styles.actions}>
+            <a className={styles.cta} href={nowCopy.ctaHref}>
+              {nowCopy.ctaLabel}
+            </a>
+            <a className={styles.quiet} href={site.resumeHref}>
+              {nowCopy.resumeLabel}
+            </a>
+          </div>
         </div>
       </div>
     </header>

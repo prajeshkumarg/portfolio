@@ -1,4 +1,4 @@
-import type { Education, Experience, Project, SkillGroup, SocialLink } from './types';
+import type { Education, Experience, Now, Project, SkillGroup, SocialLink } from './types';
 import amazonLogo from './public/logos/amazon.png';
 import shellLogo from './public/logos/shell.png';
 import nyuLogo from './public/logos/nyu.png';
@@ -37,6 +37,26 @@ export const sections = {
 } as const;
 
 export type SectionKey = keyof typeof sections;
+
+/** The hero's "Right now" block — edit the items and bump `updated`. */
+export const now: Now = {
+  updated: '2026-11-19',
+  items: [
+    { id: 'psp', name: 'PSP-3000', status: 'Getting a small LLM to run on a 2008 handheld.' },
+    { id: 'kindle', name: 'Kindle', status: 'Jailbroken. Setting up KOReader next.' },
+    { id: 'splat', name: 'Splat renderer', status: 'A parallel CPU renderer for 3D Gaussian splats.' },
+  ],
+};
+
+/** Copy around the "Right now" block in the hero. */
+export const nowCopy = {
+  heading: 'Right now',
+  updatedLabel: 'Updated',
+  summary: 'Software engineer · NYU Courant MSCS, May 2027',
+  ctaLabel: 'See my work',
+  ctaHref: '#work',
+  resumeLabel: 'Résumé',
+};
 
 export const hero = {
   /** The greeting above the stacked statement. */

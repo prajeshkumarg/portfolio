@@ -32,8 +32,11 @@ The page is server-rendered markup and CSS; motion is layered on by client compo
 >   `[data-star-scene]`, and skips every `[data-star-avoid]` rect) and
 >   `Hero/PixelSpace` (a pixel scene cycling black hole → ringed planet → crescent
 >   moon → mini solar system). Both honour reduced motion.
-> - **Hero is a client component** (rotating role word). `Motion`, `StarField`,
->   `PixelSpace` and `Projects` are also client; everything else is a Server Component.
+> - **Client components:** `Motion`, `StarField`, `Hero/PixelSpace` and `Projects`;
+>   everything else, Hero included, is a Server Component.
+> - **Hero "Right now" block:** to update it, edit `now` in `content.ts` (1–4 items:
+>   `id`, `name`, `status`, optional `href`) and bump `now.updated` (ISO date; the
+>   "Updated …" line is formatted from it). The other hero copy is `nowCopy`.
 > - **Sections, in order:** Hero · Experience · Projects · Skills · Education ·
 >   Contact · Footer. There is no Nav component (the hero has its own top bar) and
 >   no Writing section; the blog is a link in the hero bar and Contact.

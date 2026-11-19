@@ -67,3 +67,19 @@ export type SocialLink = {
   label: string;
   href: string;
 };
+
+export type NowItem = {
+  id: string;
+  /** What it is — the left column, a link when `href` is set. */
+  name: string;
+  /** Where it stands right now — the right column. */
+  status: string;
+  href?: string;
+};
+
+/** The hero's "Right now" block. Render 1–4 items. */
+export type Now = {
+  /** ISO date (YYYY-MM-DD) shown as "Updated Nov 19, 2026". Bump on every edit. */
+  updated: string;
+  items: NowItem[];
+};
