@@ -35,6 +35,14 @@
   --step-mid: clamp(2rem, 1.3rem + 3.2vw, 4rem); /* 32–64px section specimens */
   --step-display: clamp(3.25rem, 1.2rem + 9vw, 9rem); /* hero + poster scale */
 
+  /* ---- logos: light marks sit straight on the dark cards ---- */
+  --logo-filter: brightness(0) invert(0.9); /* any transparent mark -> bone */
+  /* a mark with two colours inside it (Shell: red shell + yellow ribs): flat
+     brightness(0) would blob it, so flip by luminance instead — the red goes
+     bone, the yellow goes dark, and the ribs stay legible */
+  --logo-filter-duo: invert(1) grayscale(1) brightness(1.2);
+  --logo-letters: clamp(30px, 2.6vw, 40px); /* shared lettering height, Experience */
+
   /* ---- layout ---- */
   --content-max: 1280px;
   --margin: clamp(20px, 4vw, 64px); /* one pair of equal outer margins */

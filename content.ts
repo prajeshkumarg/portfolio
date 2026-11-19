@@ -6,7 +6,7 @@ import anylangArch from './public/projects/anylang-arch.svg';
 import miniTensorCompilerOutput from './public/projects/minicompiler.png';
 import repoScoutShot from './public/projects/repo-scout.png';
 import heroPortrait from './public/image.png';
-import vitLogo from './public/logos/vit.webp';
+import vitLogo from './public/logos/vit.png';
 
 export const site = {
   wordmark: 'PRAJESH',
@@ -100,6 +100,7 @@ export const experiences: Experience[] = [
     meta: 'AUG 2023 – JUL 2025 · BENGALURU',
     org: 'Shell',
     logo: shellLogo,
+    logoDuotone: true,
     logoLetters: { top: 0.217, bottom: 0.973 },
     role: 'Software Engineer',
     points: [
@@ -179,7 +180,6 @@ export const education: Education[] = [
     institution: 'Vellore Institute of Technology',
     meta: '2019–23 · VELLORE, INDIA',
     logo: vitLogo,
-    logoPlate: true,
   },
 ];
 

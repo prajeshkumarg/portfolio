@@ -20,12 +20,9 @@ export type Experience = {
    * reserved either way, so cards keep the same height before the images land.
    */
   logo?: StaticImageData;
-  /**
-   * Set when the logo is a transparent mark rather than a pre-baked banner.
-   * Puts it on a white plate and fits it inside the band instead of cropping
-   * to fill, which would clip a centred mark.
-   */
-  logoPlate?: boolean;
+  /** The mark has two colours inside it (Shell) — turn it light by luminance
+   *  instead of flattening it to a silhouette. */
+  logoDuotone?: boolean;
 };
 
 export type Project = {
@@ -59,9 +56,6 @@ export type Education = {
   meta: string;
   /** College mark, shown left of the degree row. */
   logo?: StaticImageData;
-  /** Set when the mark sits on a baked-in white field — plates it, like the
-      Shell logo. */
-  logoPlate?: boolean;
 };
 
 export type SocialLink = {

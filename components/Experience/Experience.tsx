@@ -3,16 +3,13 @@ import { experiences } from '@/content';
 import styles from './Experience.module.css';
 
 /*
- * Experience — a bento row of company cards. Each card leads with a large logo
- * panel on the company's own brand colour (the banner logos already carry it),
- * then the dates, role and what was done below. The current role carries a jade
- * dot. This is the "logo-forward card" layout, restyled for the green-black
- * ground.
+ * Experience — a row of company cards. Each card leads with the company logo
+ * set straight on the dark surface (the transparent PNGs are turned bone with
+ * --logo-filter, no plate), then the dates, role and what was done below. Every
+ * logo is scaled so its lettering is the same height (--logo-letters) and sits on
+ * one shared baseline, from the measured `logoLetters` fractions in content.ts.
+ * The current role carries a jade dot.
  */
-
-// a uniform white plate for every logo, so dark/colour marks all read cleanly
-// and the row looks consistent on the green-black ground
-const PLATE = '#ffffff';
 
 export default function Experience() {
   return (
@@ -29,9 +26,20 @@ export default function Experience() {
               data-current={role.current ? 'true' : undefined}
               data-reveal
             >
-              <div className={styles.logoPanel} style={{ background: PLATE }}>
+              <div className={styles.logoPanel}>
                 {role.logo ? (
-                  <Image className={styles.logo} src={role.logo} alt={`${role.org} logo`} sizes="360px" />
+                  <Image
+                    className={styles.logo}
+                    src={role.logo}
+                    alt={`${role.org} logo`}
+                    sizes="360px"
+                    data-duo={role.logoDuotone ? 'true' : undefined}
+                    style={
+                      role.logoLetters
+                        ? ({ '--lt': role.logoLetters.top, '--lb': role.logoLetters.bottom } as React.CSSProperties)
+                        : undefined
+                    }
+                  />
                 ) : (
                   <span className={styles.logoText}>{role.org}</span>
                 )}

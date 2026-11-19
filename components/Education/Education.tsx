@@ -3,10 +3,9 @@ import { education } from '@/content';
 import styles from './Education.module.css';
 
 /*
- * Education — white cards, one per degree: a white logo panel on the left with
- * the mark filling it, and the degree, institution and dates in dark ink on the
- * card's white ground. Light cards are a deliberate break from the dark page,
- * like the old awwwards layout.
+ * Education — dark cards, one per degree: the school's logo on the left, set
+ * straight on the card surface and turned bone by --logo-filter (no plate), then
+ * the degree, institution and dates in light ink.
  */
 
 export default function Education() {
@@ -21,7 +20,7 @@ export default function Education() {
             <li key={e.institution} className={styles.card} data-reveal>
               {e.logo ? (
                 <div className={styles.logoPanel}>
-                  <Image className={styles.logo} src={e.logo} alt={`${e.institution} logo`} sizes="260px" />
+                  <Image className={styles.logo} src={e.logo} alt={`${e.institution} logo`} sizes="200px" />
                 </div>
               ) : null}
               <div className={styles.text}>
