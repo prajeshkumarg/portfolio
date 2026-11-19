@@ -24,11 +24,9 @@ The page is server-rendered markup and CSS; motion is layered on by client compo
 > - **House rules (globals.css header):** no gradients, glass, shadows at rest,
 >   eyebrows, mono, index numbers, thin rules (bar the `--hairline` media frame),
 >   styled accent words, or headlines over two lines.
-> - **Logos** keep their brand colours, set straight on the cards (no plates, no
->   filters). A mark with no dark-ground version yet (`logoTile` in `content.ts`)
->   gets a compact bone tile hugging it, never a full-width band; replace those
->   files with reversed versions and drop the flag. Experience sizes logos from
->   `logoLetters` so lettering height and baseline match.
+> - **Logos** (Experience, Education) sit on white plates, as on the branch's
+>   original build: the Experience plate is a 16:7 panel, the Education plate fills
+>   the card's left side. Logo files are in `public/logos/`.
 > - **Canvas is explicitly approved on this branch** (no 3D library): `StarField`
 >   (full-page, parallax star layer; rings the hero scene via
 >   `[data-star-scene]`, and skips every `[data-star-avoid]` rect) and

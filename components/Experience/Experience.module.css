@@ -35,35 +35,21 @@
   outline-offset: -2px;
 }
 
-/* the logo zone: a fixed-height box on the card surface. Each logo is sized so
-   its lettering (--lt..--lb, fractions of the file height) is --logo-letters
-   tall, then offset so every lettering bottom lands on one shared baseline. */
+/* the big logo panel on the company's own brand colour */
 .logoPanel {
-  --base: calc(var(--logo-letters) * 1.35); /* baseline distance from the zone top */
-  position: relative;
-  height: calc(var(--logo-letters) * 2.4); /* room for Amazon's smile and tile padding below the baseline */
-  margin: clamp(20px, 2vw, 28px) clamp(20px, 2vw, 28px) 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  aspect-ratio: 16 / 7;
+  padding: clamp(24px, 3vw, 40px);
 }
 
 .logo {
-  --h: calc(var(--logo-letters) / (var(--lb) - var(--lt)));
-  position: absolute;
-  left: 0;
-  top: calc(var(--base) - var(--lb) * var(--h));
   width: auto;
-  height: var(--h);
-  max-width: none;
-}
-
-/* compact tile hugging the mark: padding + background on the img itself, with the
-   top offset pulled up by the padding so the lettering baseline does not move */
-.logo[data-tile='true'] {
-  box-sizing: content-box;
-  padding: var(--logo-tile-pad-y) var(--logo-tile-pad-x);
-  background: var(--logo-tile);
-  border-radius: 8px;
-  left: calc(-1 * var(--logo-tile-pad-x));
-  top: calc(var(--base) - var(--lb) * var(--h) - var(--logo-tile-pad-y));
+  max-width: 78%;
+  height: auto;
+  max-height: 64%;
+  object-fit: contain;
 }
 
 .logoText {

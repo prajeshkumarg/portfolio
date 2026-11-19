@@ -3,13 +3,16 @@ import { experiences } from '@/content';
 import styles from './Experience.module.css';
 
 /*
- * Experience — a row of company cards. Each card leads with the company logo
- * set straight on the dark surface in its own brand colours (no full-width plate;
- * a mark with no dark-ground version gets a compact tile hugging it, logoTile), then the dates, role and what was done below. Every
- * logo is scaled so its lettering is the same height (--logo-letters) and sits on
- * one shared baseline, from the measured `logoLetters` fractions in content.ts.
- * The current role carries a jade dot.
+ * Experience — a bento row of company cards. Each card leads with a large logo
+ * panel on the company's own brand colour (the banner logos already carry it),
+ * then the dates, role and what was done below. The current role carries a jade
+ * dot. This is the "logo-forward card" layout, restyled for the green-black
+ * ground.
  */
+
+// a uniform white plate for every logo, so dark/colour marks all read cleanly
+// and the row looks consistent on the green-black ground
+const PLATE = '#ffffff';
 
 export default function Experience() {
   return (
@@ -26,20 +29,9 @@ export default function Experience() {
               data-current={role.current ? 'true' : undefined}
               data-reveal
             >
-              <div className={styles.logoPanel}>
+              <div className={styles.logoPanel} style={{ background: PLATE }}>
                 {role.logo ? (
-                  <Image
-                    className={styles.logo}
-                    src={role.logo}
-                    alt={`${role.org} logo`}
-                    sizes="360px"
-                    data-tile={role.logoTile ? 'true' : undefined}
-                    style={
-                      role.logoLetters
-                        ? ({ '--lt': role.logoLetters.top, '--lb': role.logoLetters.bottom } as React.CSSProperties)
-                        : undefined
-                    }
-                  />
+                  <Image className={styles.logo} src={role.logo} alt={`${role.org} logo`} sizes="360px" />
                 ) : (
                   <span className={styles.logoText}>{role.org}</span>
                 )}

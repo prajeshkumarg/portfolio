@@ -1,4 +1,4 @@
-/* Education — dark cards, the logo set straight on the surface, + light text. */
+/* Education — dark cards with a white logo plate the mark fills, + light text. */
 
 .section {
   padding-block: var(--gap-section);
@@ -21,40 +21,36 @@
 /* a card on the page's own surface, so it belongs to the dark page */
 .card {
   display: grid;
-  grid-template-columns: clamp(190px, 24vw, 280px) 1fr;
+  grid-template-columns: clamp(180px, 22vw, 240px) 1fr;
   align-items: stretch;
   background: var(--surface);
   overflow: hidden;
   border-radius: 4px;
 }
 
-/* the logo cell: bone mark on the card surface, no plate. NYU and VIT share
-   one width so the two banners carry the same visual weight. */
+/* the white plate fills the whole left side of the card, edge to edge */
 .logoPanel {
+  background: #fff;
   display: flex;
   align-items: center;
-  justify-content: flex-start;
-  padding: clamp(20px, 2.4vw, 32px) 0 clamp(20px, 2.4vw, 32px) clamp(22px, 2.4vw, 36px);
+  justify-content: center;
+  padding: clamp(6px, 0.7vw, 11px) clamp(20px, 2vw, 32px);
 }
 
 .logo {
-  width: clamp(150px, 15vw, 200px);
+  width: auto;
   height: auto;
-}
-
-.logo[data-tile='true'] {
-  box-sizing: content-box;
-  padding: var(--logo-tile-pad-y) var(--logo-tile-pad-x);
-  background: var(--logo-tile);
-  border-radius: 8px;
-  width: clamp(130px, 13vw, 176px); /* content width; padding makes up the rest */
+  max-width: 100%;
+  max-height: 56px;
+  object-fit: contain;
+  display: block;
 }
 
 .text {
   display: flex;
   flex-direction: column;
   justify-content: center;
-  padding: clamp(20px, 2.4vw, 32px) clamp(22px, 2.4vw, 36px);
+  padding: clamp(10px, 1vw, 16px) clamp(22px, 2.4vw, 36px);
 }
 
 .degree {
@@ -86,10 +82,6 @@
   }
 
   .logoPanel {
-    padding-bottom: 0;
-  }
-
-  .text {
-    padding-top: 16px;
+    aspect-ratio: 16 / 7;
   }
 }

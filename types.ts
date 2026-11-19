@@ -20,10 +20,12 @@ export type Experience = {
    * reserved either way, so cards keep the same height before the images land.
    */
   logo?: StaticImageData;
-  /** The file only reads on a light ground (no reversed / dark-background version
-   *  yet): give it a compact bone tile hugging the logo. Drop once a reversed file
-   *  replaces it. */
-  logoTile?: boolean;
+  /**
+   * Set when the logo is a transparent mark rather than a pre-baked banner.
+   * Puts it on a white plate and fits it inside the band instead of cropping
+   * to fill, which would clip a centred mark.
+   */
+  logoPlate?: boolean;
 };
 
 export type Project = {
@@ -57,8 +59,9 @@ export type Education = {
   meta: string;
   /** College mark, shown left of the degree row. */
   logo?: StaticImageData;
-  /** As on Experience: a compact tile until a dark-ground version exists. */
-  logoTile?: boolean;
+  /** Set when the mark sits on a baked-in white field — plates it, like the
+      Shell logo. */
+  logoPlate?: boolean;
 };
 
 export type SocialLink = {

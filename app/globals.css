@@ -38,12 +38,6 @@
   --step-mid: clamp(2rem, 1.3rem + 3.2vw, 4rem); /* 32–64px section specimens */
   --step-display: clamp(3.25rem, 1.2rem + 9vw, 9rem); /* hero + poster scale */
 
-  /* ---- logos: brand colours, straight on the dark cards ---- */
-  --logo-tile: var(--ink); /* compact backing for a mark with no dark-ground version yet */
-  --logo-tile-pad-y: 8px;
-  --logo-tile-pad-x: 12px;
-  --logo-letters: clamp(30px, 2.6vw, 40px); /* shared lettering height, Experience */
-
   /* ---- layout ---- */
   --content-max: 1280px;
   --margin: clamp(20px, 4vw, 64px); /* one pair of equal outer margins */
