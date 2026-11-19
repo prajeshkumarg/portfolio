@@ -8,6 +8,40 @@ Next.js (App Router) · TypeScript · CSS Modules · GSAP (ScrollTrigger) · Len
 
 The page is server-rendered markup and CSS; motion is layered on by client components.
 
+> **Branch `experiment/taste-folio` (current direction)** — a dark, type-only
+> redesign. **These rules, and the header comment in `app/globals.css`, win over
+> everything below** (the older notes describe other branches and are history).
+>
+> - **Look:** green-black ground `--bg #0d1412`, `--surface #16211e` cards, bone ink
+>   `--ink #e8e6dc`, `--muted`, one pale-jade `--accent #9fc7b8` (links, hover, the
+>   Contact button), and a lava `--lava #d2693a` hero CTA. `--hairline` is the one
+>   1px frame token (Projects media). Tokens live in `app/globals.css`; components
+>   use `var(--*)` only.
+> - **Type:** Switzer only (`--font`), loaded from the Fontshare `<link>` in
+>   `app/layout.tsx` (not `next/font`). Steps: `--step-small` (quiet chrome),
+>   `--step-card` (card body, the floor for reading text), `--step-body`,
+>   `--step-lead`, `--step-mid`, `--step-display`. No serif, no mono.
+> - **House rules (globals.css header):** no gradients, glass, shadows at rest,
+>   eyebrows, mono, index numbers, thin rules (bar the `--hairline` media frame),
+>   styled accent words, or headlines over two lines.
+> - **Logos** are transparent PNGs set straight on the cards, turned bone with
+>   `--logo-filter` (Shell, a two-colour mark, uses `--logo-filter-duo`). Experience
+>   sizes them from `logoLetters` so lettering height and baseline match.
+> - **Canvas is explicitly approved on this branch** (no 3D library): `StarField`
+>   (full-page, parallax star layer; rings the hero scene via
+>   `[data-star-scene]`, and skips every `[data-star-avoid]` rect) and
+>   `Hero/PixelSpace` (a pixel scene cycling black hole → ringed planet → crescent
+>   moon → mini solar system). Both honour reduced motion.
+> - **Hero is a client component** (rotating role word). `Motion`, `StarField`,
+>   `PixelSpace` and `Projects` are also client; everything else is a Server Component.
+> - **Sections, in order:** Hero · Experience · Projects · Skills · Education ·
+>   Contact · Footer. There is no Nav component (the hero has its own top bar) and
+>   no Writing section; the blog is a link in the hero bar and Contact.
+> - GSAP + Lenis (`components/Motion`) are approved here for the hero intro and
+>   scroll reveals (`data-hero-line`, `data-hero-lede`, `data-reveal`).
+
+> **History — the notes below describe older branches, not `taste-folio`.**
+
 > **Branch `experiment/zoom-folio` (current direction)** — a complete editorial
 > redesign. The landing is a single composed "cover" **scene** (`components/Scene`,
 > a client component) with no nav at rest: a greeting, the circular Central Park

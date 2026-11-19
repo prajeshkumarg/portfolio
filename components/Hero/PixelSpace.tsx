@@ -1,16 +1,19 @@
 'use client';
 
 /*
- * PixelSpace — the hero's pixel-art space, in two layers:
+ * PixelSpace — the hero's pixel-art scene: one small transparent canvas (150px,
+ * scaled up with hard pixel edges) that cycles through four pieces of space art,
+ * cross-fading between them every ~4s:
  *
- *   1. a scattered starfield across the WHOLE hero, denser toward the galaxy
- *      (right side) and thinning out everywhere else, kept clear of the text;
- *   2. the GALAXY scene in the right half — a slowly turning spiral Milky-Way
- *      (a bright core with two curved arms of stars), same pixel style and
- *      same spot where the planet used to be. No planet, no comet.
+ *   1. an Interstellar-style black hole (drawn at 3x into a buffer and blitted
+ *      down smooth, so its rings read defined, not chunky);
+ *   2. a ringed planet with an orbiting moon;
+ *   3. a crescent moon;
+ *   4. a mini solar system (a sun and two orbiting planets).
  *
- * Both are transparent and frameless on the hero ground. Reduced motion holds
- * everything still.
+ * The canvas carries data-star-scene so StarField can measure it and ring it
+ * with stars. Reduced motion holds still on the black hole. The background
+ * stars live in StarField, not here.
  */
 
 import { useEffect, useRef } from 'react';
@@ -211,15 +214,4 @@ export default function PixelSpace() {
   }, []);
 
   return <canvas ref={sceneRef} className={styles.canvas} data-star-scene aria-hidden="true" />;
-}
-
-function mulberry32(seed: number) {
-  let a = seed;
-  return function () {
-    a |= 0;
-    a = (a + 0x6d2b79f5) | 0;
-    let t = Math.imul(a ^ (a >>> 15), 1 | a);
-    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
-    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
-  };
 }

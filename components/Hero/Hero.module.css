@@ -49,7 +49,7 @@
   justify-content: center;
 }
 
-/* the name: two lines, line-height 0.82, flush left, pointer-reactive weight */
+/* the name: two lines, flush left */
 .name {
   position: relative;
   z-index: 1;

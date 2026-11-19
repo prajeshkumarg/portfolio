@@ -1,16 +1,15 @@
 'use client';
 
 /*
- * Hero — the one unique moment on the page (taste-skill v2: anti-center,
- * motivated kinetic type, emphasis in the SAME family, no serif accent, no
- * scroll cue). The name is huge and two-ink; beneath it one line re-sets a
- * rotating role word in place — "systems", "compilers", "security" — a masked
- * swap that shows the breadth of the work without a paragraph. Same Switzer
- * throughout; the rotating word is the bold emphasis.
+ * Hero — the one unique moment on the page. The name is huge and two-ink; under
+ * it sit a welcome line, then a role line that re-sets a rotating word in place
+ * ("systems", "compilers", "security" — a masked swap) beside the lava CTA. Name,
+ * welcome, role and CTA are one group, centred under the top bar. The pixel scene
+ * (PixelSpace) sits on the right on desktop and in its own row on phones.
  *
- * Client because of the rotating word and the pointer-reactive weight on the
- * name. Everything degrades to a static, readable hero with no JS and under
- * reduced motion.
+ * Client because of the rotating word. Elements marked data-star-avoid are
+ * measured by StarField so background stars never draw over them. Everything
+ * degrades to a static, readable hero with no JS and under reduced motion.
  */
 
 import { useEffect, useState } from 'react';
