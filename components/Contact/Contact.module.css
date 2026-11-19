@@ -1,4 +1,4 @@
-/* Contact — the close, full-width display rows. */
+/* Contact — the close: pitch, a grid of link blocks, the email button. */
 
 .section {
   padding-block: var(--gap-section);
@@ -20,44 +20,44 @@
   line-height: 1.4;
 }
 
-/* the ways to reach — full-width rows, told apart by alternating tone bands */
+/* the ways to reach: a two-column grid of link blocks, each label sitting
+   directly above its value, left-aligned. No bars, no fills — spacing only. */
 .rows {
   margin-top: clamp(48px, 7vh, 88px);
-  border-top: 0;
-}
-
-.row {
-  width: 100%;
-}
-
-.row:nth-child(odd) {
-  background: var(--surface);
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: clamp(32px, 5vh, 56px) clamp(24px, 4vw, 64px);
 }
 
 .rowLink {
   display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: 24px;
-  padding: clamp(18px, 2.4vh, 28px) clamp(12px, 2vw, 24px);
-  transition: color var(--t-fast) var(--ease-out);
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+  width: fit-content;
+  max-width: 100%;
 }
 
 .rowLabel {
   color: var(--muted);
-  font-size: var(--step-small);
-  letter-spacing: 0.02em;
+  font-size: var(--step-card);
+  letter-spacing: 0.01em;
+  transition: color var(--t-fast) var(--ease-out);
 }
 
 .rowValue {
   font-weight: 600;
   letter-spacing: -0.03em;
-  line-height: 1;
-  font-size: clamp(1.75rem, 4.5vw, 3.5rem);
-  text-align: right;
+  line-height: 1.05;
+  font-size: clamp(1.625rem, 3.4vw, 2.75rem);
+  overflow-wrap: anywhere;
+  transition: color var(--t-fast) var(--ease-out);
 }
 
-.rowLink:hover .rowValue {
+.rowLink:hover .rowValue,
+.rowLink:focus-visible .rowValue,
+.rowLink:hover .rowLabel,
+.rowLink:focus-visible .rowLabel {
   color: var(--accent);
 }
 
@@ -89,13 +89,7 @@
 }
 
 @media (max-width: 720px) {
-  .rowLink {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 6px;
-  }
-
-  .rowValue {
-    text-align: left;
+  .rows {
+    grid-template-columns: 1fr;
   }
 }
