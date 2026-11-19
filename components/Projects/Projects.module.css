@@ -64,12 +64,14 @@
   transform: translate(2px, -2px);
 }
 
-/* right: the sticky preview. Its top aligns with the first row's top rule
-   (the list has no leading padding, so top:0 at the split row lines them up),
-   and it stays in view while the shorter list scrolls past. */
+/* right: the sticky preview. Lifted up so the diagram's top sits near the
+   "Things I have built" heading rather than dropping to the first row — the
+   gap above it otherwise reads oddly against the left column. On desktop the
+   negative margin pulls it over the heading row; it stays sticky below that. */
 .preview {
   position: sticky;
   top: clamp(40px, 12vh, 120px);
+  margin-top: calc(-1 * (var(--step-mid) + clamp(32px, 4.5vh, 56px)));
 }
 
 .previewInner {
