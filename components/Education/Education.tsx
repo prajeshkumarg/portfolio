@@ -4,7 +4,8 @@ import styles from './Education.module.css';
 
 /*
  * Education — dark cards, one per degree: the school's logo on the left, set
- * straight on the card surface and turned bone by --logo-filter (no plate), then
+ * straight on the card surface in its brand colours (a compact tile hugging the
+ * mark where there is no dark-ground version yet, never a full-width plate), then
  * the degree, institution and dates in light ink.
  */
 
@@ -20,7 +21,13 @@ export default function Education() {
             <li key={e.institution} className={styles.card} data-reveal>
               {e.logo ? (
                 <div className={styles.logoPanel}>
-                  <Image className={styles.logo} src={e.logo} alt={`${e.institution} logo`} sizes="200px" />
+                  <Image
+                    className={styles.logo}
+                    src={e.logo}
+                    alt={`${e.institution} logo`}
+                    sizes="200px"
+                    data-tile={e.logoTile ? 'true' : undefined}
+                  />
                 </div>
               ) : null}
               <div className={styles.text}>

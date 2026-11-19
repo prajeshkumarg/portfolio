@@ -4,8 +4,8 @@ import styles from './Experience.module.css';
 
 /*
  * Experience — a row of company cards. Each card leads with the company logo
- * set straight on the dark surface (the transparent PNGs are turned bone with
- * --logo-filter, no plate), then the dates, role and what was done below. Every
+ * set straight on the dark surface in its own brand colours (no full-width plate;
+ * a mark with no dark-ground version gets a compact tile hugging it, logoTile), then the dates, role and what was done below. Every
  * logo is scaled so its lettering is the same height (--logo-letters) and sits on
  * one shared baseline, from the measured `logoLetters` fractions in content.ts.
  * The current role carries a jade dot.
@@ -33,7 +33,7 @@ export default function Experience() {
                     src={role.logo}
                     alt={`${role.org} logo`}
                     sizes="360px"
-                    data-duo={role.logoDuotone ? 'true' : undefined}
+                    data-tile={role.logoTile ? 'true' : undefined}
                     style={
                       role.logoLetters
                         ? ({ '--lt': role.logoLetters.top, '--lb': role.logoLetters.bottom } as React.CSSProperties)

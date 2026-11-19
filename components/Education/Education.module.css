@@ -40,7 +40,14 @@
 .logo {
   width: clamp(150px, 15vw, 200px);
   height: auto;
-  filter: var(--logo-filter);
+}
+
+.logo[data-tile='true'] {
+  box-sizing: content-box;
+  padding: var(--logo-tile-pad-y) var(--logo-tile-pad-x);
+  background: var(--logo-tile);
+  border-radius: 8px;
+  width: clamp(130px, 13vw, 176px); /* content width; padding makes up the rest */
 }
 
 .text {

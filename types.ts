@@ -20,9 +20,10 @@ export type Experience = {
    * reserved either way, so cards keep the same height before the images land.
    */
   logo?: StaticImageData;
-  /** The mark has two colours inside it (Shell) — turn it light by luminance
-   *  instead of flattening it to a silhouette. */
-  logoDuotone?: boolean;
+  /** The file only reads on a light ground (no reversed / dark-background version
+   *  yet): give it a compact bone tile hugging the logo. Drop once a reversed file
+   *  replaces it. */
+  logoTile?: boolean;
 };
 
 export type Project = {
@@ -56,6 +57,8 @@ export type Education = {
   meta: string;
   /** College mark, shown left of the degree row. */
   logo?: StaticImageData;
+  /** As on Experience: a compact tile until a dark-ground version exists. */
+  logoTile?: boolean;
 };
 
 export type SocialLink = {
