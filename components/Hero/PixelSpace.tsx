@@ -210,7 +210,7 @@ export default function PixelSpace() {
     return () => cancelAnimationFrame(raf);
   }, []);
 
-  return <canvas ref={sceneRef} className={styles.canvas} aria-hidden="true" />;
+  return <canvas ref={sceneRef} className={styles.canvas} data-star-scene aria-hidden="true" />;
 }
 
 function mulberry32(seed: number) {

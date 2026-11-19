@@ -9,6 +9,12 @@
  * SHARP round points (not chunky pixel squares). Density is low and biased to
  * the side margins; opacity varies for depth. Bright stars flash a crisp
  * 4-point sparkle at their twinkle peak. Off under prefers-reduced-motion.
+ *
+ * Two extra star groups hug the hero's pixel scene: a ring around it and a
+ * small pocket by its moon. Both are placed from the scene's real on-screen rect
+ * (the [data-star-scene] canvas, measured with getBoundingClientRect and
+ * re-measured on resize / font load), in pixels around its centre, so the
+ * falloff is round at every viewport size.
  */
 
 import { useEffect, useRef } from 'react';
@@ -23,8 +29,6 @@ export default function StarField() {
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
     const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
-    const rng = mulberry32(31337);
-
     const dpr = Math.min(window.devicePixelRatio || 1, 2);
     let W = window.innerWidth; // CSS px
     let H = 0; // CSS px, document height
@@ -61,79 +65,76 @@ export default function StarField() {
       '#b8c6d6', // faint cool blue
       '#cfe6dc', // pale jade-white
     ];
-    const stars: Star[] = [];
-    const COUNT = Math.round((H / 10) * 1.6); // more stars overall
-    for (let i = 0; i < COUNT; i++) {
-      // allow stars across the full width (incl. the centre gap); only nudge a
-      // small share out of the middle so the field is even, not segregated.
-      let nx = rng();
-      if (nx > 0.35 && nx < 0.65 && rng() > 0.75) {
-        nx = rng() < 0.5 ? rng() * 0.35 : 0.65 + rng() * 0.35;
+    // (re)built whenever the page is re-measured, so the scene cluster follows it
+    let stars: Star[] = [];
+    const build = () => {
+      const next: Star[] = [];
+      const rng = mulberry32(31337); // same seed every build -> a stable field
+      const COUNT = Math.round((H / 10) * 1.6); // more stars overall
+      for (let i = 0; i < COUNT; i++) {
+        // allow stars across the full width (incl. the centre gap); only nudge a
+        // small share out of the middle so the field is even, not segregated.
+        let nx = rng();
+        if (nx > 0.35 && nx < 0.65 && rng() > 0.75) {
+          nx = rng() < 0.5 ? rng() * 0.35 : 0.65 + rng() * 0.35;
+        }
+        const big = rng() > 0.78;
+        next.push({
+          nx,
+          ny: rng(),
+          r: big ? 2.4 + rng() * 1.8 : 1.1 + rng() * 1.0, // bigger overall, more visible
+          period: 1800 + rng() * 3600,
+          phase: rng() * Math.PI * 2,
+          op: big ? 0.75 + rng() * 0.25 : 0.4 + rng() * 0.5, // brighter overall
+          col: PALETTE[Math.floor(rng() * PALETTE.length)],
+          sparkle: big && rng() > 0.4,
+        });
       }
-      const big = rng() > 0.78;
-      stars.push({
-        nx,
-        ny: rng(),
-        r: big ? 2.4 + rng() * 1.8 : 1.1 + rng() * 1.0, // bigger overall, more visible
-        period: 1800 + rng() * 3600,
-        phase: rng() * Math.PI * 2,
-        op: big ? 0.75 + rng() * 0.25 : 0.4 + rng() * 0.5, // brighter overall
-        col: PALETTE[Math.floor(rng() * PALETTE.length)],
-        sparkle: big && rng() > 0.4,
-      });
-    }
 
-    // a RING of stars hugging the planet's edge, evenly all the way around
-    // (left, right, top, bottom, diagonals) — not a disc the planet covers, so
-    // it does not read as just top/bottom bands.
-    const planetNx = 0.8;
-    const planetNy = (window.innerHeight * 0.5) / H;
-    const vh = window.innerHeight;
-    const planetR = (vh * 0.2) / H; // approx planet radius as a page fraction
-    const aspect = window.innerWidth / H; // to keep the ring circular on screen
-    for (let i = 0; i < 240; i++) {
-      const ang = rng() * Math.PI * 2;
-      // distance just outside the planet, fading outward
-      const dist = planetR * (1.05 + Math.pow(rng(), 1.5) * 1.8);
-      const nx = planetNx + (Math.cos(ang) * dist) / aspect; // /aspect -> round on screen
-      const ny = planetNy + Math.sin(ang) * dist;
-      if (nx < 0.5 || nx > 1 || ny < 0) continue;
-      const big = rng() > 0.78;
-      stars.push({
-        nx,
-        ny,
-        r: big ? 2.4 + rng() * 1.8 : 1.1 + rng() * 1.0,
-        period: 1600 + rng() * 3000,
-        phase: rng() * Math.PI * 2,
-        op: big ? 0.75 + rng() * 0.25 : 0.45 + rng() * 0.5,
-        col: PALETTE[Math.floor(rng() * PALETTE.length)],
-        sparkle: big && rng() > 0.4,
-      });
-    }
+      // Stars hugging the hero's pixel scene, placed from its real on-screen rect so
+      // they stay round (px around the centre, no page-fraction stretching) on any
+      // viewport. Page coordinates: rect + scroll offset.
+      const sceneEl = document.querySelector<HTMLElement>('[data-star-scene]');
+      const sr = sceneEl?.getBoundingClientRect();
+      if (sr && sr.width > 0) {
+        const cx = sr.left + sr.width / 2 + window.scrollX;
+        const cy = sr.top + sr.height / 2 + window.scrollY;
+        const rim = sr.width * 0.3; // roughly the visible planet / ring edge
+        const addNear = (x: number, y: number, bigChance: number, sparkleChance: number) => {
+          if (x < 0 || x > W || y < 0 || y > H) return;
+          const big = rng() > bigChance;
+          next.push({
+            nx: x / W,
+            ny: y / H,
+            r: big ? 2.3 + rng() * 1.5 : 1.05 + rng() * 0.95,
+            period: 1600 + rng() * 3000,
+            phase: rng() * Math.PI * 2,
+            op: big ? 0.75 + rng() * 0.25 : 0.45 + rng() * 0.5,
+            col: PALETTE[Math.floor(rng() * PALETTE.length)],
+            sparkle: big && rng() > sparkleChance,
+          });
+        };
 
-    // a small tight cluster right around the MOON (lower-left of the planet),
-    // so it sits in its own little pocket of stars, not bare space
-    const moonNx = planetNx - 0.055;
-    const moonNy = planetNy + (window.innerHeight * 0.06) / H;
-    const moonSpread = (window.innerHeight * 0.16) / H;
-    for (let i = 0; i < 60; i++) {
-      const ang = rng() * Math.PI * 2;
-      const rad = Math.pow(rng(), 0.5) * moonSpread;
-      const nx = moonNx + Math.cos(ang) * rad * 0.9;
-      const ny = moonNy + Math.sin(ang) * rad;
-      if (nx < 0.5 || nx > 1) continue;
-      const big = rng() > 0.82;
-      stars.push({
-        nx,
-        ny,
-        r: big ? 2.2 + rng() * 1.4 : 1.0 + rng() * 0.9,
-        period: 1600 + rng() * 3000,
-        phase: rng() * Math.PI * 2,
-        op: big ? 0.75 + rng() * 0.25 : 0.45 + rng() * 0.5,
-        col: PALETTE[Math.floor(rng() * PALETTE.length)],
-        sparkle: big && rng() > 0.5,
-      });
-    }
+        // a ring just outside the scene, even all the way round, thinning outward
+        for (let i = 0; i < 240; i++) {
+          const ang = rng() * Math.PI * 2;
+          const dist = rim * (1.05 + Math.pow(rng(), 1.5) * 1.8);
+          addNear(cx + Math.cos(ang) * dist, cy + Math.sin(ang) * dist, 0.78, 0.4);
+        }
+
+        // a small pocket by the moon (lower-left of the scene)
+        const mx = cx - sr.width * 0.14;
+        const my = cy + sr.width * 0.094;
+        const spread = sr.width * 0.25;
+        for (let i = 0; i < 60; i++) {
+          const ang = rng() * Math.PI * 2;
+          const rad = Math.pow(rng(), 0.5) * spread;
+          addNear(mx + Math.cos(ang) * rad, my + Math.sin(ang) * rad, 0.82, 0.5);
+        }
+      }
+
+      stars = next;
+    };
 
     const dot = (x: number, y: number, r: number, col: string) => {
       ctx.fillStyle = col;
@@ -182,10 +183,15 @@ export default function StarField() {
     };
 
     let raf = 0;
-    const onResize = () => size();
+    const measure = () => {
+      size();
+      build();
+    };
+    const onResize = measure;
     window.addEventListener('resize', onResize);
-    const t1 = setTimeout(size, 400);
-    const t2 = setTimeout(size, 1200);
+    const t1 = setTimeout(measure, 400);
+    const t2 = setTimeout(measure, 1200);
+    document.fonts?.ready.then(measure); // Switzer loads late and moves the layout
 
     // parallax: the field drifts slower than the content
     const onScroll = () => {
@@ -194,6 +200,7 @@ export default function StarField() {
     onScroll();
     window.addEventListener('scroll', onScroll, { passive: true });
 
+    build();
     if (reduced) {
       draw(0);
     } else {

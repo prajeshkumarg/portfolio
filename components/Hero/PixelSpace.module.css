@@ -44,12 +44,20 @@
   }
 }
 
-/* phone: keep it small and faint in the corner, behind the type */
+/* phone: the scene leaves the absolute layer and takes its own row in the hero
+   grid, between the top bar and the name — fully on-screen, right-aligned to the
+   page margin, never under any text (Hero.module.css assigns the grid rows) */
 @media (max-width: 720px) {
   .canvas {
-    width: 200px;
-    right: -40px;
-    bottom: clamp(96px, 20vh, 180px);
-    opacity: 0.4;
+    position: relative;
+    grid-row: 2;
+    justify-self: end;
+    top: auto;
+    right: auto;
+    bottom: auto;
+    transform: none;
+    width: min(62vw, 260px);
+    margin-top: 8px;
+    opacity: 1;
   }
 }
