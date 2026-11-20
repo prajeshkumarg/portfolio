@@ -105,20 +105,6 @@ The page is server-rendered markup and CSS; motion is layered on by client compo
 > - **Sections, in order:** Hero · Experience · Projects · Skills · Education ·
 >   Contact · Footer. There is no Nav component (the hero has its own top bar) and
 >   no Writing section; the blog is a link in the hero bar and Contact.
-> - **The page is a stack of sheets** (`app/page.tsx`): the hero is the transparent
->   bottom card and each section after it (the footer rides in the last) is a solid
->   `.sheet-solid` (opaque `--bg`, `--radius-sheet` top corners, a `--sheet-edge`
->   top highlight, a faint static `--sheet-stars` texture). On desktop/tablet with a
->   fine pointer (>=768px) and once Motion has booted (`html.motion`), sheets are
->   `position: sticky` and the next slides up over the current one; the covered one
->   scales to 0.94, dims (content to 0.4, an overlay via `--dim` to 0.35), scrubbed to
->   the scroll, and the covering sheet gets `--shadow-sheet`. `Motion` sets
->   `--sheet-top` per sheet (`min(0, vh - height)`) so a sheet taller than the
->   viewport scrolls fully, then sticks by its bottom. Hash links scroll to the
->   target sheet's real top (cumulative heights, never a sticky element's offsetTop)
->   so it lands on top and unscaled. Phones, reduced motion and no-JS get plain
->   stacked blocks. GSAP + Lenis are approved here; there are no per-section entrance
->   animations, no heading parallax and no zoom.
 > - **Hero "Building now" cards:** each `now.items` entry in `content.ts` (1–4: `id`,
 >   `name`, `line`, `art`, optional `href`) renders as a `Hero/HeroCard`: a plain
 >   14px-radius card (`--radius-card-hero`) with a tinted panel on top holding a 32×20 pixel scene
