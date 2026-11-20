@@ -3,12 +3,13 @@
 /* No bottom padding: the cards and buttons end exactly at the hero's bottom edge,
    and the next section's own --gap-section is the only space after them. The
    hero stops --hero-foot short of the viewport so the cards still sit just inside
-   the first screen. Left/right use --gutter, the same edge as every section. */
+   the first screen. The hero is full-width: name and cards hug the left page
+   margin, the buttons and the pixel scene the right one. */
 .hero {
   --hero-foot: clamp(24px, 4vh, 40px);
   position: relative;
   min-height: calc(100svh - var(--hero-foot));
-  padding: clamp(20px, 4vw, 40px) var(--gutter) 0;
+  padding: clamp(20px, 4vw, 40px) var(--margin) 0;
   display: grid;
   grid-template-rows: auto 1fr;
   background: transparent; /* the full-page StarField shows through continuously */
@@ -119,12 +120,12 @@
   display: flex;
 }
 
-/* bottom-right of the hero: on the right content edge (--gutter) and the same
+/* bottom-right of the hero: on the right page margin and the same
    bottom edge as the card row, so the two share one baseline */
 .actions {
   position: absolute;
   z-index: 1;
-  right: var(--gutter);
+  right: var(--margin);
   bottom: 0;
   display: flex;
   align-items: center;

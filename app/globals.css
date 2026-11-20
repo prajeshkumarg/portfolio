@@ -70,10 +70,6 @@
   /* ---- layout ---- */
   --content-max: 1280px;
   --margin: clamp(20px, 4vw, 64px); /* one pair of equal outer margins */
-  /* the left/right edge of ALL content: where .wrap's padding ends. Resolves against
-     the width of whatever uses it, so a full-width hero lands on the same x as the
-     centred sections. */
-  --gutter: calc(max(0px, (100% - var(--content-max)) / 2) + var(--margin));
   --gap-section: clamp(120px, 18vh, 240px); /* section rhythm */
   --scroll-offset: 80px;
 

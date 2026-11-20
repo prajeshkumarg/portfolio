@@ -47,10 +47,10 @@ The page is server-rendered markup and CSS; motion is layered on by client compo
 >   Nov 19" comes from it). Other hero copy is `nowCopy`. The buttons sit bottom-right
 >   on the same bottom edge as the cards (stacked, full width on phones). PixelSpace
 >   has no per-item scenes, so hover does not switch it.
-> - **One left edge:** the hero uses `--gutter` (globals.css) for its left/right
->   padding and `.wrap` uses the same max-width + `--margin`, so "Prajesh", "Building
->   now" and every section heading start at the same x. The hero has no bottom
->   padding; the gap to the next section is that section's `--gap-section`.
+> - **Hero is full-width:** the name and the cards hug the left page margin, the
+>   buttons and the pixel scene the right one (`--margin`), while sections below sit
+>   in the centred `.wrap` column. The hero has no bottom padding; the gap to the
+>   next section is that section's `--gap-section`.
 > - **Sections, in order:** Hero · Experience · Projects · Skills · Education ·
 >   Contact · Footer. There is no Nav component (the hero has its own top bar) and
 >   no Writing section; the blog is a link in the hero bar and Contact.
