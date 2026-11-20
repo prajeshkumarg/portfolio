@@ -100,15 +100,19 @@
   .phoneList {
     display: flex;
     flex-direction: column;
+    gap: 10px;
   }
 
+  /* each row is a card on the page's green-black surface */
   .prow {
     display: grid;
     grid-template-columns: 32px minmax(0, 1fr) auto;
     align-items: center;
     column-gap: 12px;
     min-height: 60px;
-    padding: 10px 0;
+    padding: 10px 14px;
+    background: var(--surface);
+    border-radius: 12px;
   }
 
   .ptile {

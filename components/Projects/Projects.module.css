@@ -203,11 +203,14 @@
   .phoneList {
     display: flex;
     flex-direction: column;
+    gap: 10px;
   }
 
+  /* each project is a card on the page's green-black surface */
   .prow {
-    padding: 12px 0;
-    border-top: 1px solid color-mix(in srgb, var(--ink) 12%, transparent);
+    padding: 6px 14px 8px;
+    background: var(--surface);
+    border-radius: 12px;
   }
 
   .phead {

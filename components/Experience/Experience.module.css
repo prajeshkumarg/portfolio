@@ -136,6 +136,14 @@
   .phoneList {
     display: flex;
     flex-direction: column;
+    gap: 10px;
+  }
+
+  /* each row is a card on the page's green-black surface */
+  .prow {
+    background: var(--surface);
+    border-radius: 12px;
+    overflow: hidden;
   }
 
   .psum {
@@ -144,7 +152,7 @@
     align-items: center;
     column-gap: 12px;
     min-height: 60px;
-    padding: 10px 0;
+    padding: 10px 14px;
     cursor: pointer;
     list-style: none;
   }
@@ -215,7 +223,7 @@
     display: flex;
     flex-direction: column;
     gap: 12px;
-    padding: 2px 0 18px 44px;
+    padding: 2px 14px 16px 58px;
     color: var(--ink-dim);
     font-size: var(--step-card);
     line-height: 1.55;

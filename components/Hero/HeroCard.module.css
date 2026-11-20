@@ -157,9 +157,30 @@
 
 }
 
-/* phones: each card is ~70vw, max 220px, inside a snapping scroll row */
+/* phones: compact cards (~58vw, max 176px) inside a snapping scroll row */
 @media (max-width: 600px) {
   .cart {
-    width: min(70vw, 220px);
+    width: min(58vw, 176px);
+  }
+
+  .body {
+    min-height: 188px;
+  }
+
+  .label {
+    height: 92px;
+  }
+
+  .text {
+    gap: 4px;
+    padding: 10px 10px 12px;
+  }
+
+  .name {
+    font-size: 1rem;
+  }
+
+  .line {
+    font-size: 0.8125rem;
   }
 }
