@@ -106,14 +106,6 @@ The page is server-rendered markup and CSS; motion is layered on by client compo
 > - **Sections, in order:** Hero · Experience · Projects · Skills · Education ·
 >   Contact · Footer. There is no Nav component (the hero has its own top bar) and
 >   no Writing section; the blog is a link in the hero bar and Contact.
-> - GSAP + Lenis (`components/Motion`) are approved here: the hero intro, then fast
->   one-shot section entrances (above 600px only; no zoom, nothing is ever scaled).
->   When a section's top crosses 85% of the viewport its h2 enters (24px up, 0.5s),
->   then its `data-reveal` parts 80ms later, 60ms apart; a light h2 parallax drifts
->   ±24px via `--drift`; the hero's cards and buttons (`data-hero-exit`) lift 16px
->   and dim to 0.6 across the hero's last 30%. Parts start hidden by CSS only while
->   `html.motion` is set, so nothing stays hidden if JS fails; phones and reduced
->   motion see everything immediately.
 > - **Hero "Building now" cards:** each `now.items` entry in `content.ts` (1–4: `id`,
 >   `name`, `line`, `art`, optional `href`) renders as a `Hero/HeroCard`: a plain
 >   14px-radius card (`--radius-card-hero`) with a tinted panel on top holding a 32×20 pixel scene
