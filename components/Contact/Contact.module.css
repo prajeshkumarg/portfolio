@@ -4,6 +4,10 @@
   padding-block: var(--gap-section); /* last section: gap above and below */
 }
 
+.card {
+  display: contents; /* no box on desktop; a card on phones */
+}
+
 .pitch {
   max-width: 16ch;
   font-weight: 600;
@@ -106,11 +110,32 @@
     display: none;
   }
 
+  /* one green-black card holds the pitch, the line and the links, with
+     phone-sized type */
+  .card {
+    display: block;
+    padding: 22px 18px 10px;
+    background: var(--surface);
+    border-radius: 14px;
+  }
+
+  .pitch {
+    max-width: none;
+    font-size: 1.75rem;
+    line-height: 1.05;
+  }
+
+  .body {
+    margin-top: 12px;
+    font-size: 1rem;
+    line-height: 1.5;
+  }
+
   .phoneRow {
     display: flex;
     flex-wrap: wrap;
-    gap: 0 20px;
-    margin-top: 28px;
+    gap: 0 18px;
+    margin-top: 18px;
   }
 
   .phoneLink {

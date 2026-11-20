@@ -56,7 +56,7 @@
     position: absolute;
     grid-row: auto;
     justify-self: auto;
-    top: calc(clamp(20px, 4vw, 40px) + 56px + 18vw * 1.8);
+    top: calc(32px + 18vw * 1.8 + 14px);
     right: var(--margin);
     bottom: auto;
     transform: none;

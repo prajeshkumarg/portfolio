@@ -4,12 +4,14 @@ import styles from './Contact.module.css';
 /*
  * Contact — the close. The pitch sits first at display scale; the ways to reach
  * Prajesh follow as a two-column grid of link blocks (label above its value, no
- * bars); the jade button sends the email. No form.
+ * bars); the jade button sends the email. No form. On phones everything sits in
+ * one green-black card with smaller type.
  */
 export default function Contact() {
   return (
     <section id="contact" className={styles.section} aria-labelledby="contact-h">
       <div className="wrap">
+        <div className={styles.card}>
         <h2 id="contact-h" className={styles.pitch} data-reveal>
           {contact.heading}
         </h2>
@@ -49,6 +51,7 @@ export default function Contact() {
             →
           </span>
         </a>
+        </div>
       </div>
     </section>
   );

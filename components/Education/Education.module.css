@@ -1,7 +1,7 @@
 /* Education — dark cards with a white logo plate the mark fills, + light text. */
 
 .section {
-  padding-block: var(--gap-section) 0; /* the gap sits above each section, once */
+  padding-block: var(--gap-section); /* the sheet's own space above and below */
 }
 
 .heading {
@@ -106,29 +106,13 @@
   /* each row is a card on the page's green-black surface */
   .prow {
     display: grid;
-    grid-template-columns: 32px minmax(0, 1fr) auto;
+    grid-template-columns: minmax(0, 1fr) auto;
     align-items: center;
     column-gap: 12px;
     min-height: 60px;
     padding: 10px 14px;
     background: var(--surface);
     border-radius: 12px;
-  }
-
-  .ptile {
-    width: 32px;
-    height: 32px;
-    overflow: hidden;
-    border-radius: 6px;
-    background: var(--plate);
-  }
-
-  .plogo {
-    width: 100%;
-    height: 100%;
-    max-width: none;
-    object-fit: cover;
-    object-position: 0% 50%;
   }
 
   .ptext {

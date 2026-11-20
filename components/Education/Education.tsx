@@ -37,9 +37,6 @@ export default function Education() {
         <ol className={styles.phoneList}>
           {education.map((e) => (
             <li key={e.institution} className={styles.prow} data-reveal>
-              <span className={styles.ptile}>
-                {e.logo ? <Image className={styles.plogo} src={e.logo} alt="" sizes="48px" /> : null}
-              </span>
               <span className={styles.ptext}>
                 <span className={styles.pschool}>{e.schoolShort}</span>
                 <span className={styles.pdegree}>{e.degreeShort}</span>

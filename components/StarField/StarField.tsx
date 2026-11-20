@@ -77,7 +77,7 @@ export default function StarField({ scope = 'viewport' }: { scope?: 'viewport' |
     let avoid: { x0: number; y0: number; x1: number; y1: number }[] = [];
     const measureAvoid = () => {
       const root: ParentNode = host ?? document;
-      const o = host ? host.getBoundingClientRect() : { left: 0, top: -window.scrollY };
+      const o = host ? host.getBoundingClientRect() : { left: 0, top: 0 }; // viewport scope: live viewport rects
       avoid = Array.from(root.querySelectorAll<HTMLElement>('[data-star-avoid]')).map((el) => {
         const r = el.getBoundingClientRect();
         return {
@@ -180,7 +180,10 @@ export default function StarField({ scope = 'viewport' }: { scope?: 'viewport' |
 
     const draw = (t: number) => {
       ctx.clearRect(0, 0, W, H);
-      const scrolled = host ? 0 : window.scrollY; // viewport scope: avoid rects are in page coordinates
+      // viewport scope: the avoid rects are read live in viewport coordinates, so they
+      // follow the hero whether it scrolls (phones) or stays stuck under the sheets
+      if (!host) measureAvoid();
+      const scrolled = 0;
       for (const s of stars) {
         const x = s.nx * W;
         const y = s.ny * H;

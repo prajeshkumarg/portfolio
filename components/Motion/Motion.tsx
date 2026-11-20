@@ -5,21 +5,22 @@
  *
  *   data-hero-line   the two hero lines, masked and rising on load (signature)
  *   data-hero-lede   the supporting sentence + button, fading up after
- *   data-hero-exit   the hero's cards and buttons ease up 16px and dim to 0.6
- *                    across the hero's last 30% as it scrolls out (scrubbed)
- *   data-reveal      each section's parts, entering ONCE (never reversed) when
- *                    the section's top crosses 85% of the viewport: the h2 first,
- *                    then the rest 80ms later, staggered 60ms (under ~0.8s total)
- *   h2 parallax      while a section is in view its h2 drifts +24px -> -24px
- *                    (a --drift CSS variable, applied as `translate`), so
- *                    headings lead the content slightly
- *   anchors          nav / hash links glide with a long ease-out (Lenis)
+ *   data-sheet       the SHEET SLIDE-OVER (desktop/tablet, >=768px with a fine
+ *                    pointer): the hero and each section are sheets in one stack
+ *                    (app/page.tsx). Each sheet is sticky (see the CSS in
+ *                    globals.css); the next one slides up over it, and while it
+ *                    does, the covered sheet scales 1 -> 0.94 (from its top
+ *                    centre), its content dims 1 -> 0.4 and a dark overlay goes
+ *                    0 -> 0.35 — all scrubbed to the scroll, so it reverses.
+ *                    Nothing animates on the incoming sheet.
+ *   anchors          hash links scroll to the target SHEET's real top (computed
+ *                    from the sheet heights, never from a sticky element's
+ *                    current position), so it lands fully on top and unscaled
  *
- * Section entrances, the exit and the parallax run only above 600px (phones are
- * static) and never under reduced motion. Parts start hidden by CSS only while
- * html.motion is set (the boot script drops it after 3s if this never boots), so
- * nothing stays hidden if the script fails. Renders nothing, so every section
- * stays a Server Component. Transform + opacity only.
+ * Phones (<768px / no fine pointer) and reduced motion get plain scrolling, and
+ * html.motion is dropped so the sheet CSS never applies. Renders nothing, so every
+ * section stays a Server Component. Transform + opacity only; will-change is set
+ * only while a sheet is actively being covered.
  */
 
 import { useEffect } from 'react';
@@ -28,6 +29,9 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import Lenis from 'lenis';
 
 gsap.registerPlugin(ScrollTrigger);
+
+const SHEET_QUERY = '(min-width: 768px) and (pointer: fine)';
+const SCROLL_EASE = (t: number) => 1 - Math.pow(1 - t, 4); // ease-out quart
 
 export default function Motion() {
   useEffect(() => {
@@ -59,98 +63,110 @@ export default function Motion() {
           { autoAlpha: 1, y: 0, duration: 0.7, stagger: 0.08 },
           '-=0.3',
         );
-
     });
 
-    // ---- sections + hero exit: desktop and tablet only -----------------------
-    const mm = gsap.matchMedia();
-    mm.add('(min-width: 601px)', () => {
-      const headings: HTMLElement[] = [];
-
-      // marks parts as revealed (so the CSS stops hiding them) and animates them in
-      const enter = (els: HTMLElement[], delay: number, each: number) => {
-        if (!els.length) return;
-        els.forEach((el) => el.setAttribute('data-revealed', ''));
-        gsap.fromTo(
-          els,
-          { autoAlpha: 0, y: 24 },
-          {
-            autoAlpha: 1,
-            y: 0,
-            duration: 0.5,
-            ease: 'expo.out',
-            delay,
-            stagger: each,
-            clearProps: 'transform,opacity,visibility',
-          },
-        );
-      };
-
-      gsap.utils.toArray<HTMLElement>('main > section').forEach((sec) => {
-        const heading = sec.querySelector<HTMLElement>('h2[data-reveal]');
-        // visible parts only: the phone-only duplicates are display:none here
-        const parts = gsap
-          .utils.toArray<HTMLElement>('[data-reveal]', sec)
-          .filter((el) => el !== heading && el.getClientRects().length > 0);
-        const each = Math.min(0.06, 0.2 / Math.max(parts.length - 1, 1)); // keeps the total < ~0.8s
-
-        ScrollTrigger.create({
-          trigger: sec,
-          start: 'top 85%',
-          once: true,
-          onEnter: () => {
-            if (heading) enter([heading], 0, 0);
-            enter(parts, heading ? 0.08 : 0, each);
-          },
-        });
-
-        if (heading) {
-          headings.push(heading);
-          ScrollTrigger.create({
-            trigger: sec,
-            start: 'top bottom',
-            end: 'bottom top',
-            onUpdate: (self) => heading.style.setProperty('--drift', `${(0.5 - self.progress) * 48}px`),
-          });
-        }
-      });
-
-      // the hero's cards and buttons lift and dim across the hero's last 30%
-      const hero = document.getElementById('top');
-      const exits = gsap.utils.toArray<HTMLElement>('[data-hero-exit]');
-      if (hero && exits.length) {
-        gsap.to(exits, {
-          opacity: 0.6,
-          y: -16,
-          ease: 'none',
-          immediateRender: false,
-          overwrite: false,
-          scrollTrigger: {
-            trigger: hero,
-            start: () => `top+=${Math.round(hero.offsetHeight * 0.7)} top`,
-            end: 'bottom top',
-            scrub: true,
-            invalidateOnRefresh: true,
-          },
-        });
-      }
-
-      return () => headings.forEach((h) => h.style.removeProperty('--drift'));
-    });
-
-    const lenis = new Lenis({
-      anchors: {
-        duration: 1.5,
-        easing: (t: number) => 1 - Math.pow(1 - t, 4), // ease-out quart
-      },
-    });
+    const lenis = new Lenis();
     lenis.on('scroll', ScrollTrigger.update);
     const tick = (time: number) => lenis.raf(time * 1000);
     gsap.ticker.add(tick);
     gsap.ticker.lagSmoothing(0);
-    ScrollTrigger.refresh();
+
+    // ---- the sheet slide-over ------------------------------------------------
+    const sheets = gsap.utils.toArray<HTMLElement>('[data-sheet]');
+    const stack = document.querySelector<HTMLElement>('[data-stack]');
+    let tops: number[] = []; // each sheet's resting top, in page coordinates
+    let sheetMode = false;
+
+    // Positions come from the stacked heights, not from offsetTop: a sticky sheet's
+    // offsetTop moves while it is stuck, its height never does.
+    const measure = () => {
+      if (!stack) return;
+      let y = stack.getBoundingClientRect().top + window.scrollY;
+      tops = sheets.map((s) => {
+        const top = y;
+        y += s.offsetHeight;
+        // a sheet taller than the viewport scrolls fully, then sticks by its bottom
+        s.style.setProperty('--sheet-top', `${Math.min(0, window.innerHeight - s.offsetHeight)}px`);
+        return top;
+      });
+    };
+
+    const mm = gsap.matchMedia();
+    mm.add(SHEET_QUERY, () => {
+      sheetMode = true;
+      measure();
+
+      // sheet i covers sheet i-1: the covered one is stuck from max(its top, the
+      // moment its bottom meets the viewport's bottom) until sheet i reaches the top
+      sheets.forEach((sheet, i) => {
+        if (i === 0) return;
+        const covered = sheets[i - 1];
+        const content = Array.from(covered.children) as HTMLElement[];
+        gsap
+          .timeline({
+            defaults: { ease: 'none' },
+            scrollTrigger: {
+              start: () => Math.max(tops[i - 1], tops[i] - window.innerHeight),
+              end: () => tops[i],
+              scrub: true,
+              invalidateOnRefresh: true,
+              onToggle: (self) => {
+                covered.style.willChange = self.isActive ? 'transform' : '';
+              },
+              onUpdate: (self) => sheet.toggleAttribute('data-covering', self.progress > 0),
+            },
+          })
+          .set(covered, { transformOrigin: '50% 0%' }, 0)
+          .to(covered, { scale: 0.94, '--dim': 0.35 }, 0)
+          .to(content, { opacity: 0.4 }, 0);
+      });
+
+      // keep the measurements (and --sheet-top) true as content and window change
+      const ro = new ResizeObserver(() => {
+        measure();
+        ScrollTrigger.refresh();
+      });
+      sheets.forEach((s) => ro.observe(s));
+      const onResize = () => {
+        measure();
+        ScrollTrigger.refresh();
+      };
+      window.addEventListener('resize', onResize);
+      ScrollTrigger.refresh();
+
+      return () => {
+        sheetMode = false;
+        ro.disconnect();
+        window.removeEventListener('resize', onResize);
+        sheets.forEach((s) => {
+          s.style.removeProperty('--sheet-top');
+          s.style.removeProperty('will-change');
+          s.removeAttribute('data-covering');
+        });
+      };
+    });
+
+    // ---- hash links -----------------------------------------------------------
+    const onClick = (e: MouseEvent) => {
+      const a = (e.target as Element | null)?.closest<HTMLAnchorElement>('a[href^="#"]');
+      if (!a || e.defaultPrevented || e.metaKey || e.ctrlKey || e.shiftKey) return;
+      const id = a.getAttribute('href')!.slice(1);
+      const target = id ? document.getElementById(id) : document.documentElement;
+      if (!target) return;
+      e.preventDefault();
+      const sheetIndex = sheetMode ? sheets.findIndex((s) => s.contains(target)) : -1;
+      if (sheetIndex >= 0) {
+        // land with the target's sheet fully on top (and unscaled)
+        lenis.scrollTo(tops[sheetIndex], { duration: 1.5, easing: SCROLL_EASE });
+      } else {
+        lenis.scrollTo(id ? target : 0, { duration: 1.5, easing: SCROLL_EASE });
+      }
+      if (id) history.pushState(null, '', `#${id}`);
+    };
+    document.addEventListener('click', onClick);
 
     return () => {
+      document.removeEventListener('click', onClick);
       mm.revert();
       ctx.revert();
       gsap.ticker.remove(tick);

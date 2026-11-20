@@ -60,11 +60,6 @@ export default function Experience() {
             <li key={role.org} data-reveal>
               <details className={styles.prow}>
                 <summary className={styles.psum}>
-                  <span className={styles.ptile}>
-                    {role.logo ? (
-                      <Image className={styles.plogo} src={role.logo} alt="" sizes="48px" />
-                    ) : null}
-                  </span>
                   <span className={styles.ptext}>
                     <span className={styles.porg}>{role.org}</span>
                     <span className={styles.prole}>{role.role}</span>
