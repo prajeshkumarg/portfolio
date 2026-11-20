@@ -101,7 +101,7 @@ export default function StarField({ scope = 'viewport' }: { scope?: 'viewport' |
     const build = () => {
       const next: Star[] = [];
       const rng = mulberry32(31337); // same seed every build -> a stable field
-      const COUNT = host ? 0 : Math.round((H / 10) * 1.6); // the host scope only adds the scene cluster
+      const COUNT = host ? 0 : Math.round((H / 10) * 2.2); // the host scope only adds the scene cluster
       for (let i = 0; i < COUNT; i++) {
         // allow stars across the full width (incl. the centre gap); only nudge a
         // small share out of the middle so the field is even, not segregated.
