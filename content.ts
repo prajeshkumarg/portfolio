@@ -38,9 +38,8 @@ export const sections = {
 
 export type SectionKey = keyof typeof sections;
 
-/** The hero's "Building now" cards — edit the items and bump `updated`. */
+/** The hero's "Building now" cards — edit the items. */
 export const now: Now = {
-  updated: '2026-11-19',
   items: [
     { id: 'psp', name: 'PSP-Infer', line: 'Getting a small LLM to run on a 2008 handheld.', art: 'psp' },
     { id: 'splat', name: 'Splat renderer', line: 'A parallel CPU renderer for 3D Gaussian splats.', art: 'splat' },
@@ -50,8 +49,6 @@ export const now: Now = {
 /** Copy around the cards in the hero. */
 export const nowCopy = {
   heading: 'Building now',
-  updatedLabel: 'updated',
-  separator: '·',
   ctaLabel: 'See my work',
   ctaHref: '#work',
   resumeLabel: 'Résumé',

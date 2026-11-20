@@ -82,7 +82,5 @@ export type NowItem = {
 
 /** The hero's "Building now" cards. Render 1–4 items. */
 export type Now = {
-  /** ISO date (YYYY-MM-DD) shown as "updated Nov 19". Bump on every edit. */
-  updated: string;
   items: NowItem[];
 };

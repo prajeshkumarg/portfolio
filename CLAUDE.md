@@ -46,8 +46,7 @@ The page is server-rendered markup and CSS; motion is layered on by client compo
 >   flat sheen and parallaxes the art — all off on touch and under reduced motion.
 >   To add one: add an item to `now`, then add its `art` key to the `ART` map in
 >   `HeroCard.tsx` (a `--viz-*` label colour + a 32×20 grid; unknown keys fall back to
->   a jade, empty label), and bump `now.updated` (ISO date; the heading's "updated
->   Nov 19" comes from it). Other hero copy is `nowCopy`. The buttons sit bottom-right
+>   a jade, empty label). Other hero copy is `nowCopy`. The buttons sit bottom-right
 >   on the same bottom edge as the cards (stacked, full width on phones). PixelSpace
 >   has no per-item scenes, so hover does not switch it.
 > - **Hero is full-width:** the name and the cards hug the left page margin, the

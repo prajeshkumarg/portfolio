@@ -1,6 +1,6 @@
 /*
  * Hero — the one unique moment on the page. The name is huge and two-ink; under
- * it a "Building now · updated Nov 19" line and a row of cards (one per
+ * it an italic jade "Building now" line and a row of cards (one per
  * item in `now`, content.ts — see HeroCard). The two buttons, "See my work"
  * (lava) and a quiet Résumé, sit bottom-right under the pixel scene (PixelSpace),
  * and stack full-width at the bottom on phones.
@@ -17,13 +17,6 @@ import { site, now, nowCopy } from '@/content';
 import PixelSpace from './PixelSpace';
 import HeroCard from './HeroCard';
 import styles from './Hero.module.css';
-
-// "2026-11-19" -> "Nov 19", formatted in UTC so the day never shifts
-const updatedLabel = new Date(`${now.updated}T00:00:00Z`).toLocaleDateString('en-US', {
-  month: 'short',
-  day: 'numeric',
-  timeZone: 'UTC',
-});
 
 export default function Hero() {
   return (
@@ -49,10 +42,7 @@ export default function Hero() {
         </h1>
 
         <h2 className={styles.nowHeading} data-hero-lede data-star-avoid>
-          <span className={styles.nowTitle}>{nowCopy.heading}</span>{' '}
-          <span className={styles.nowMeta}>
-            {nowCopy.separator} {nowCopy.updatedLabel} <time dateTime={now.updated}>{updatedLabel}</time>
-          </span>
+          {nowCopy.heading}
         </h2>
 
         <ul className={styles.carts} data-hero-lede data-star-avoid>

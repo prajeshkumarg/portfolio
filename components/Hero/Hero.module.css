@@ -90,22 +90,15 @@
   color: var(--ink-dim);
 }
 
-/* "Building now" in ink at --step-lead, then "· updated Nov 19" muted at --step-body */
+/* "Building now": a slightly smaller italic line in jade */
 .nowHeading {
   margin-top: auto;
   padding-top: clamp(24px, 3.4vh, 40px);
-  font-weight: 400;
-}
-
-.nowTitle {
-  color: var(--ink);
-  font-size: var(--step-lead);
-  letter-spacing: -0.01em;
-}
-
-.nowMeta {
-  color: var(--muted);
+  color: var(--accent);
   font-size: var(--step-body);
+  font-style: italic;
+  font-weight: 400;
+  letter-spacing: -0.005em;
 }
 
 /* the card row: left-aligned, 20px apart, the hero's main element after the name */
