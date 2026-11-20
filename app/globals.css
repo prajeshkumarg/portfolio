@@ -29,12 +29,6 @@
   --shadow-hero-hover: 0 2px 0 #060b09, 0 32px 56px -10px rgba(6, 11, 9, 0.85);
   --radius-card-hero: 14px;
 
-  /* ---- sheets: the page is a stack of solid sheets that slide over each other ---- */
-  --radius-sheet: 28px;
-  --sheet-edge: rgba(232, 230, 220, 0.08); /* 1px bone highlight on a sheet's top edge */
-  --shadow-sheet: 0 -24px 48px -16px rgba(6, 11, 9, 0.7); /* only while a sheet covers another */
-  /* a faint STATIC star texture so a sheet is never empty (a tiled SVG, no canvas) */
-  --sheet-stars: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cg%3E%3Ccircle cx='20' cy='30' r='1' fill='%23e8e6dc' fill-opacity='.35'/%3E%3Ccircle cx='75' cy='12' r='.8' fill='%239fc7b8' fill-opacity='.4'/%3E%3Ccircle cx='130' cy='48' r='1.2' fill='%23e8e6dc' fill-opacity='.3'/%3E%3Ccircle cx='190' cy='22' r='.8' fill='%23e8e6dc' fill-opacity='.35'/%3E%3Ccircle cx='220' cy='90' r='1' fill='%239fc7b8' fill-opacity='.3'/%3E%3Ccircle cx='40' cy='100' r='.9' fill='%23e8e6dc' fill-opacity='.3'/%3E%3Ccircle cx='105' cy='125' r='1.2' fill='%239fc7b8' fill-opacity='.35'/%3E%3Ccircle cx='165' cy='110' r='.8' fill='%23e8e6dc' fill-opacity='.4'/%3E%3Ccircle cx='15' cy='170' r='1' fill='%23e8e6dc' fill-opacity='.3'/%3E%3Ccircle cx='80' cy='200' r='.9' fill='%239fc7b8' fill-opacity='.35'/%3E%3Ccircle cx='145' cy='180' r='1.2' fill='%23e8e6dc' fill-opacity='.3'/%3E%3Ccircle cx='205' cy='215' r='.8' fill='%23e8e6dc' fill-opacity='.35'/%3E%3C/g%3E%3C/svg%3E");
   --plate: #ffffff; /* the white plate logos sit on */
   --muted: #94a09a; /* secondary notes, meta — ~5:1 on bg */
   --accent: #9fc7b8; /* pale jade — the contact/primary button */
@@ -164,61 +158,37 @@ img {
   padding-inline: var(--margin);
 }
 
-/* the page is a stack of sheets (see app/page.tsx). main only groups them: it
-   generates no box, so every sheet shares one tall containing block (needed for
-   position: sticky). Plain blocks by default (phones, no JS, reduced motion). */
-main {
-  display: contents;
-}
-
-.stack {
+/* sections and the footer sit above the fixed StarField background */
+main,
+footer {
   position: relative;
+  z-index: 1;
 }
 
-/* the hero is the transparent bottom card: the fixed StarField shows through */
-.sheet {
-  position: relative;
-}
-
-/* every later sheet is solid, with the faint static star texture */
-.sheet-solid {
-  background-color: var(--bg);
-  background-image: var(--sheet-stars);
-  background-size: 240px 240px;
-}
-
-/* Sheet slide-over: desktop and tablet with a real pointer, only once Motion has
-   booted (html.motion is dropped if it never does, and never added under reduced
-   motion — so the sheets just stack as normal blocks). Each sheet sticks at the top;
-   Motion sets --sheet-top so a sheet TALLER than the viewport scrolls fully first
-   and sticks only once its bottom reaches the viewport's bottom. The next sheet,
-   later in the DOM, slides over it. */
-@media (min-width: 768px) and (pointer: fine) {
-  html.motion .sheet {
-    position: sticky;
-    top: var(--sheet-top, 0px);
+/* Scroll snapping (desktop/tablet, >=768px; Motion adds the snap points via
+   lenis/snap). A section shorter than the viewport fills one screen with its
+   content centred, so each snap lands on a composed screen; a taller section keeps
+   its natural height and scrolls freely. The Contact section and the footer
+   together form the last screen. */
+@media (min-width: 768px) {
+  main > section {
+    min-height: 100svh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
   }
 
-  html.motion .sheet-solid {
-    border-top: 1px solid var(--sheet-edge);
-    border-radius: var(--radius-sheet) var(--radius-sheet) 0 0;
+  .finale {
+    min-height: 100svh;
+    display: flex;
+    flex-direction: column;
   }
 
-  /* a sheet that is covering the one before it reads as lifted */
-  html.motion .sheet[data-covering] {
-    box-shadow: var(--shadow-sheet);
-  }
-
-  /* the dark overlay on a covered sheet (--dim is animated by Motion) */
-  html.motion .sheet::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    z-index: 50;
-    border-radius: inherit;
-    background: var(--bg);
-    opacity: var(--dim, 0);
-    pointer-events: none;
+  .finale > section {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
   }
 }
 

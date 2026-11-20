@@ -5,22 +5,25 @@
  *
  *   data-hero-line   the two hero lines, masked and rising on load (signature)
  *   data-hero-lede   the supporting sentence + button, fading up after
- *   data-sheet       the SHEET SLIDE-OVER (desktop/tablet, >=768px with a fine
- *                    pointer): the hero and each section are sheets in one stack
- *                    (app/page.tsx). Each sheet is sticky (see the CSS in
- *                    globals.css); the next one slides up over it, and while it
- *                    does, the covered sheet scales 1 -> 0.94 (from its top
- *                    centre), its content dims 1 -> 0.4 and a dark overlay goes
- *                    0 -> 0.35 — all scrubbed to the scroll, so it reverses.
- *                    Nothing animates on the incoming sheet.
- *   anchors          hash links scroll to the target SHEET's real top (computed
- *                    from the sheet heights, never from a sticky element's
- *                    current position), so it lands fully on top and unscaled
+ *   snapping         (>=768px) PROXIMITY snapping on top of Lenis: a snap point
+ *                    at the top of the hero and of each section (Contact + footer,
+ *                    .finale, count as one), nudged by --scroll-offset. When you
+ *                    stop scrolling, it snaps only to a point AHEAD of you in the
+ *                    direction you were moving, within ~18% of the viewport (plus
+ *                    a 24px settle backwards), over 0.6s ease-out. So it never
+ *                    drags you back to the top of a tall section you are reading.
+ *                    (lenis/snap was tried first: its proximity mode snaps to the
+ *                    NEAREST point, which pulled small trackpad steps back.)
+ *   arrival          once per section, when it becomes the snapped one: its
+ *                    heading and first row rise 16px and fade 0.6 -> 1 over 0.4s.
+ *                    Never replayed; nothing is hidden before it plays.
+ *   anchors          hash links scroll to the section's snap point exactly
+ *   keyboard         PageDown / PageUp / Space jump to the next / previous snap
+ *                    point when the current section fits the screen; inside a tall
+ *                    section they scroll natively (and jump on at its end / start)
  *
- * Phones (<768px / no fine pointer) and reduced motion get plain scrolling, and
- * html.motion is dropped so the sheet CSS never applies. Renders nothing, so every
- * section stays a Server Component. Transform + opacity only; will-change is set
- * only while a sheet is actively being covered.
+ * Phones (<768px) and reduced motion: no snapping, no arrival motion. Renders
+ * nothing, so every section stays a Server Component.
  */
 
 import { useEffect } from 'react';
@@ -30,8 +33,9 @@ import Lenis from 'lenis';
 
 gsap.registerPlugin(ScrollTrigger);
 
-const SHEET_QUERY = '(min-width: 768px) and (pointer: fine)';
-const SCROLL_EASE = (t: number) => 1 - Math.pow(1 - t, 4); // ease-out quart
+const SNAP_QUERY = '(min-width: 768px)';
+const EASE = (t: number) => 1 - Math.pow(1 - t, 4); // ease-out quart
+const INTERACTIVE = 'a, button, input, textarea, select, summary, [contenteditable="true"]';
 
 export default function Motion() {
   useEffect(() => {
@@ -71,82 +75,139 @@ export default function Motion() {
     gsap.ticker.add(tick);
     gsap.ticker.lagSmoothing(0);
 
-    // ---- the sheet slide-over ------------------------------------------------
-    const sheets = gsap.utils.toArray<HTMLElement>('[data-sheet]');
-    const stack = document.querySelector<HTMLElement>('[data-stack]');
-    let tops: number[] = []; // each sheet's resting top, in page coordinates
-    let sheetMode = false;
+    // ---- sections: the snap targets -------------------------------------------
+    // the hero, each top-level section, and the Contact + footer finale
+    const targets = [
+      document.getElementById('top'),
+      ...Array.from(document.querySelectorAll<HTMLElement>('main > section, main > [data-snap]')),
+    ].filter((el): el is HTMLElement => !!el);
 
-    // Positions come from the stacked heights, not from offsetTop: a sticky sheet's
-    // offsetTop moves while it is stuck, its height never does.
-    const measure = () => {
-      if (!stack) return;
-      let y = stack.getBoundingClientRect().top + window.scrollY;
-      tops = sheets.map((s) => {
-        const top = y;
-        y += s.offsetHeight;
-        // a sheet taller than the viewport scrolls fully, then sticks by its bottom
-        s.style.setProperty('--sheet-top', `${Math.min(0, window.innerHeight - s.offsetHeight)}px`);
-        return top;
-      });
+    let snapOn = false;
+    let snapValues: number[] = [];
+    const played = new Set<HTMLElement>();
+
+    const offset = () =>
+      parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--scroll-offset')) || 0;
+
+    // snap value of a section: its top, nudged down by --scroll-offset (never < 0)
+    const valueOf = (el: HTMLElement) =>
+      Math.max(0, Math.round(el.getBoundingClientRect().top + window.scrollY - offset()));
+
+    const computeSnapValues = () => {
+      snapValues = targets.map(valueOf);
+    };
+
+    const rebuildSnaps = () => {
+      if (snapOn) computeSnapValues();
+    };
+
+    // arrival: the heading and the first row rise once, when a section is snapped to
+    const arrive = (el: HTMLElement) => {
+      if (played.has(el)) return;
+      played.add(el);
+      const heading = el.querySelector<HTMLElement>('h2');
+      const first = heading?.nextElementSibling as HTMLElement | null;
+      const parts = [heading, first].filter(
+        (p): p is HTMLElement => !!p && p.getClientRects().length > 0,
+      );
+      if (!parts.length) return;
+      gsap.fromTo(
+        parts,
+        { y: 16, opacity: 0.6 },
+        {
+          y: 0,
+          opacity: 1,
+          duration: 0.4,
+          ease: 'expo.out',
+          stagger: 0.06,
+          clearProps: 'transform,opacity',
+        },
+      );
     };
 
     const mm = gsap.matchMedia();
-    mm.add(SHEET_QUERY, () => {
-      sheetMode = true;
-      measure();
+    mm.add(SNAP_QUERY, () => {
+      snapOn = true;
 
-      // sheet i covers sheet i-1: the covered one is stuck from max(its top, the
-      // moment its bottom meets the viewport's bottom) until sheet i reaches the top
-      sheets.forEach((sheet, i) => {
-        if (i === 0) return;
-        const covered = sheets[i - 1];
-        const content = Array.from(covered.children) as HTMLElement[];
-        gsap
-          .timeline({
-            defaults: { ease: 'none' },
-            scrollTrigger: {
-              start: () => Math.max(tops[i - 1], tops[i] - window.innerHeight),
-              end: () => tops[i],
-              scrub: true,
-              invalidateOnRefresh: true,
-              onToggle: (self) => {
-                covered.style.willChange = self.isActive ? 'transform' : '';
-              },
-              onUpdate: (self) => sheet.toggleAttribute('data-covering', self.progress > 0),
-            },
-          })
-          .set(covered, { transformOrigin: '50% 0%' }, 0)
-          .to(covered, { scale: 0.94, '--dim': 0.35 }, 0)
-          .to(content, { opacity: 0.4 }, 0);
-      });
-
-      // keep the measurements (and --sheet-top) true as content and window change
-      const ro = new ResizeObserver(() => {
-        measure();
-        ScrollTrigger.refresh();
-      });
-      sheets.forEach((s) => ro.observe(s));
-      const onResize = () => {
-        measure();
-        ScrollTrigger.refresh();
+      // after the user stops (wheel / trackpad / touch input goes quiet), snap
+      // forward to a point we were heading toward, if it is close enough
+      let timer: ReturnType<typeof setTimeout> | undefined;
+      let dir = 0;
+      const settle = () => {
+        const y = lenis.targetScroll;
+        const reach = window.innerHeight * 0.18;
+        const BACK = 24;
+        let dest: number | undefined;
+        if (dir > 0) {
+          dest = snapValues.find((v) => v >= y && v - y <= reach);
+          dest ??= [...snapValues].reverse().find((v) => v < y && y - v <= BACK);
+        } else if (dir < 0) {
+          dest = [...snapValues].reverse().find((v) => v <= y && y - v <= reach);
+          dest ??= snapValues.find((v) => v > y && v - y <= BACK);
+        }
+        if (dest === undefined) return;
+        const el = targets[snapValues.indexOf(dest)];
+        if (Math.abs(dest - y) < 1) return arrive(el);
+        lenis.scrollTo(dest, { duration: 0.6, easing: EASE, onComplete: () => arrive(el) });
       };
-      window.addEventListener('resize', onResize);
-      ScrollTrigger.refresh();
+      const onInput = (e: { deltaY: number }) => {
+        if (e.deltaY) dir = Math.sign(e.deltaY);
+        clearTimeout(timer);
+        timer = setTimeout(settle, 220);
+      };
+      lenis.on('virtual-scroll', onInput);
+      rebuildSnaps();
+
+      // keep the points true as content, fonts and the window change
+      const ro = new ResizeObserver(() => rebuildSnaps());
+      targets.forEach((t) => ro.observe(t));
+      window.addEventListener('resize', rebuildSnaps);
+      document.fonts?.ready.then(rebuildSnaps);
+
+      // PageDown / PageUp / Space: next or previous snap point when the section
+      // fits the screen; inside a tall section scroll natively until its edge
+      const onKey = (e: KeyboardEvent) => {
+        if (e.defaultPrevented || e.altKey || e.ctrlKey || e.metaKey) return;
+        const isDown = e.key === 'PageDown' || (e.key === ' ' && !e.shiftKey);
+        const isUp = e.key === 'PageUp' || (e.key === ' ' && e.shiftKey);
+        if (!isDown && !isUp) return;
+        if ((e.target as Element | null)?.closest(INTERACTIVE)) return;
+
+        const y = lenis.scroll;
+        const vh = window.innerHeight;
+        // the section the viewport top is in
+        let i = 0;
+        snapValues.forEach((v, n) => {
+          if (y >= v - 8) i = n;
+        });
+        const el = targets[i];
+        const top = el.getBoundingClientRect().top + window.scrollY;
+        const bottom = top + el.offsetHeight;
+        const fits = el.offsetHeight <= vh + 2;
+        const EDGE = 48;
+
+        let dest: number | undefined;
+        if (isDown && (fits || y + vh >= bottom - EDGE) && i < targets.length - 1) dest = snapValues[i + 1];
+        if (isUp && (fits || y <= snapValues[i] + EDGE)) {
+          dest = y > snapValues[i] + EDGE ? snapValues[i] : snapValues[Math.max(0, i - 1)];
+        }
+        if (dest === undefined) return; // tall section: native scroll
+        e.preventDefault();
+        lenis.scrollTo(dest, { duration: 0.6, easing: EASE, onComplete: () => arrive(targets[snapValues.indexOf(dest!)]) });
+      };
+      window.addEventListener('keydown', onKey);
 
       return () => {
-        sheetMode = false;
+        window.removeEventListener('keydown', onKey);
+        window.removeEventListener('resize', rebuildSnaps);
         ro.disconnect();
-        window.removeEventListener('resize', onResize);
-        sheets.forEach((s) => {
-          s.style.removeProperty('--sheet-top');
-          s.style.removeProperty('will-change');
-          s.removeAttribute('data-covering');
-        });
+        clearTimeout(timer);
+        lenis.off('virtual-scroll', onInput);
+        snapOn = false;
       };
     });
 
-    // ---- hash links -----------------------------------------------------------
+    // ---- hash links: land exactly on the section's snap point -----------------
     const onClick = (e: MouseEvent) => {
       const a = (e.target as Element | null)?.closest<HTMLAnchorElement>('a[href^="#"]');
       if (!a || e.defaultPrevented || e.metaKey || e.ctrlKey || e.shiftKey) return;
@@ -154,12 +215,15 @@ export default function Motion() {
       const target = id ? document.getElementById(id) : document.documentElement;
       if (!target) return;
       e.preventDefault();
-      const sheetIndex = sheetMode ? sheets.findIndex((s) => s.contains(target)) : -1;
-      if (sheetIndex >= 0) {
-        // land with the target's sheet fully on top (and unscaled)
-        lenis.scrollTo(tops[sheetIndex], { duration: 1.5, easing: SCROLL_EASE });
+      const section = snapOn ? targets.find((t) => t.contains(target)) : undefined;
+      if (section && snapOn) {
+        lenis.scrollTo(valueOf(section), {
+          duration: 1.0,
+          easing: EASE,
+          onComplete: () => arrive(section),
+        });
       } else {
-        lenis.scrollTo(id ? target : 0, { duration: 1.5, easing: SCROLL_EASE });
+        lenis.scrollTo(id ? target : 0, { duration: 1.0, easing: EASE });
       }
       if (id) history.pushState(null, '', `#${id}`);
     };
