@@ -71,7 +71,7 @@
   /* ---- layout ---- */
   --content-max: 1280px;
   --margin: clamp(20px, 4vw, 64px); /* one pair of equal outer margins */
-  --gap-section: clamp(120px, 18vh, 240px); /* section rhythm */
+  --gap-section: clamp(96px, 12vh, 160px); /* section rhythm: the gap ABOVE each section */
   --scroll-offset: 80px;
 
   /* ---- motion ---- */
@@ -162,6 +162,21 @@ main,
 footer {
   position: relative;
   z-index: 1;
+}
+
+/* Section entrances (desktop/tablet): parts start hidden only while html.motion is
+   set (the boot script drops it if Motion never boots, and never adds it under
+   reduced motion); Motion marks each part data-revealed as it animates in. Phones
+   are static. Headings also drift a little (--drift, set by Motion) as `translate`. */
+@media (min-width: 601px) {
+  html.motion main [data-reveal]:not([data-revealed]) {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+
+  main section h2 {
+    translate: 0 var(--drift, 0px);
+  }
 }
 
 /* phones (<=600px): tighter rhythm, smaller section headings, 16px+ reading text */

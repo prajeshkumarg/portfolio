@@ -60,7 +60,41 @@ The page is server-rendered markup and CSS; motion is layered on by client compo
 >   `Hero/HeroArt`), side-by-side buttons; Experience and Education as 32px-tile
 >   tables (Experience rows are `<details>`); Projects as a list with a "Show
 >   diagram" toggle; Skills as a definition list; Contact as one row of links.
->   `--gap-section` is 64px there and the zoom transitions are off.
+>   `--gap-section` is 64px there and all scroll entrances are off.
+> - **Sections, in order:** Hero · Experience · Projects · Skills · Education ·
+>   Contact · Footer. There is no Nav component (the hero has its own top bar) and
+>   no Writing section; the blog is a link in the hero bar and Contact.
+> - GSAP + Lenis (`components/Motion`) are approved here: the hero intro, then fast
+>   one-shot section entrances (above 600px only; no zoom, nothing is ever scaled).
+>   When a section's top crosses 85% of the viewport its h2 enters (24px up, 0.5s),
+>   then its `data-reveal` parts 80ms later, 60ms apart; a light h2 parallax drifts
+>   ±24px via `--drift`; the hero's cards and buttons (`data-hero-exit`) lift 16px
+>   and dim to 0.6 across the hero's last 30%. Parts start hidden by CSS only while
+>   `html.motion` is set, so nothing stays hidden if JS fails; phones and reduced
+>   motion see everything immediately.
+> - **Hero "Building now" cards:** each `now.items` entry in `content.ts` (1–4: `id`,
+>   `name`, `line`, `art`, optional `href`) renders as a `Hero/HeroCard`: a plain
+>   14px-radius card (`--radius-card-hero`) with a tinted panel on top holding a 32×20 pixel scene
+>   at 65% of the panel and name + description below. It carries `--shadow-hero-rest` (the one
+>   shadow at rest on the page); hover lifts, tilts ±6° with the pointer, slides a
+>   flat sheen and parallaxes the art — all off on touch and under reduced motion.
+>   To add one: add an item to `now`, then add its `art` key to the `ART` map in
+>   `HeroCard.tsx` (a `--viz-*` label colour + a 32×20 grid; unknown keys fall back to
+>   a jade, empty label). Other hero copy is `nowCopy`. The buttons sit bottom-right
+>   on the same bottom edge as the cards (stacked, full width on phones). PixelSpace
+>   has no per-item scenes, so hover does not switch it.
+> - **Hero is full-width:** the name and the cards hug the left page margin, the
+>   buttons and the pixel scene the right one (`--margin`), while sections below sit
+>   in the centred `.wrap` column. The hero has no bottom padding; the gap to the
+>   next section is that section's `--gap-section`.
+> - **Phone (<=600px) is a separate, simplified layout** (duplicate markup toggled by
+>   CSS, same `content.ts` data plus short fields: `now.short`, `experience.years`,
+>   `project.short`, `skillGroup.short`, `education.schoolShort/degreeShort/years`,
+>   `contactRow`): one-line name, a compact "Building now" list (icons from
+>   `Hero/HeroArt`), side-by-side buttons; Experience and Education as 32px-tile
+>   tables (Experience rows are `<details>`); Projects as a list with a "Show
+>   diagram" toggle; Skills as a definition list; Contact as one row of links.
+>   `--gap-section` is 64px there and all scroll entrances are off.
 > - **Sections, in order:** Hero · Experience · Projects · Skills · Education ·
 >   Contact · Footer. There is no Nav component (the hero has its own top bar) and
 >   no Writing section; the blog is a link in the hero bar and Contact.

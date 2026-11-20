@@ -1,7 +1,7 @@
 /* Contact — the close: pitch, a grid of link blocks, the email button. */
 
 .section {
-  padding-block: var(--gap-section);
+  padding-block: var(--gap-section); /* last section: gap above and below */
 }
 
 .pitch {
