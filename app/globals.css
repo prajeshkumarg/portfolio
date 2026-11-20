@@ -28,7 +28,6 @@
   --shadow-hero-rest: 0 2px 0 #060b09, 0 24px 48px -12px rgba(6, 11, 9, 0.7);
   --shadow-hero-hover: 0 2px 0 #060b09, 0 32px 56px -10px rgba(6, 11, 9, 0.85);
   --radius-card-hero: 14px;
-
   --plate: #ffffff; /* the white plate logos sit on */
   --muted: #94a09a; /* secondary notes, meta — ~5:1 on bg */
   --accent: #9fc7b8; /* pale jade — the contact/primary button */
@@ -165,30 +164,18 @@ footer {
   z-index: 1;
 }
 
-/* Scroll snapping (desktop/tablet, >=768px; Motion adds the snap points via
-   lenis/snap). A section shorter than the viewport fills one screen with its
-   content centred, so each snap lands on a composed screen; a taller section keeps
-   its natural height and scrolls freely. The Contact section and the footer
-   together form the last screen. */
-@media (min-width: 768px) {
-  main > section {
-    min-height: 100svh;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
+/* Section entrances (desktop/tablet): parts start hidden only while html.motion is
+   set (the boot script drops it if Motion never boots, and never adds it under
+   reduced motion); Motion marks each part data-revealed as it animates in. Phones
+   are static. Headings also drift a little (--drift, set by Motion) as `translate`. */
+@media (min-width: 601px) {
+  html.motion main [data-reveal]:not([data-revealed]) {
+    opacity: 0;
+    transform: translateY(24px);
   }
 
-  .finale {
-    min-height: 100svh;
-    display: flex;
-    flex-direction: column;
-  }
-
-  .finale > section {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
+  main section h2 {
+    translate: 0 var(--drift, 0px);
   }
 }
 

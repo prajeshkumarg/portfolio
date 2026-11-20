@@ -1,8 +1,9 @@
 /* Hero — flat green-black field, the name in two inks, then the "Building now" cards. */
 
 /* No bottom padding: the cards and buttons end exactly at the hero's bottom edge,
-   (the next sheet slides straight over the hero). The hero stops --hero-foot
-   short of the viewport so the cards still sit just inside the first screen. The hero is full-width: name and cards hug the left page
+   and the next section's own --gap-section is the only space after them. The
+   hero stops --hero-foot short of the viewport so the cards still sit just inside
+   the first screen. The hero is full-width: name and cards hug the left page
    margin, the buttons and the pixel scene the right one. */
 .hero {
   --hero-foot: clamp(24px, 4vh, 40px);

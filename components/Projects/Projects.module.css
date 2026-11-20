@@ -1,7 +1,7 @@
 /* Projects — split index (left) + sticky diagram preview (right). */
 
 .section {
-  padding-block: var(--gap-section); /* the sheet's own space above and below */
+  padding-block: var(--gap-section) 0; /* the gap sits above each section, once */
 }
 
 .heading {

@@ -8,14 +8,11 @@ import Footer from '@/components/Footer/Footer';
 import Motion from '@/components/Motion/Motion';
 import StarField from '@/components/StarField/StarField';
 
-/*
- * One fixed starfield behind the whole page. The snap points are the tops of the
- * hero and each section (Motion adds them); the Contact section and the footer
- * share the last screen (.finale).
- */
 export default function Page() {
   return (
     <>
+      {/* a fixed, still starfield sits behind everything; the hero's content and
+          every section scroll over it */}
       <StarField />
       <Hero />
       <main>
@@ -23,11 +20,9 @@ export default function Page() {
         <Projects />
         <Skills />
         <Education />
-        <div className="finale" data-snap>
-          <Contact />
-          <Footer />
-        </div>
+        <Contact />
       </main>
+      <Footer />
       <Motion />
     </>
   );

@@ -45,7 +45,7 @@ export default function Hero() {
           {nowCopy.heading}
         </h2>
 
-        <ul className={styles.carts} data-hero-lede data-star-avoid>
+        <ul className={styles.carts} data-hero-lede data-hero-exit data-star-avoid>
           {now.items.slice(0, 4).map((item) => (
             <li key={item.id} className={styles.cartItem}>
               <HeroCard item={item} />
@@ -54,7 +54,7 @@ export default function Hero() {
         </ul>
       </div>
 
-      <div className={styles.actions} data-hero-lede data-star-avoid>
+      <div className={styles.actions} data-hero-lede data-hero-exit data-star-avoid>
         <a className={styles.cta} href={nowCopy.ctaHref}>
           {nowCopy.ctaLabel}
         </a>
