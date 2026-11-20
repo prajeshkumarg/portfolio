@@ -7,7 +7,12 @@
    margin, the buttons and the pixel scene the right one. */
 .hero {
   --hero-foot: clamp(24px, 4vh, 40px);
-  position: relative;
+  /* pinned: the page's sheet scrolls up over it. Falls back to normal flow when the
+     hero is taller than the screen (phones, short windows), where pinning would
+     hide its bottom. */
+  position: sticky;
+  top: 0;
+  z-index: 0;
   min-height: calc(100svh - var(--hero-foot));
   padding: clamp(20px, 4vw, 40px) var(--margin) 0;
   display: grid;
@@ -199,8 +204,18 @@
   }
 }
 
+@media (max-height: 720px) {
+  .hero {
+    position: relative;
+  }
+}
+
 /* phone: name stays two lines + two inks; Right now rows stack name over status */
 @media (max-width: 720px) {
+  .hero {
+    position: relative;
+  }
+
   /* rows: top bar, pixel scene (its own row), then the text group */
   .hero {
     grid-template-rows: auto auto 1fr auto;

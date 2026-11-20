@@ -1,12 +1,12 @@
-/* StarField — an absolute, full-PAGE star layer behind content that scrolls
-   with the page (not pinned to the viewport). */
+/* StarField — an absolute star layer filling its parent (the hero, or the sheet
+   of sections), behind that parent's content. */
 
 .field {
   position: absolute;
   top: 0;
   left: 0;
   width: 100%;
-  z-index: 0; /* behind content, above the body background */
+  height: 100%;
+  z-index: 0; /* behind the parent's content */
   pointer-events: none;
-  opacity: 1;
 }

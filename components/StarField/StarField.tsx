@@ -1,26 +1,24 @@
 'use client';
 
 /*
- * StarField — a sparse, full-page star layer behind everything. It gives the
- * whole site a faint scattered-stars background in the margins and gaps, and
- * scrolls with the page (with a slight parallax).
+ * StarField — a sparse star layer that fills its PARENT element (the hero, and
+ * the sheet of sections that slides over it), so each layer carries its own
+ * stars. It sits behind the parent's content and moves with it.
  *
  * Rendered at full device resolution with smoothing on, so stars are small,
- * SHARP round points (not chunky pixel squares). Density is low and biased to
- * the side margins; opacity varies for depth. Bright stars flash a crisp
- * 4-point sparkle at their twinkle peak. Off under prefers-reduced-motion.
+ * SHARP round points (not chunky pixel squares). Density is low; opacity varies
+ * for depth. Bright stars flash a crisp 4-point sparkle at their twinkle peak.
+ * Still frames under prefers-reduced-motion.
  *
- * Two extra star groups hug the hero's pixel scene: a ring around it and a
- * small pocket by its moon. Both are placed from the scene's real on-screen rect
- * (the [data-star-scene] canvas, measured with getBoundingClientRect and
- * re-measured on resize / font load), in pixels around its centre, so the
- * falloff is round at every viewport size.
+ * Inside the hero, two extra star groups hug the pixel scene: a ring around it
+ * and a small pocket by its moon. Both are placed from the scene's real
+ * on-screen rect (the [data-star-scene] canvas inside the parent, measured with
+ * getBoundingClientRect and re-measured on resize / font load), in pixels around
+ * its centre, so the falloff is round at every viewport size.
  *
- * Stars never draw over the UI: every [data-star-avoid] element (hero top bar,
- * name, welcome line, role line, CTA) is measured into an exclusion rect, padded
- * 8px, and re-measured on resize / font load. Because the field drifts against
- * the page while scrolling, the test runs at draw time against each star's
- * current position.
+ * Stars never draw over the UI: every [data-star-avoid] element inside the
+ * parent (hero top bar, name, "Building now", cards, buttons) is measured into
+ * an exclusion rect, padded 8px, and re-measured on resize / font load.
  */
 
 import { useEffect, useRef } from 'react';
@@ -34,20 +32,16 @@ export default function StarField() {
     if (!canvas) return;
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
+    const host = canvas.parentElement;
+    if (!host) return;
     const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
     const dpr = Math.min(window.devicePixelRatio || 1, 2);
-    let W = window.innerWidth; // CSS px
-    let H = 0; // CSS px, document height
+    let W = host.clientWidth; // CSS px
+    let H = host.clientHeight; // CSS px
 
     const size = () => {
-      canvas.style.height = '0px'; // measure page without the canvas's own height
-      const docH = Math.max(
-        document.body.scrollHeight,
-        document.documentElement.scrollHeight,
-        window.innerHeight,
-      );
-      W = window.innerWidth;
-      H = docH;
+      W = host.clientWidth;
+      H = host.clientHeight;
       canvas.width = Math.round(W * dpr);
       canvas.height = Math.round(H * dpr);
       canvas.style.width = `${W}px`;
@@ -71,17 +65,18 @@ export default function StarField() {
       '#b8c6d6', // faint cool blue
       '#cfe6dc', // pale jade-white
     ];
-    // exclusion rects in page coordinates, padded; re-measured with the page
+    // exclusion rects in the parent's coordinates, padded; re-measured with the page
     const PAD = 8;
     let avoid: { x0: number; y0: number; x1: number; y1: number }[] = [];
     const measureAvoid = () => {
-      avoid = Array.from(document.querySelectorAll<HTMLElement>('[data-star-avoid]')).map((el) => {
+      const o = host.getBoundingClientRect();
+      avoid = Array.from(host.querySelectorAll<HTMLElement>('[data-star-avoid]')).map((el) => {
         const r = el.getBoundingClientRect();
         return {
-          x0: r.left + window.scrollX - PAD,
-          y0: r.top + window.scrollY - PAD,
-          x1: r.right + window.scrollX + PAD,
-          y1: r.bottom + window.scrollY + PAD,
+          x0: r.left - o.left - PAD,
+          y0: r.top - o.top - PAD,
+          x1: r.right - o.left + PAD,
+          y1: r.bottom - o.top + PAD,
         };
       });
     };
@@ -121,12 +116,13 @@ export default function StarField() {
 
       // Stars hugging the hero's pixel scene, placed from its real on-screen rect so
       // they stay round (px around the centre, no page-fraction stretching) on any
-      // viewport. Page coordinates: rect + scroll offset.
-      const sceneEl = document.querySelector<HTMLElement>('[data-star-scene]');
+      // viewport. Coordinates are relative to the parent element.
+      const sceneEl = host.querySelector<HTMLElement>('[data-star-scene]');
       const sr = sceneEl?.getBoundingClientRect();
+      const o = host.getBoundingClientRect();
       if (sr && sr.width > 0) {
-        const cx = sr.left + sr.width / 2 + window.scrollX;
-        const cy = sr.top + sr.height / 2 + window.scrollY;
+        const cx = sr.left - o.left + sr.width / 2;
+        const cy = sr.top - o.top + sr.height / 2;
         const rim = sr.width * 0.3; // roughly the visible planet / ring edge
         const addNear = (x: number, y: number, bigChance: number, sparkleChance: number) => {
           if (x < 0 || x > W || y < 0 || y > H) return;
@@ -173,11 +169,10 @@ export default function StarField() {
 
     const draw = (t: number) => {
       ctx.clearRect(0, 0, W, H);
-      const drift = window.scrollY * 0.25; // the canvas is translated by this (parallax)
       for (const s of stars) {
         const x = s.nx * W;
         const y = s.ny * H;
-        if (blocked(x, y + drift, s.sparkle ? 14 : s.r)) continue;
+        if (blocked(x, y, s.sparkle ? 14 : s.r)) continue;
         const tw = reduced ? 1 : 0.55 + 0.45 * Math.sin(t / s.period + s.phase);
         const a = s.op * tw;
         if (a < 0.05) continue;
@@ -219,18 +214,12 @@ export default function StarField() {
       build();
     };
     const onResize = measure;
-    window.addEventListener('resize', onResize);
+    const ro = new ResizeObserver(onResize); // the parent changes height as content lands
+    ro.observe(host);
     const t1 = setTimeout(measure, 400);
     const t2 = setTimeout(measure, 1200);
     const t3 = setTimeout(measure, 2600); // after the hero intro has settled
     document.fonts?.ready.then(measure); // Switzer loads late and moves the layout
-
-    // parallax: the field drifts slower than the content
-    const onScroll = () => {
-      canvas.style.transform = `translateY(${window.scrollY * 0.25}px)`;
-    };
-    onScroll();
-    window.addEventListener('scroll', onScroll, { passive: true });
 
     measureAvoid();
     build();
@@ -245,8 +234,7 @@ export default function StarField() {
     }
     return () => {
       cancelAnimationFrame(raf);
-      window.removeEventListener('resize', onResize);
-      window.removeEventListener('scroll', onScroll);
+      ro.disconnect();
       clearTimeout(t1);
       clearTimeout(t2);
       clearTimeout(t3);

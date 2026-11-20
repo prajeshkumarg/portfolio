@@ -5,13 +5,16 @@
  * (lava) and a quiet Résumé, sit bottom-right under the pixel scene (PixelSpace),
  * and stack full-width at the bottom on phones.
  *
- * A Server Component (PixelSpace and HeroCard are the client pieces). Elements marked
+ * The hero is pinned (position: sticky) while the rest of the page scrolls up over
+ * it. It carries its own StarField. A Server Component (StarField, PixelSpace and
+ * HeroCard are the client pieces). Elements marked
  * data-star-avoid are measured by StarField so background stars never draw over
  * them. Everything degrades to a static, readable hero with no JS and under
  * reduced motion.
  */
 
 import { site, now, nowCopy } from '@/content';
+import StarField from '@/components/StarField/StarField';
 import PixelSpace from './PixelSpace';
 import HeroCard from './HeroCard';
 import styles from './Hero.module.css';
@@ -26,6 +29,7 @@ const updatedLabel = new Date(`${now.updated}T00:00:00Z`).toLocaleDateString('en
 export default function Hero() {
   return (
     <header id="top" className={styles.hero} data-hero-pending>
+      <StarField />
       <PixelSpace />
       <div className={styles.top} data-star-avoid>
         <span className={styles.monogram}>{site.wordmark}</span>
