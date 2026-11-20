@@ -24,7 +24,12 @@ export default function Contact() {
             <li key={l.label} data-reveal>
               <a className={styles.rowLink} href={l.href} target="_blank" rel="noreferrer">
                 <span className={styles.rowLabel}>{l.label}</span>
-                <span className={styles.rowValue}>{l.value}</span>
+                <span className={styles.rowValue}>
+                  {l.value}
+                  <span className={styles.rowArrow} aria-hidden="true">
+                    ↗
+                  </span>
+                </span>
               </a>
             </li>
           ))}
@@ -40,6 +45,9 @@ export default function Contact() {
                 {...(l.href.startsWith('mailto:') ? {} : { target: '_blank', rel: 'noreferrer' })}
               >
                 {l.label}
+                <span className={styles.rowArrow} aria-hidden="true">
+                  {l.href.startsWith('mailto:') ? '→' : '↗'}
+                </span>
               </a>
             </li>
           ))}

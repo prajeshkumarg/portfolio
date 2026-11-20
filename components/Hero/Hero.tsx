@@ -22,15 +22,6 @@ export default function Hero() {
   return (
     <header id="top" className={styles.hero} data-hero-pending>
       <PixelSpace />
-      <div className={styles.top} data-star-avoid>
-        <span className={styles.monogram}>{site.wordmark}</span>
-        <nav className={styles.links} aria-label="Primary">
-          <a href="#work">Work</a>
-          <a href="#projects">Projects</a>
-          <a href={site.blogHref}>Writing</a>
-        </nav>
-      </div>
-
       <div className={styles.main}>
         <h1 className={styles.name} data-star-avoid>
           <span className={styles.line} data-hero-line>

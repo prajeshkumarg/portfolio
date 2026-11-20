@@ -11,40 +11,11 @@
   min-height: calc(100svh - var(--hero-foot));
   padding: clamp(20px, 4vw, 40px) var(--margin) 0;
   display: grid;
-  grid-template-rows: auto 1fr;
+  grid-template-rows: 1fr;
   background: transparent; /* the full-page StarField shows through continuously */
 }
 
-/* top row: monogram left, three links right, all small */
-.top {
-  position: relative;
-  z-index: 1;
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  font-size: var(--step-small);
-}
-
-.monogram {
-  font-weight: 600;
-  letter-spacing: 0.02em;
-}
-
-.links {
-  display: flex;
-  gap: clamp(16px, 2vw, 28px);
-}
-
-.links a {
-  color: var(--muted);
-  transition: color var(--t-fast) var(--ease-out);
-}
-
-.links a:hover {
-  color: var(--ink);
-}
-
-/* the name sits under the top bar; "Building now" + the cards are pushed to the
+/* the name sits at the top; "Building now" + the cards are pushed to the
    bottom of this column, so the cards' bottom edge lines up with the buttons' */
 .main {
   position: relative;
@@ -129,8 +100,8 @@
   display: inline-flex;
   align-items: center;
   padding: 0.85em 1.5em;
-  background: var(--lava); /* clay / lava — warm against the dark, jade scene */
-  color: var(--lava-ink);
+  background: var(--accent); /* jade, matching the scene and the Contact button */
+  color: var(--accent-ink);
   font-size: var(--step-body);
   font-weight: 600;
   border-radius: 0; /* one square-cornered button for the whole page */
@@ -140,7 +111,7 @@
 
 .cta:hover {
   transform: translateY(-2px);
-  background: #e07a44; /* a touch brighter lava on hover */
+  background: var(--accent-hover); /* a touch brighter jade on hover */
 }
 
 .cta:active {
@@ -194,17 +165,13 @@
 
 /* phone: name stays two lines + two inks; Right now rows stack name over status */
 @media (max-width: 720px) {
-  /* rows: top bar, pixel scene (its own row), then the text group */
+  /* rows: pixel scene (its own row), then the text group, then the buttons */
   .hero {
-    grid-template-rows: auto auto 1fr auto;
-  }
-
-  .top {
-    grid-row: 1;
+    grid-template-rows: auto 1fr auto;
   }
 
   .main {
-    grid-row: 3;
+    grid-row: 2;
   }
 
   .name {
@@ -237,7 +204,7 @@
   /* buttons: the last grid row, full width, stacked */
   .actions {
     position: relative;
-    grid-row: 4;
+    grid-row: 3;
     right: auto;
     bottom: auto;
     flex-direction: column;
@@ -266,11 +233,6 @@
 @media (max-width: 600px) {
   .hero {
     grid-template-rows: auto 1fr auto;
-  }
-
-  /* no top bar at all on phones: neither the monogram nor the links */
-  .top {
-    display: none;
   }
 
   .hero {

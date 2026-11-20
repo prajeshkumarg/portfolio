@@ -58,6 +58,25 @@
   transition: color var(--t-fast) var(--ease-out);
 }
 
+/* a small arrow after each value: muted at rest, jade and nudged up-right on hover */
+.rowArrow {
+  display: inline-block;
+  margin-left: 0.3em;
+  font-size: 0.62em;
+  font-weight: 500;
+  color: var(--muted);
+  vertical-align: 0.35em;
+  transition: color var(--t-fast) var(--ease-out), transform var(--t-fast) var(--ease-out);
+}
+
+.rowLink:hover .rowArrow,
+.rowLink:focus-visible .rowArrow,
+.phoneLink:hover .rowArrow,
+.phoneLink:focus-visible .rowArrow {
+  color: var(--accent);
+  transform: translate(2px, -2px);
+}
+
 .rowLink:hover .rowValue,
 .rowLink:focus-visible .rowValue,
 .rowLink:hover .rowLabel,
