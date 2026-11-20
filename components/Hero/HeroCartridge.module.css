@@ -37,7 +37,7 @@
   filter: var(--lift-shadow);
 }
 
-/* the clipped, bordered body: 2-step pixel notches on the top corners */
+/* the clipped, bordered body: the same 2-step pixel notches on all four corners */
 .body {
   display: flex;
   flex-direction: column;
@@ -50,8 +50,11 @@
   clip-path: polygon(
     0 8px, 4px 8px, 4px 4px, 8px 4px, 8px 0,
     calc(100% - 8px) 0, calc(100% - 8px) 4px, calc(100% - 4px) 4px, calc(100% - 4px) 8px, 100% 8px,
-    100% 100%, 0 100%
+    100% calc(100% - 8px), calc(100% - 4px) calc(100% - 8px), calc(100% - 4px) calc(100% - 4px),
+    calc(100% - 8px) calc(100% - 4px), calc(100% - 8px) 100%,
+    8px 100%, 8px calc(100% - 4px), 4px calc(100% - 4px), 4px calc(100% - 8px), 0 calc(100% - 8px)
   );
+
 }
 
 /* the illustration fills the top edge to edge, no padding, on a coloured ground;
