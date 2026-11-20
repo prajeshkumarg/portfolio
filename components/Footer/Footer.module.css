@@ -1,7 +1,18 @@
+/* Footer — a quiet close: copyright + email. */
+
 .footer {
-  padding: 30px 0;
-  text-align: center;
-  font-family: var(--font-mono), monospace;
-  font-size: var(--text-mono-meta);
-  color: var(--color-faint);
+  padding-block: clamp(32px, 6vh, 64px) clamp(28px, 4vh, 48px);
+}
+
+.meta {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 16px;
+  color: var(--muted);
+  font-size: var(--step-small);
+}
+
+.credit {
+  max-width: 44ch;
 }

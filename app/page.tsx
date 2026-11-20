@@ -1,28 +1,29 @@
-import Nav from '@/components/Nav/Nav';
 import Hero from '@/components/Hero/Hero';
 import Experience from '@/components/Experience/Experience';
 import Projects from '@/components/Projects/Projects';
 import Skills from '@/components/Skills/Skills';
 import Education from '@/components/Education/Education';
-import Writing from '@/components/Writing/Writing';
 import Contact from '@/components/Contact/Contact';
 import Footer from '@/components/Footer/Footer';
-import styles from './page.module.css';
+import Motion from '@/components/Motion/Motion';
+import StarField from '@/components/StarField/StarField';
 
 export default function Page() {
   return (
     <>
-      <Nav />
-      <main className={styles.shell}>
-        <Hero />
+      {/* a fixed, still starfield sits behind everything; the hero's content and
+          every section scroll over it */}
+      <StarField />
+      <Hero />
+      <main>
         <Experience />
         <Projects />
         <Skills />
         <Education />
-        <Writing />
         <Contact />
-        <Footer />
       </main>
+      <Footer />
+      <Motion />
     </>
   );
 }

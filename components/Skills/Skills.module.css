@@ -1,29 +1,99 @@
+/* Skills — grouped capability columns. */
+
 .section {
-  scroll-margin-top: var(--scroll-offset);
-  padding: 40px 0 60px;
+  padding-block: var(--gap-section) 0; /* the gap sits above each section, once */
 }
 
-/* The reference omits this; the card tilt needs a perspective ancestor. */
-.stage {
-  perspective: 1400px;
+.heading {
+  margin-bottom: clamp(48px, 7vh, 80px);
+  font-weight: 600;
+  letter-spacing: -0.04em;
+  line-height: 0.95;
+  font-size: var(--step-mid);
 }
 
-.panel {
+.groups {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: clamp(28px, 4vw, 64px);
+}
+
+.group {
   display: flex;
   flex-direction: column;
-  gap: 24px;
-  padding: 32px;
+  gap: 16px;
 }
 
-.groupLabel {
-  margin-bottom: 10px;
-  font-size: var(--text-group-label);
-  font-weight: 600;
-  color: var(--color-ink);
+.label {
+  color: var(--accent);
+  font-size: var(--step-small);
+  font-weight: 500;
+  letter-spacing: 0.01em;
 }
 
-.chips {
+.items {
   display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.item {
+  color: var(--ink);
+  font-size: var(--step-lead);
+  letter-spacing: -0.01em;
+}
+
+@media (max-width: 860px) {
+  .groups {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 32px;
+  }
+}
+
+@media (max-width: 480px) {
+  .groups {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ---- phone (<=600px): a definition list ----------------------------------- */
+
+.dl {
+  display: none;
+  margin: 0;
+}
+
+@media (max-width: 600px) {
+  .groups {
+    display: none;
+  }
+
+  /* the whole list is one card on the page's green-black surface */
+  .dl {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    padding: 16px 14px;
+    background: var(--surface);
+    border-radius: 12px;
+  }
+
+  .dlRow {
+    display: grid;
+    grid-template-columns: 90px minmax(0, 1fr);
+    column-gap: 12px;
+    align-items: baseline;
+  }
+
+  .dt {
+    color: var(--muted);
+    font-size: var(--step-body);
+  }
+
+  .dd {
+    margin: 0;
+    color: var(--ink);
+    font-size: var(--step-body);
+    line-height: 1.5;
+  }
 }

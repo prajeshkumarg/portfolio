@@ -1,82 +1,291 @@
+/* Projects — split index (left) + sticky diagram preview (right). */
+
 .section {
-  scroll-margin-top: var(--scroll-offset);
-  padding: 40px 0 60px;
+  padding-block: var(--gap-section) 0; /* the gap sits above each section, once */
 }
 
-.grid {
+.heading {
+  margin-bottom: clamp(32px, 4.5vh, 56px);
+  font-weight: 600;
+  letter-spacing: -0.04em;
+  line-height: 0.95;
+  font-size: var(--step-mid);
+}
+
+.split {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 22px;
-  perspective: 1400px;
+  grid-template-columns: minmax(0, 5fr) minmax(0, 6fr);
+  gap: clamp(32px, 4vw, 64px);
+  align-items: start;
 }
 
-/* padding is declared here, not just inherited from the card primitive, so the
-   media band's negative margins stay locked to it */
-/* Column flex so the media band can be pinned to the bottom edge. The grid
-   stretches both cards to the tallest one, and without this the band sits at the
-   end of the text instead, leaving a strip of card visible beneath it. */
-.card,
-.card:hover {
-  --media-ratio: 16 / 9;
-  --card-pad: 28px;
+/* left: the index of names */
+.list {
   display: flex;
   flex-direction: column;
-  padding: var(--card-pad);
-  color: inherit;
-  text-decoration: none;
 }
 
-.meta {
-  font-family: var(--font-mono), monospace;
-  font-size: var(--text-mono-meta);
-  letter-spacing: 0.12em;
-  color: var(--color-accent);
+.item {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 20px;
+  padding: clamp(18px, 2.4vh, 28px) 0;
+  border-top: 1px solid color-mix(in srgb, var(--ink) 12%, transparent);
+  color: var(--ink-dim);
+  transition: color var(--t-fast) var(--ease-out);
 }
 
-.title {
-  margin-top: 12px;
-  font-size: var(--text-card-title-lg);
+.list li:last-child .item {
+  border-bottom: 1px solid color-mix(in srgb, var(--ink) 12%, transparent);
+}
+
+.item[data-active='true'],
+.item:hover {
+  color: var(--accent);
+}
+
+.name {
   font-weight: 600;
-  color: var(--color-ink);
+  letter-spacing: -0.03em;
+  line-height: 1;
+  font-size: clamp(1.75rem, 3.2vw, 2.75rem);
 }
 
-/* the bottom margin is the minimum gap to the media band, held for the taller
-   card where `margin-top: auto` on the band collapses to nothing */
-.body {
-  margin: 12px 0 22px;
-  font-size: var(--text-card-body);
-  line-height: 1.75;
-  color: var(--color-muted);
+.arrow {
+  color: var(--muted);
+  font-size: var(--step-lead);
+  transition: color var(--t-fast) var(--ease-out), transform var(--t-fast) var(--ease-out);
 }
 
-.link {
-  color: var(--color-accent);
-  text-decoration: underline;
+.item[data-active='true'] .arrow,
+.item:hover .arrow {
+  color: var(--accent);
+  transform: translate(2px, -2px);
 }
 
-/* Reserved space for a screenshot — intentionally empty until the images land.
-   Negative side and bottom margins bleed it to the card's left, right, and bottom
-   edges; the bottom corners are rounded here rather than clipped by the card,
-   because `overflow` on the card would flatten its `transform-style: preserve-3d`
-   and kill the hover tilt. `position: relative` lets the fill image size to this box. */
-.media {
-  position: relative;
-  margin: auto calc(var(--card-pad) * -1) calc(var(--card-pad) * -1);
-  aspect-ratio: var(--media-ratio);
-  flex: none;
-  border-radius: 0 0 var(--radius-card) var(--radius-card);
-  overflow: hidden;
+/* right: the sticky preview. Lifted up so the diagram's top sits near the
+   "Things I have built" heading rather than dropping to the first row — the
+   gap above it otherwise reads oddly against the left column. On desktop the
+   negative margin pulls it over the heading row; it stays sticky below that. */
+.preview {
+  position: sticky;
+  top: clamp(40px, 12vh, 120px);
+  margin-top: calc(-1 * (var(--step-mid) + clamp(32px, 4.5vh, 56px)));
 }
 
-/* contain, not cover — these are diagrams, and cropping one loses the end of
-   the pipeline. The slot already matches the image's ratio, so nothing letterboxes. */
-.mediaImage {
-  object-fit: contain;
-  object-position: center;
+.previewInner {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
 }
 
-@media (max-width: 900px) {
-  .grid {
+/* the diagram sits directly on the page background — no frame, no plate */
+.viz {
+  width: 100%;
+}
+
+.viz svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  animation: vizFade 0.4s var(--ease-out);
+}
+
+@keyframes vizFade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* description under the diagram: muted, comfortable measure, 2–3 lines */
+.caption {
+  max-width: 52ch;
+  color: var(--muted);
+  font-size: var(--step-body);
+  line-height: 1.5;
+}
+
+/* tags under the diagram: clay, separated by " · " */
+.stack {
+  color: var(--lava);
+  font-size: var(--step-small);
+  line-height: 1.5;
+  letter-spacing: 0.01em;
+}
+
+/* ---- diagram motion (only on .vizActive; off under reduced-motion) ---- */
+
+/* edges flow: a dashed stroke whose offset animates so data moves along the
+   pipeline. At rest (non-active diagrams) edges are solid. */
+.vizActive :global(.vizEdge) {
+  stroke-dasharray: 7 6;
+  animation: vizFlow 1.1s linear infinite;
+}
+
+@keyframes vizFlow {
+  to {
+    stroke-dashoffset: -13;
+  }
+}
+
+/* the key-idea node's stroke pulses gently */
+.vizActive :global(.vizKeyNode) {
+  animation: vizPulse 2.4s var(--ease-out) infinite;
+}
+
+@keyframes vizPulse {
+  0%,
+  100% {
+    stroke-opacity: 1;
+    stroke-width: 1.5;
+  }
+  50% {
+    stroke-opacity: 0.55;
+    stroke-width: 2.4;
+  }
+}
+
+/* phone-only inline block (diagram + description + stack); hidden on desktop */
+.inline {
+  display: none;
+}
+
+@media (max-width: 860px) {
+  .split {
     grid-template-columns: 1fr;
+    gap: 0;
+  }
+
+  /* no sticky preview on phone — each row shows its own diagram inline */
+  .preview {
+    display: none;
+  }
+
+  .inline {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    margin-bottom: clamp(24px, 4vh, 36px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .viz svg {
+    animation: none;
+  }
+
+  .vizActive :global(.vizEdge) {
+    stroke-dasharray: none;
+    animation: none;
+  }
+
+  .vizActive :global(.vizKeyNode) {
+    animation: none;
+  }
+}
+
+/* ---- phone (<=600px): a list ---------------------------------------------
+   name + one-liner + link; diagram, description and tags behind a toggle. */
+
+.phoneList {
+  display: none;
+}
+
+@media (max-width: 600px) {
+  .split {
+    display: none;
+  }
+
+  .phoneList {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  /* each project is a card on the page's green-black surface */
+  .prow {
+    padding: 6px 14px 8px;
+    background: var(--surface);
+    border-radius: 12px;
+  }
+
+  .phead {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    min-height: 56px;
+  }
+
+  .ptitles {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+  }
+
+  .pname {
+    color: var(--ink);
+    font-size: var(--step-lead);
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    line-height: 1.15;
+  }
+
+  .pshort {
+    color: var(--muted);
+    font-size: var(--step-body);
+    line-height: 1.3;
+  }
+
+  .plink {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex: none;
+    width: 44px;
+    height: 44px;
+    color: var(--accent);
+    font-size: var(--step-lead);
+  }
+
+  .ptoggle {
+    display: flex;
+    align-items: center;
+    min-height: 44px;
+    color: var(--accent);
+    font-size: var(--step-body);
+    cursor: pointer;
+  }
+
+  .pmore {
+    display: block;
+  }
+
+  .pmore[open] > :not(summary) {
+    margin-top: 12px;
+  }
+
+  /* the diagram scrolls sideways at a readable width; a fade on the right edge
+     hints that there is more */
+  .pscroll {
+    overflow-x: auto;
+    -webkit-mask-image: linear-gradient(to right, black calc(100% - 36px), transparent);
+    mask-image: linear-gradient(to right, black calc(100% - 36px), transparent);
+  }
+
+  .pdiagram {
+    min-width: 560px;
+    padding-right: 36px;
+  }
+
+  .pdiagram svg {
+    display: block;
+    width: 100%;
+    height: auto;
   }
 }

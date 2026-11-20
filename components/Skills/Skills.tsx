@@ -1,26 +1,42 @@
-import Card3D from '@/components/Card3D/Card3D';
-import SectionLabel from '@/components/SectionLabel/SectionLabel';
-import Chip from '@/components/Chip/Chip';
 import { skillGroups } from '@/content';
 import styles from './Skills.module.css';
 
+/*
+ * Skills — grouped capability columns (direction §7.4 "two-ended rows" adapted
+ * to grouped lists). Each group opens with one plain word; its items sit under
+ * it at small size. No boxes, no rules — groups are told apart by space.
+ */
 export default function Skills() {
   return (
-    <section id="skills" className={styles.section}>
-      <SectionLabel>SKILLS</SectionLabel>
-      <div className={styles.stage}>
-        <Card3D className={styles.panel}>
-          {skillGroups.map((group) => (
-            <div key={group.label}>
-              <h3 className={styles.groupLabel}>{group.label}</h3>
-              <div className={styles.chips}>
-                {group.items.map((item) => (
-                  <Chip key={item}>{item}</Chip>
+    <section id="skills" className={styles.section} aria-labelledby="skills-h">
+      <div className="wrap">
+        <h2 id="skills-h" className={styles.heading} data-reveal>
+          What I work with
+        </h2>
+        <div className={styles.groups}>
+          {skillGroups.map((g) => (
+            <div key={g.label} className={styles.group} data-reveal>
+              <p className={styles.label}>{g.label}</p>
+              <ul className={styles.items}>
+                {g.items.map((item) => (
+                  <li key={item} className={styles.item}>
+                    {item}
+                  </li>
                 ))}
-              </div>
+              </ul>
             </div>
           ))}
-        </Card3D>
+        </div>
+
+        {/* phone (<=600px): a definition list — short label, then a comma line */}
+        <dl className={styles.dl}>
+          {skillGroups.map((g) => (
+            <div key={g.label} className={styles.dlRow} data-reveal>
+              <dt className={styles.dt}>{g.short}</dt>
+              <dd className={styles.dd}>{g.items.join(', ')}</dd>
+            </div>
+          ))}
+        </dl>
       </div>
     </section>
   );

@@ -1,41 +1,67 @@
-import Image from 'next/image';
-import ButtonPrimary from '@/components/ButtonPrimary/ButtonPrimary';
-import { hero, sideCaption, site } from '@/content';
+/*
+ * Hero — the one unique moment on the page. The name is huge and two-ink; under
+ * it an italic jade "Building now" line and a row of cards (one per
+ * item in `now`, content.ts — see HeroCard). The two buttons, "See my work"
+ * (lava) and a quiet Résumé, sit bottom-right under the pixel scene (PixelSpace),
+ * and stack full-width at the bottom on phones.
+ *
+ * It scrolls away normally over the page's fixed starfield (which also holds the
+ * ring of stars around the pixel scene). A Server Component (PixelSpace and
+ * HeroCard are the client pieces). Elements marked
+ * data-star-avoid are measured by StarField so background stars never draw over
+ * them. Everything degrades to a static, readable hero with no JS and under
+ * reduced motion.
+ */
+
+import { site, now, nowCopy, heroNav } from '@/content';
+import PixelSpace from './PixelSpace';
+import HeroCard from './HeroCard';
 import styles from './Hero.module.css';
 
 export default function Hero() {
   return (
-    <section id="top" className={styles.hero}>
-
-      <div className={styles.intro}>
-        <h1 className={styles.greeting}>
-          {hero.greeting.lead}
-          <span className={styles.greetingName}>{hero.greeting.name}</span>
+    <header id="top" className={styles.hero} data-hero-pending>
+      <PixelSpace />
+      <nav className={styles.sideNav} aria-label="Primary" data-hero-lede data-star-avoid>
+        <ul>
+          {heroNav.map((l) => (
+            <li key={l.label}>
+              <a href={l.href}>{l.label}</a>
+            </li>
+          ))}
+        </ul>
+      </nav>
+      <div className={styles.main}>
+        <h1 className={styles.name} data-star-avoid>
+          <span className={styles.line} data-hero-line>
+            <span>Prajesh</span>
+          </span>
+          <span className={`${styles.line} ${styles.lineTwo}`} data-hero-line>
+            <span>Kumar</span>
+          </span>
         </h1>
-        <p className={styles.bio}>{hero.bio}</p>
-        <div className={styles.actions}>
-          <ButtonPrimary href={hero.ctaHref}>{hero.ctaLabel}</ButtonPrimary>
-          <a className={styles.resume} href={site.resumeHref} target="_blank" rel="noreferrer">
-            {hero.resumeLabel}
-          </a>
-        </div>
+
+        <h2 className={styles.nowHeading} data-hero-lede data-star-avoid>
+          {nowCopy.heading}
+        </h2>
+
+        <ul className={styles.carts} data-hero-lede data-hero-exit data-star-avoid>
+          {now.items.slice(0, 4).map((item) => (
+            <li key={item.id} className={styles.cartItem}>
+              <HeroCard item={item} />
+            </li>
+          ))}
+        </ul>
       </div>
 
-      {/* col 2 — the portrait in a circular frame, with the former side-rail
-          words as a subscript caption underneath */}
-      <div className={styles.portraitStage}>
-        <div className={styles.portraitFrame}>
-          <Image
-            className={styles.portrait}
-            src={hero.portrait}
-            alt={hero.portraitAlt}
-            fill
-            priority
-            sizes="(max-width: 900px) 60vw, 320px"
-          />
-        </div>
-        <p className={styles.portraitCaption}>{sideCaption}</p>
+      <div className={styles.actions} data-hero-lede data-hero-exit data-star-avoid>
+        <a className={styles.cta} href={nowCopy.ctaHref}>
+          {nowCopy.ctaLabel}
+        </a>
+        <a className={styles.quiet} href={site.resumeHref}>
+          {nowCopy.resumeLabel}
+        </a>
       </div>
-    </section>
+    </header>
   );
 }

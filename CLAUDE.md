@@ -4,9 +4,148 @@ Single-page developer portfolio. Static, no backend, no data fetching.
 
 ## Stack
 
-Next.js (App Router) · TypeScript · CSS Modules
+Next.js (App Router) · TypeScript · CSS Modules · GSAP (ScrollTrigger) · Lenis
 
-No 3D, no canvas, no animation libraries. The page is server-rendered markup and CSS.
+The page is server-rendered markup and CSS; motion is layered on by client components.
+
+> **Branch `experiment/taste-folio` (current direction)** — a dark, type-only
+> redesign. **These rules, and the header comment in `app/globals.css`, win over
+> everything below** (the older notes describe other branches and are history).
+>
+> - **Look:** green-black ground `--bg #0d1412`, `--surface #16211e` cards, bone ink
+>   `--ink #e8e6dc`, `--muted`, one pale-jade `--accent #9fc7b8` (links, hover, the
+>   Contact button), and a lava `--lava #d2693a` hero CTA. `--hairline` is the one
+>   1px frame token (Projects media). Tokens live in `app/globals.css`; components
+>   use `var(--*)` only.
+> - **Type:** Switzer only (`--font`), loaded from the Fontshare `<link>` in
+>   `app/layout.tsx` (not `next/font`). Steps: `--step-small` (quiet chrome),
+>   `--step-card` (card body, the floor for reading text), `--step-body`,
+>   `--step-lead`, `--step-mid`, `--step-display`. No serif, no mono.
+> - **House rules (globals.css header):** no gradients, glass, shadows at rest,
+>   eyebrows, mono, index numbers, thin rules (bar the `--hairline` media frame),
+>   styled accent words, or headlines over two lines.
+> - **Logos** (Experience, Education) sit on white plates, as on the branch's
+>   original build: the Experience plate is a 16:7 panel, the Education plate fills
+>   the card's left side. Logo files are in `public/logos/`.
+> - **Canvas is explicitly approved on this branch** (no 3D library): `StarField`
+>   and `Hero/PixelSpace` (a pixel scene cycling black hole → ringed planet →
+>   crescent moon → mini solar system). StarField is the page background: a **fixed,
+>   still** full-viewport layer that the hero's content and every section scroll
+>   over. It also holds the ring/pocket of stars around the pixel scene (placed from
+>   `[data-star-scene]`), which stay still where the planet started while the planet
+>   scrolls away. Stars skip every `[data-star-avoid]` rect (tested against the
+>   current scroll). Both honour reduced motion.
+> - **Client components:** `Motion`, `StarField`, `Hero/PixelSpace`,
+>   `Hero/HeroCard` (pointer tilt) and `Projects`; everything else, Hero itself
+>   included, is a Server Component.
+> - **Hero "Building now" cards:** each `now.items` entry in `content.ts` (1–4: `id`,
+>   `name`, `line`, `art`, optional `href`) renders as a `Hero/HeroCard`: a plain
+>   14px-radius card (`--radius-card-hero`) with a tinted panel on top holding a 32×20 pixel scene
+>   at 65% of the panel and name + description below. It carries `--shadow-hero-rest` (the one
+>   shadow at rest on the page); hover lifts, tilts ±6° with the pointer, slides a
+>   flat sheen and parallaxes the art — all off on touch and under reduced motion.
+>   To add one: add an item to `now`, then add its `art` key to the `ART` map in
+>   `HeroCard.tsx` (a `--viz-*` label colour + a 32×20 grid; unknown keys fall back to
+>   a jade, empty label). Other hero copy is `nowCopy`. The buttons sit bottom-right
+>   on the same bottom edge as the cards (stacked, full width on phones). PixelSpace
+>   has no per-item scenes, so hover does not switch it.
+> - **Hero is full-width:** the name and the cards hug the left page margin, the
+>   buttons and the pixel scene the right one (`--margin`), while sections below sit
+>   in the centred `.wrap` column. The hero has no bottom padding; the gap to the
+>   next section is that section's `--gap-section`.
+> - **Phone (<=600px) is a separate, simplified layout** (duplicate markup toggled by
+>   CSS, same `content.ts` data plus short fields: `experience.years`,
+>   `project.short`, `skillGroup.short`, `education.schoolShort/degreeShort/years`,
+>   `contactRow`): two-line name, no nav links, the "Building now" cards as a snapping
+>   scroll row, small side-by-side buttons; Experience and Education as compact
+>   tables on green-black cards (Experience rows are `<details>`); Projects as a list with a "Show
+>   diagram" toggle; Skills as a definition list; Contact as one row of links.
+>   `--gap-section` is 64px there, there is no top bar (no monogram, no nav
+>   links), the tables have no logo tiles, Contact is one card with smaller type,
+>   and all scroll entrances are off.
+> - **Sections, in order:** Hero · Experience · Projects · Skills · Education ·
+>   Contact · Footer. There is no Nav component (the hero has its own top bar) and
+>   no Writing section; the blog is a link in the hero bar and Contact.
+> - GSAP + Lenis (`components/Motion`) are approved here: the hero intro, once-only
+>   `data-reveal` rises, and scrubbed ZOOM transitions above 600px. Each section zooms
+>   in (scale 1.22 -> 1, fading in) between its top hitting the viewport bottom and 55%
+>   up, and its `.wrap` zooms out (1 -> 0.78, fading) from its bottom at 45% to the
+>   top; the hero zooms out the same way from its bottom at 55%. `html` has
+>   `overflow-x: clip` so the scaled sections never add sideways scroll.
+>   `--gap-section` is clamp(160px, 20vh, 256px), above each section only. Phones
+>   and reduced motion are static.
+> - **Hero "Building now" cards:** each `now.items` entry in `content.ts` (1–4: `id`,
+>   `name`, `line`, `art`, optional `href`) renders as a `Hero/HeroCard`: a plain
+>   14px-radius card (`--radius-card-hero`) with a tinted panel on top holding a 32×20 pixel scene
+>   at 65% of the panel and name + description below. It carries `--shadow-hero-rest` (the one
+>   shadow at rest on the page); hover lifts, tilts ±6° with the pointer, slides a
+>   flat sheen and parallaxes the art — all off on touch and under reduced motion.
+>   To add one: add an item to `now`, then add its `art` key to the `ART` map in
+>   `HeroCard.tsx` (a `--viz-*` label colour + a 32×20 grid; unknown keys fall back to
+>   a jade, empty label). Other hero copy is `nowCopy`. The buttons sit bottom-right
+>   on the same bottom edge as the cards (stacked, full width on phones). PixelSpace
+>   has no per-item scenes, so hover does not switch it.
+> - **Hero is full-width:** the name and the cards hug the left page margin, the
+>   buttons and the pixel scene the right one (`--margin`), while sections below sit
+>   in the centred `.wrap` column. The hero has no bottom padding; the gap to the
+>   next section is that section's `--gap-section`.
+> - **Phone (<=600px) is a separate, simplified layout** (duplicate markup toggled by
+>   CSS, same `content.ts` data plus short fields: `experience.years`,
+>   `project.short`, `skillGroup.short`, `education.schoolShort/degreeShort/years`,
+>   `contactRow`): two-line name, no nav links, the "Building now" cards as a snapping
+>   scroll row, small side-by-side buttons; Experience and Education as compact
+>   tables on green-black cards (Experience rows are `<details>`); Projects as a list with a "Show
+>   diagram" toggle; Skills as a definition list; Contact as one row of links.
+>   `--gap-section` is 64px there, there is no top bar (no monogram, no nav
+>   links), the tables have no logo tiles, Contact is one card with smaller type,
+>   and all scroll entrances are off.
+> - **Sections, in order:** Hero · Experience · Projects · Skills · Education ·
+>   Contact · Footer. There is no Nav component (the hero has its own top bar) and
+>   no Writing section; the blog is a link in the hero bar and Contact.
+
+> **History — the notes below describe older branches, not `taste-folio`.**
+
+> **Branch `experiment/zoom-folio` (current direction)** — a complete editorial
+> redesign. The landing is a single composed "cover" **scene** (`components/Scene`,
+> a client component) with no nav at rest: a greeting, the circular Central Park
+> portrait, a stacked `Engineer. / Compilers. / Security.` statement (Compilers in
+> the serif italic indigo), a caption and a live clock. On scroll a GSAP
+> ScrollTrigger **pins the stage and flies the camera INTO the scene** — it scales
+> (~3.4×), blurs and fades while the page content rises in behind it. Under reduced
+> motion / no JS the scene is a plain full-height cover and the page scrolls normally.
+> Identity: warm paper `#f4f1e8`, indigo `#3546e0`, Space Grotesk + JetBrains Mono +
+> Instrument Serif (italic accent). Tokens live in `app/globals.css`; no `var(--u)`
+> scaling unit (that was awwwards-only). Sections below the scene: Nav (fades in past
+> the camera, `data-nav`) · Experience (CV ledger, ruled rows) · Projects (alternating
+> media rows, numbered) · Skills (full-bleed ink `Band`) · Education · Writing ·
+> Contact (centred sign-off + link row) · Footer. `components/Motion` drives the
+> scroll reveals (`data-reveal`), the nav reveal and the progress rail (`data-rail`).
+> The Hero and Bento components were removed on this branch.
+
+No 3D, no canvas on any branch. Below, the older `experiment/awwwards` notes.
+
+> **Branch `experiment/awwwards`** — full-width redesign (1600px cap, fluid side padding).
+> The **hero and Contact are bento grids** of `Tile`s. Between them the page alternates
+> paper and ink: Experience (sand band, "open tabs" — the
+> company wordmarks (transparent PNGs; the name is visually hidden) heading three parts of one outlined box (border
+> only, like the hero's; thin inner rules between parts), every panel open; logos are optically aligned — scaled so their lettering matches
+> and set on one baseline, from each logo's measured `logoLetters`; `current: true` gets
+> clay point markers) · Projects
+> (paper — the screenshots are dark, so they need a light ground; an index + live preview:
+> numbered rows with tag pills; hovering/focusing a row swaps the sticky screenshot +
+> description on the right. Phones show each row's shot inline. New project = one row) · Skills (ink band, open columns) · Education (two
+> cards) · Writing (one wide row). Ink sections use the `Band` primitive.
+> Below the hero, surfaces have **no outlines**: cards are separated by tone + `--shadow-tile`.
+> **Two accents with fixed roles:** indigo `--color-accent` = interactive (links, buttons,
+> the italic title word); clay `--color-clay` = live status only (the hero's Now tile).
+> **Sections can override the accent:** Projects sets `--color-accent: var(--color-green)`
+> (header, active row, links, focus ring); Experience (sand) sets `--color-accent` and
+> `--color-faint` to the sand-safe clay and grey. Skills keeps periwinkle.
+> Dates and meta tags are neutral (`--color-faint`). **Hero tiles are `outline`** — border
+> only, no fill; the Now tile is the one filled (clay) tile. The photo has no border.
+> Section titles come from `sections` in `content.ts`. GSAP + Lenis were explicitly
+> approved for this branch only. `main` still follows the handoff spec and its
+> no-animation-library rule.
 
 ## Design source of truth
 
@@ -38,16 +177,38 @@ types.ts            # Experience, Project, SkillGroup, SocialLink
 public/             # resume.pdf and static assets
 ```
 
-Sections in page order: Nav · Hero · Experience · Projects · Skills · Writing · Contact · Footer
-Primitives: `Card3D` · `SectionLabel` · `Chip` · `ButtonPrimary`
+Sections in page order: Nav · Hero · Experience · Projects · Skills · Education · Writing ·
+Contact · Footer
+Primitives: `Bento` + `Tile` (grid and tile — Hero and Contact only) · `Band` (full-bleed
+ink section) · `SectionHeader`
+(label + h2; `ink` and `center` variants) · `ButtonPrimary` · `Motion` (the only client
+component)
+
+### Bento
+
+`Tile` takes `span` (3–8 or 12 of 12 columns), `rows` (1–2), `tone`, and `href` (only
+link tiles get hover). Under 900px spans 3–5 become half width and 6+ full; under 600px
+everything is one column. Bleeds inside a tile (logo bands, project media) use negative
+`var(--tile-pad)` margins and are clipped by the tile's `overflow: hidden`. Hover lift uses
+the `translate` property so it never fights GSAP, which animates `transform`.
+
+### Motion
+
+`components/Motion/Motion.tsx` renders nothing. Sections expose `data-*` hooks
+(`data-intro`, `data-split`, `data-reveal`, `data-preview`, `data-progress`) and
+Motion drives them; `Tile` sets `data-reveal` (or `data-intro` in the hero) itself, so every section
+stays a Server Component. New animation = add a hook in markup + handle it in Motion.
+An inline boot script in `layout.tsx` adds `html.motion` before paint so the hero starts
+hidden; it's skipped under `prefers-reduced-motion`, and removed after 3s if Motion never
+boots. Lenis is off under reduced motion; scroll-scrubbed progress stays on.
 
 ## Rules
 
 - **No hardcoded hex, font names, or shadow values in components.** Always `var(--*)`.
   New value needed? Add a token to `globals.css` first.
 - **No copy in JSX.** All text, links, and lists live in `content.ts` and render via `.map()`.
-- **Server Components by default.** Nothing currently needs `'use client'` — the whole
-  page is static. Adding it should be a deliberate, justified choice.
+- **Server Components by default.** `Motion` is the single `'use client'` component;
+  don't add others — add a `data-*` hook and handle it there.
 - **One `.module.css` per component.** No global class names outside `globals.css`.
 - Use the `next/font` CSS variables (`--font-sans`, `--font-mono`), never a raw
   `font-family: 'Space Grotesk'`.
@@ -98,8 +259,16 @@ shadow, a CSS 3D tilt on hover (perspective on the stage, `preserve-3d` on the
 frame — the same pattern as `.card3d`). A bounce was tried and removed at
 Prajesh's request; motion respects `prefers-reduced-motion`.
 
-Do not reintroduce a canvas, a 3D library, or an animation library without being
-asked for it directly.
+Do not reintroduce a canvas or a 3D library without being asked for it directly.
+(Exception, `experiment/awwwards-next`, asked for 2026-11-05: the hero's small pixel-art
+skyline is a 2D `<canvas data-skyline>` drawn by Motion — no library.)
+
+On `experiment/awwwards` the hero is a bento: an 8-col × 2-row statement tile (eyebrow,
+h1, bio, actions), a 4-col portrait tile (the photo fills it, caption pill on top), then
+a row of Learning (3 cols) · Building (6 cols) ·
+Now (3 cols, the one filled clay tile) from `hero.learning` / `hero.building` /
+`hero.status`. Each tile has one accent on its dot, label and link — ochre
+(`--color-ochre`), green (the Projects colour), clay. The circular frame is not used on this branch.
 
 ## Responsive
 
@@ -109,6 +278,19 @@ The handoff defines **no** breakpoints. Invented behavior:
 - `< 900px` — Experience 3-col → 1-col, Projects 2-col → 1-col
 - h1 clamps 58px → ~38px
 
+On `experiment/awwwards`, **large screens scale the whole page** through one unit, `--u`
+(`globals.css`): exactly `1px` up to 1800px wide, then `100vw / 1800` (≈1.42px at 2560).
+Every size that should grow — tokens, and the px maximum inside component `clamp()`s — is
+written `calc(N * var(--u))`, so a big display shows the same composition scaled up
+rather than a small page in wide margins. New sizes: use `var(--u)`, not bare px. (CSS
+`zoom` was avoided: it breaks the `100vw` breakouts in `Band`.) The hero portrait has no
+caption on this branch.
+
+On `experiment/awwwards` type is fluid (`--text-display`, `--text-h2`, `--text-stat`,
+`--text-tile-heading` are `clamp()`s), the bento grids go 12 → 6 → 1 columns (see
+**Bento**), Experience rows and Projects splits stack `< 900px`, Skills goes 4 → 2 → 1
+columns, and the nav drops Projects/Skills `< 480px` so it fits a 375px screen.
+
 ## Commands
 
 ```
@@ -116,6 +298,12 @@ npm run dev     # localhost:3000
 npm run build   # run before declaring done — catches SSR errors dev hides
 npm run lint
 ```
+
+Opening the dev server on a LAN address (e.g. to test on a phone) relies on
+`allowedDevOrigins` in `next.config.ts`, which allows all private ranges (`192.168.*.*`,
+`10.*.*.*`, `172.16–31.*.*`) and `*.local` — so IP changes need no edit. A host outside
+those gets its JS and HMR blocked (403): the page renders but never hydrates, and every
+Motion effect silently does nothing.
 
 ## Open items
 

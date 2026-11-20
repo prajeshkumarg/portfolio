@@ -1,42 +1,174 @@
+/* Contact — the close: pitch, a grid of link blocks, the email button. */
+
 .section {
-  scroll-margin-top: var(--scroll-offset);
-  padding: 60px 0 90px;
-  text-align: center;
+  padding-block: var(--gap-section); /* last section: gap above and below */
 }
 
-.heading {
-  margin: 0 0 18px;
-  font-size: var(--text-h2);
+.card {
+  display: contents; /* no box on desktop; a card on phones */
+}
+
+.pitch {
+  max-width: 16ch;
   font-weight: 600;
-  color: var(--color-ink);
+  letter-spacing: -0.04em;
+  line-height: 0.95;
+  font-size: clamp(2.75rem, 8vw, 7rem);
 }
 
 .body {
-  max-width: 480px;
-  margin: 0 auto;
-  font-size: var(--text-body);
-  line-height: 1.85;
-  color: var(--color-muted);
+  margin-top: clamp(20px, 3vh, 36px);
+  max-width: 46ch;
+  color: var(--muted);
+  font-size: var(--step-lead);
+  line-height: 1.4;
+}
+
+/* the ways to reach: a two-column grid of link blocks, each label sitting
+   directly above its value, left-aligned. No bars, no fills — spacing only. */
+.rows {
+  margin-top: clamp(48px, 7vh, 88px);
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: clamp(32px, 5vh, 56px) clamp(24px, 4vw, 64px);
+}
+
+.rowLink {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+  width: fit-content;
+  max-width: 100%;
+}
+
+.rowLabel {
+  color: var(--muted);
+  font-size: var(--step-card);
+  letter-spacing: 0.01em;
+  transition: color var(--t-fast) var(--ease-out);
+}
+
+.rowValue {
+  font-weight: 600;
+  letter-spacing: -0.03em;
+  line-height: 1.05;
+  font-size: clamp(1.625rem, 3.4vw, 2.75rem);
+  overflow-wrap: anywhere;
+  transition: color var(--t-fast) var(--ease-out);
+}
+
+/* a small arrow after each value: muted at rest, jade and nudged up-right on hover */
+.rowArrow {
+  display: inline-block;
+  margin-left: 0.3em;
+  font-size: 0.62em;
+  font-weight: 500;
+  color: var(--muted);
+  vertical-align: 0.35em;
+  transition: color var(--t-fast) var(--ease-out), transform var(--t-fast) var(--ease-out);
+}
+
+.rowLink:hover .rowArrow,
+.rowLink:focus-visible .rowArrow,
+.phoneLink:hover .rowArrow,
+.phoneLink:focus-visible .rowArrow {
+  color: var(--accent);
+  transform: translate(2px, -2px);
+}
+
+.rowLink:hover .rowValue,
+.rowLink:focus-visible .rowValue,
+.rowLink:hover .rowLabel,
+.rowLink:focus-visible .rowLabel {
+  color: var(--accent);
 }
 
 .cta {
-  margin-top: 30px;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6em;
+  margin-top: clamp(40px, 6vh, 72px);
+  padding: 0.9em 1.6em;
+  background: var(--accent);
+  color: var(--accent-ink);
+  font-weight: 600;
+  font-size: var(--step-lead);
+  letter-spacing: -0.02em;
+  border-radius: 0;
+  transition: transform var(--t-fast) var(--ease-out);
 }
 
-.socials {
-  display: flex;
-  gap: 24px;
-  justify-content: center;
-  margin-top: 26px;
-  font-family: var(--font-mono), monospace;
-  font-size: var(--text-mono);
+.cta:hover {
+  transform: translateY(-2px);
 }
 
-.social {
-  color: var(--color-muted);
-  text-decoration: none;
+.arrow {
+  transition: transform var(--t-fast) var(--ease-out);
 }
 
-.social:hover {
-  color: var(--color-accent);
+.cta:hover .arrow {
+  transform: translateX(4px);
+}
+
+@media (max-width: 720px) {
+  .rows {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ---- phone (<=600px): one row of links ------------------------------------ */
+
+.phoneRow {
+  display: none;
+}
+
+@media (max-width: 600px) {
+  .rows,
+  .cta {
+    display: none;
+  }
+
+  /* one green-black card holds the pitch, the line and the links, with
+     phone-sized type */
+  .card {
+    display: block;
+    padding: 22px 18px 10px;
+    background: var(--surface);
+    border-radius: 14px;
+  }
+
+  .pitch {
+    max-width: none;
+    font-size: 1.75rem;
+    line-height: 1.05;
+  }
+
+  .body {
+    margin-top: 12px;
+    font-size: 1rem;
+    line-height: 1.5;
+  }
+
+  .phoneRow {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0 18px;
+    margin-top: 18px;
+  }
+
+  .phoneLink {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    color: var(--ink);
+    font-size: var(--step-body);
+    font-weight: 600;
+    transition: color var(--t-fast) var(--ease-out);
+  }
+
+  .phoneLink:hover,
+  .phoneLink:focus-visible {
+    color: var(--accent);
+  }
 }

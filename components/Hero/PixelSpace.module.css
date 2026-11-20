@@ -1,0 +1,67 @@
+/* PixelSpace — the hero's pixel-art scene: one frameless, transparent canvas on
+   the hero ground, absolutely placed in the right half on desktop and given its
+   own row on phones. */
+
+.canvas {
+  position: absolute;
+  top: 50%;
+  right: clamp(-20px, 2vw, 72px);
+  transform: translateY(-50%);
+  width: clamp(340px, 46vw, 700px);
+  aspect-ratio: 1;
+  z-index: 0; /* behind the name text */
+  pointer-events: none;
+  background: transparent;
+  /* hard pixel blocks: the small canvas scaled up stays crisp */
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+}
+
+/* tablet: the name fills the upper-left, so drop the art to the lower-right
+   corner and shrink it, out from under the letters */
+@media (max-width: 1024px) {
+  .canvas {
+    top: auto;
+    /* clear of the hero buttons, which sit bottom-right (Hero.module.css) */
+    bottom: 84px;
+    transform: none;
+    width: clamp(270px, 40vw, 380px);
+    right: clamp(-10px, 2vw, 40px);
+    opacity: 0.85;
+  }
+}
+
+/* phone: the scene leaves the absolute layer and takes its own row in the hero
+   grid, above the name — fully on-screen, right-aligned to the
+   page margin, never under any text (Hero.module.css assigns the grid rows) */
+@media (max-width: 720px) {
+  .canvas {
+    position: relative;
+    grid-row: 1;
+    justify-self: end;
+    top: auto;
+    right: auto;
+    bottom: auto;
+    transform: none;
+    width: min(62vw, 260px);
+    margin-top: 8px;
+    opacity: 1;
+  }
+}
+
+/* phone (<=600px): small, tucked under the two-line name on the right. Absolute,
+   so it never pushes the content down. */
+@media (max-width: 600px) {
+  .canvas {
+    position: absolute;
+    grid-row: auto;
+    justify-self: auto;
+    top: calc(32px + 18vw * 1.8 + 14px);
+    right: var(--margin);
+    bottom: auto;
+    transform: none;
+    width: min(45vw, 200px);
+    margin-top: 0;
+    opacity: 0.9;
+  }
+}

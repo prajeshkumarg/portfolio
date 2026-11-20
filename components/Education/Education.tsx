@@ -1,34 +1,50 @@
 import Image from 'next/image';
-import Card3D from '@/components/Card3D/Card3D';
-import SectionLabel from '@/components/SectionLabel/SectionLabel';
 import { education } from '@/content';
 import styles from './Education.module.css';
 
+/*
+ * Education — white cards, one per degree: a white logo panel on the left with
+ * the mark filling it, and the degree, institution and dates in dark ink on the
+ * card's white ground. Light cards are a deliberate break from the dark page,
+ * like the old awwwards layout.
+ */
+
 export default function Education() {
   return (
-    <section id="education" className={styles.section}>
-      <SectionLabel>EDUCATION</SectionLabel>
-      <div className={styles.grid}>
-        {education.map((entry) => (
-          <Card3D key={entry.institution} className={styles.card}>
-            {/* band fills the card's left edge, bleeding to the border — the
-                card's corners are rounded here because the card cannot clip
-                (overflow would flatten the 3D tilt) */}
-            {entry.logo ? (
-              <div
-                className={styles.cardLogoWrap}
-                data-plate={entry.logoPlate ? 'true' : undefined}
-              >
-                <Image className={styles.cardLogo} src={entry.logo} alt="" fill sizes="180px" />
+    <section id="education" className={styles.section} aria-labelledby="edu-h">
+      <div className="wrap">
+        <h2 id="edu-h" className={styles.heading} data-reveal>
+          Where I studied
+        </h2>
+        <ol className={styles.list}>
+          {education.map((e) => (
+            <li key={e.institution} className={styles.card} data-reveal>
+              {e.logo ? (
+                <div className={styles.logoPanel}>
+                  <Image className={styles.logo} src={e.logo} alt={`${e.institution} logo`} sizes="260px" />
+                </div>
+              ) : null}
+              <div className={styles.text}>
+                <h3 className={styles.degree}>{e.degree}</h3>
+                <p className={styles.inst}>{e.institution}</p>
+                <p className={styles.meta}>{e.meta}</p>
               </div>
-            ) : null}
-            <div className={styles.cardBody}>
-              <h3 className={styles.degree}>{entry.degree}</h3>
-              <p className={styles.institution}>{entry.institution}</p>
-              <p className={styles.meta}>{entry.meta}</p>
-            </div>
-          </Card3D>
-        ))}
+            </li>
+          ))}
+        </ol>
+
+        {/* phone (<=600px): the same row pattern as Experience, not expandable */}
+        <ol className={styles.phoneList}>
+          {education.map((e) => (
+            <li key={e.institution} className={styles.prow} data-reveal>
+              <span className={styles.ptext}>
+                <span className={styles.pschool}>{e.schoolShort}</span>
+                <span className={styles.pdegree}>{e.degreeShort}</span>
+              </span>
+              <span className={styles.pyears}>{e.years}</span>
+            </li>
+          ))}
+        </ol>
       </div>
     </section>
   );

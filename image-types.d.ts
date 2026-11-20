@@ -6,3 +6,4 @@
 // before the build, would not see it. This file is committed, so typechecking
 // works without a build step first.
 /// <reference types="next/image-types/global" />
+

@@ -1,5 +1,7 @@
-name: Deploy
+name: CI
 
+# Checks only. Deploys are done by Netlify's own GitHub integration (site
+# praj3sh-dev): a deploy preview for every PR, production on every push to main.
 on:
   push:
     branches: [main]
@@ -8,11 +10,11 @@ on:
 
 # a newer push to the same branch supersedes an in-flight run
 concurrency:
-  group: deploy-${{ github.ref }}
+  group: ci-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
-  build-and-deploy:
+  check:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -31,25 +33,5 @@ jobs:
       - name: Typecheck
         run: npx tsc --noEmit
 
-      # `netlify build` runs `next build` *and* @netlify/plugin-nextjs, which is
-      # what turns .next into something Netlify can serve. Plain `next build`
-      # alone would not be deployable.
       - name: Build
-        run: npx netlify build
-        env:
-          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
-          NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
-
-      - name: Deploy preview
-        if: github.event_name == 'pull_request'
-        run: npx netlify deploy --no-build
-        env:
-          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
-          NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
-
-      - name: Deploy production
-        if: github.ref == 'refs/heads/main' && github.event_name == 'push'
-        run: npx netlify deploy --prod --no-build
-        env:
-          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
-          NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
+        run: npm run build

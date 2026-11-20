@@ -1,0 +1,30 @@
+/* HeroArt — fills for the pixel scenes (label colour, ink, background) and the
+   blinking prompt cursor. --label is set by whoever renders the scene. */
+
+.pc {
+  fill: var(--label);
+}
+
+.pi {
+  fill: var(--ink);
+}
+
+.pb {
+  fill: var(--bg);
+}
+
+.cursor {
+  animation: blink 1.2s steps(1) infinite;
+}
+
+@keyframes blink {
+  50% {
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cursor {
+    animation: none;
+  }
+}

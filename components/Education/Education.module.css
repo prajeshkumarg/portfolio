@@ -1,76 +1,143 @@
+/* Education — dark cards with a white logo plate the mark fills, + light text. */
+
 .section {
-  scroll-margin-top: var(--scroll-offset);
-  padding: 40px 0 60px;
+  padding-block: var(--gap-section) 0; /* the gap sits above each section, once */
 }
 
-/* the two cards stacked, one right below the other */
-.grid {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 22px;
-  perspective: 1400px;
+.heading {
+  margin-bottom: clamp(32px, 5vh, 64px);
+  font-weight: 600;
+  letter-spacing: -0.04em;
+  line-height: 0.95;
+  font-size: var(--step-mid);
 }
 
-/* one card per degree — a left image column and a text column */
-.card {
-  display: flex;
-  align-items: stretch;
-  padding: 0;
-}
-
-/* the logo band — fills the card's whole left edge, bleeding to the border.
-   The card's corners are rounded here rather than clipped, because `overflow`
-   on the card would flatten `transform-style: preserve-3d` and kill the
-   hover tilt. */
-.cardLogoWrap {
-  position: relative;
-  flex-shrink: 0;
-  width: 32%;
-  min-width: 110px;
-  border-radius: var(--radius-card) 0 0 var(--radius-card);
-  overflow: hidden;
-}
-
-/* white plate behind marks with a baked-in white field, like the Shell plate */
-.cardLogoWrap[data-plate='true'] {
-  background: var(--color-logo-plate);
-}
-
-.cardLogoWrap[data-plate='true'] .cardLogo {
-  object-fit: contain;
-  padding: 12px;
-}
-
-.cardLogo {
-  object-fit: cover;
-}
-
-.cardBody {
-  flex: 1;
-  padding: 24px;
+.list {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: clamp(16px, 2vh, 24px);
+}
+
+/* a card on the page's own surface, so it belongs to the dark page */
+.card {
+  display: grid;
+  grid-template-columns: clamp(180px, 22vw, 240px) 1fr;
+  align-items: stretch;
+  background: var(--surface);
+  overflow: hidden;
+  border-radius: 4px;
+}
+
+/* the white plate fills the whole left side of the card, edge to edge */
+.logoPanel {
+  background: #fff;
+  display: flex;
+  align-items: center;
   justify-content: center;
+  padding: clamp(6px, 0.7vw, 11px) clamp(20px, 2vw, 32px);
+}
+
+.logo {
+  width: auto;
+  height: auto;
+  max-width: 100%;
+  max-height: 56px;
+  object-fit: contain;
+  display: block;
+}
+
+.text {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: clamp(10px, 1vw, 16px) clamp(22px, 2.4vw, 36px);
 }
 
 .degree {
-  font-size: var(--text-card-title-lg);
+  color: var(--ink);
   font-weight: 600;
-  color: var(--color-ink);
+  letter-spacing: -0.03em;
+  line-height: 1.05;
+  font-size: clamp(1.375rem, 2.6vw, 2rem);
 }
 
-.institution {
-  font-size: var(--text-card-body-sm);
-  color: var(--color-muted);
+.inst {
+  margin-top: 0.3em;
+  color: var(--ink);
+  font-size: var(--step-body);
+  line-height: 1.4;
 }
 
 .meta {
-  margin-top: 8px;
-  font-family: var(--font-mono), monospace;
-  font-size: var(--text-mono);
-  font-weight: 700;
-  letter-spacing: 0.12em;
-  color: var(--color-accent);
+  margin-top: 0.5em;
+  color: var(--muted);
+  font-size: var(--step-card);
+  line-height: 1.5;
+  letter-spacing: 0.01em;
 }
 
+@media (max-width: 560px) {
+  .card {
+    grid-template-columns: 1fr;
+  }
+
+  .logoPanel {
+    aspect-ratio: 16 / 7;
+  }
+}
+
+/* ---- phone (<=600px): a compact table ------------------------------------- */
+
+.phoneList {
+  display: none;
+}
+
+@media (max-width: 600px) {
+  .list {
+    display: none;
+  }
+
+  .phoneList {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  /* each row is a card on the page's green-black surface */
+  .prow {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: center;
+    column-gap: 12px;
+    min-height: 60px;
+    padding: 10px 14px;
+    background: var(--surface);
+    border-radius: 12px;
+  }
+
+  .ptext {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+  }
+
+  .pschool {
+    color: var(--ink);
+    font-size: var(--step-body);
+    font-weight: 600;
+    line-height: 1.2;
+  }
+
+  .pdegree {
+    color: var(--muted);
+    font-size: var(--step-small);
+    line-height: 1.3;
+  }
+
+  .pyears {
+    color: var(--muted);
+    font-size: var(--step-small);
+    font-variant-numeric: tabular-nums;
+    text-align: right;
+  }
+}
