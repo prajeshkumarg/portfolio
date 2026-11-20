@@ -6,6 +6,9 @@
  *   data-hero-line   the two hero lines, masked and rising on load (signature)
  *   data-hero-lede   the supporting sentence + button, fading up after
  *   data-reveal      every section's parts, staggered in on scroll
+ *   #top exit        the whole hero eases up and fades as you scroll off it
+ *                    (scrubbed), while the starfield behind keeps going
+ *   anchors          nav / hash links glide with a long ease-out (Lenis)
  *
  * Renders nothing, so every section stays a Server Component. Lenis gives the
  * smooth scroll. Transform + opacity only; content never stays hidden if the
@@ -69,7 +72,26 @@ export default function Motion() {
       });
     });
 
-    const lenis = new Lenis({ anchors: true });
+    // the hero eases away as the next section arrives; scrubbed to the scroll, so
+    // it reverses on the way back up. The StarField is outside the hero and stays.
+    const hero = document.getElementById('top');
+    if (hero) {
+      ctx.add(() => {
+        gsap.to(hero, {
+          y: -64,
+          opacity: 0.12,
+          ease: 'none',
+          scrollTrigger: { trigger: hero, start: 'top top', end: 'bottom top', scrub: true },
+        });
+      });
+    }
+
+    const lenis = new Lenis({
+      anchors: {
+        duration: 1.5,
+        easing: (t: number) => 1 - Math.pow(1 - t, 4), // ease-out quart
+      },
+    });
     lenis.on('scroll', ScrollTrigger.update);
     const tick = (time: number) => lenis.raf(time * 1000);
     gsap.ticker.add(tick);
