@@ -28,6 +28,7 @@
   --shadow-hero-rest: 0 2px 0 #060b09, 0 24px 48px -12px rgba(6, 11, 9, 0.7);
   --shadow-hero-hover: 0 2px 0 #060b09, 0 32px 56px -10px rgba(6, 11, 9, 0.85);
   --radius-card-hero: 14px;
+  --plate: #ffffff; /* the white plate logos sit on */
   --muted: #94a09a; /* secondary notes, meta — ~5:1 on bg */
   --accent: #9fc7b8; /* pale jade — the contact/primary button */
   --accent-ink: #0d1412; /* ink on the jade button */
@@ -161,6 +162,15 @@ main,
 footer {
   position: relative;
   z-index: 1;
+}
+
+/* phones (<=600px): tighter rhythm, smaller section headings, 16px+ reading text */
+@media (max-width: 600px) {
+  :root {
+    --gap-section: 64px;
+    --step-mid: 1.75rem;
+    --step-card: 1rem;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {

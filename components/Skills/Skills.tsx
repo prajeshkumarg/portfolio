@@ -27,6 +27,16 @@ export default function Skills() {
             </div>
           ))}
         </div>
+
+        {/* phone (<=600px): a definition list — short label, then a comma line */}
+        <dl className={styles.dl}>
+          {skillGroups.map((g) => (
+            <div key={g.label} className={styles.dlRow} data-reveal>
+              <dt className={styles.dt}>{g.short}</dt>
+              <dd className={styles.dd}>{g.items.join(', ')}</dd>
+            </div>
+          ))}
+        </dl>
       </div>
     </section>
   );

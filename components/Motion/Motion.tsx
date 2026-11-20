@@ -78,7 +78,8 @@ export default function Motion() {
     // .wrap child, so the two scrubs never fight over one transform. Origins sit on
     // the edge that is on screen (top while arriving, bottom while leaving) so tall
     // sections do not swing about their off-screen centre.
-    ctx.add(() => {
+    // (off on phones, <=600px)
+    if (matchMedia('(min-width: 601px)').matches) ctx.add(() => {
       const sections = gsap.utils.toArray<HTMLElement>('main > section');
       sections.forEach((sec, n) => {
         gsap.fromTo(

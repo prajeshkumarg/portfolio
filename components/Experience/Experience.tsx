@@ -7,12 +7,10 @@ import styles from './Experience.module.css';
  * panel on the company's own brand colour (the banner logos already carry it),
  * then the dates, role and what was done below. The current role carries a jade
  * dot. This is the "logo-forward card" layout, restyled for the green-black
- * ground.
+ * ground. On phones (<=600px) the cards give way to a compact table of tappable
+ * <details> rows.
  */
 
-// a uniform white plate for every logo, so dark/colour marks all read cleanly
-// and the row looks consistent on the green-black ground
-const PLATE = '#ffffff';
 
 export default function Experience() {
   return (
@@ -29,7 +27,7 @@ export default function Experience() {
               data-current={role.current ? 'true' : undefined}
               data-reveal
             >
-              <div className={styles.logoPanel} style={{ background: PLATE }}>
+              <div className={styles.logoPanel}>
                 {role.logo ? (
                   <Image className={styles.logo} src={role.logo} alt={`${role.org} logo`} sizes="360px" />
                 ) : (
@@ -52,6 +50,34 @@ export default function Experience() {
                   ))}
                 </ul>
               </div>
+            </li>
+          ))}
+        </ol>
+
+        {/* phone (<=600px): one compact row per job; tap a row to open its bullets */}
+        <ol className={styles.phoneList}>
+          {experiences.map((role) => (
+            <li key={role.org} data-reveal>
+              <details className={styles.prow}>
+                <summary className={styles.psum}>
+                  <span className={styles.ptile}>
+                    {role.logo ? (
+                      <Image className={styles.plogo} src={role.logo} alt="" sizes="48px" />
+                    ) : null}
+                  </span>
+                  <span className={styles.ptext}>
+                    <span className={styles.porg}>{role.org}</span>
+                    <span className={styles.prole}>{role.role}</span>
+                  </span>
+                  <span className={styles.pyears}>{role.years}</span>
+                  <span className={styles.pchev} aria-hidden="true" />
+                </summary>
+                <ul className={styles.ppoints}>
+                  {role.points.map((point) => (
+                    <li key={point}>{point}</li>
+                  ))}
+                </ul>
+              </details>
             </li>
           ))}
         </ol>

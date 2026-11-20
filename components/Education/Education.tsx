@@ -32,6 +32,22 @@ export default function Education() {
             </li>
           ))}
         </ol>
+
+        {/* phone (<=600px): the same row pattern as Experience, not expandable */}
+        <ol className={styles.phoneList}>
+          {education.map((e) => (
+            <li key={e.institution} className={styles.prow} data-reveal>
+              <span className={styles.ptile}>
+                {e.logo ? <Image className={styles.plogo} src={e.logo} alt="" sizes="48px" /> : null}
+              </span>
+              <span className={styles.ptext}>
+                <span className={styles.pschool}>{e.schoolShort}</span>
+                <span className={styles.pdegree}>{e.degreeShort}</span>
+              </span>
+              <span className={styles.pyears}>{e.years}</span>
+            </li>
+          ))}
+        </ol>
       </div>
     </section>
   );

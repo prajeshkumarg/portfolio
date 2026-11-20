@@ -93,3 +93,38 @@
     grid-template-columns: 1fr;
   }
 }
+
+/* ---- phone (<=600px): one row of links ------------------------------------ */
+
+.phoneRow {
+  display: none;
+}
+
+@media (max-width: 600px) {
+  .rows,
+  .cta {
+    display: none;
+  }
+
+  .phoneRow {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0 20px;
+    margin-top: 28px;
+  }
+
+  .phoneLink {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    color: var(--ink);
+    font-size: var(--step-body);
+    font-weight: 600;
+    transition: color var(--t-fast) var(--ease-out);
+  }
+
+  .phoneLink:hover,
+  .phoneLink:focus-visible {
+    color: var(--accent);
+  }
+}

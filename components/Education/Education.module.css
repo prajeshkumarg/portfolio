@@ -85,3 +85,71 @@
     aspect-ratio: 16 / 7;
   }
 }
+
+/* ---- phone (<=600px): a compact table ------------------------------------- */
+
+.phoneList {
+  display: none;
+}
+
+@media (max-width: 600px) {
+  .list {
+    display: none;
+  }
+
+  .phoneList {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .prow {
+    display: grid;
+    grid-template-columns: 32px minmax(0, 1fr) auto;
+    align-items: center;
+    column-gap: 12px;
+    min-height: 60px;
+    padding: 10px 0;
+  }
+
+  .ptile {
+    width: 32px;
+    height: 32px;
+    overflow: hidden;
+    border-radius: 6px;
+    background: var(--plate);
+  }
+
+  .plogo {
+    width: 100%;
+    height: 100%;
+    max-width: none;
+    object-fit: cover;
+    object-position: 0% 50%;
+  }
+
+  .ptext {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+  }
+
+  .pschool {
+    color: var(--ink);
+    font-size: var(--step-body);
+    font-weight: 600;
+    line-height: 1.2;
+  }
+
+  .pdegree {
+    color: var(--muted);
+    font-size: var(--step-small);
+    line-height: 1.3;
+  }
+
+  .pyears {
+    color: var(--muted);
+    font-size: var(--step-small);
+    font-variant-numeric: tabular-nums;
+    text-align: right;
+  }
+}

@@ -61,18 +61,6 @@
   transition: translate var(--t-fast) var(--ease-out);
 }
 
-.pc {
-  fill: var(--label);
-}
-
-.pi {
-  fill: var(--ink);
-}
-
-.pb {
-  fill: var(--bg);
-}
-
 /* name + description under the scene */
 .text {
   display: flex;
@@ -130,26 +118,11 @@
     opacity: 1;
   }
 
-  .cart:hover .cursor,
-  .cart:focus-visible .cursor {
-    animation: blink 1s steps(1) infinite;
-  }
 }
 
 .cart:hover .label,
 .cart:focus-visible .label {
   border-color: color-mix(in srgb, var(--label) 65%, var(--ink));
-}
-
-/* the PSP cursor blinks slowly even at rest, so the scene reads as live */
-.cursor {
-  animation: blink 1.2s steps(1) infinite;
-}
-
-@keyframes blink {
-  50% {
-    opacity: 0;
-  }
 }
 
 /* reduced motion: no slide, tilt, parallax, sheen or blink — just the border change */
@@ -182,11 +155,6 @@
     opacity: 0;
   }
 
-  .cursor,
-  .cart:hover .cursor,
-  .cart:focus-visible .cursor {
-    animation: none;
-  }
 }
 
 /* phones: each card is ~70vw, max 220px, inside a snapping scroll row */

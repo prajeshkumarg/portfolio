@@ -55,3 +55,41 @@
     grid-template-columns: 1fr;
   }
 }
+
+/* ---- phone (<=600px): a definition list ----------------------------------- */
+
+.dl {
+  display: none;
+  margin: 0;
+}
+
+@media (max-width: 600px) {
+  .groups {
+    display: none;
+  }
+
+  .dl {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .dlRow {
+    display: grid;
+    grid-template-columns: 90px minmax(0, 1fr);
+    column-gap: 12px;
+    align-items: baseline;
+  }
+
+  .dt {
+    color: var(--muted);
+    font-size: var(--step-body);
+  }
+
+  .dd {
+    margin: 0;
+    color: var(--ink);
+    font-size: var(--step-body);
+    line-height: 1.5;
+  }
+}

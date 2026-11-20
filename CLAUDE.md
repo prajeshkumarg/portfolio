@@ -53,6 +53,14 @@ The page is server-rendered markup and CSS; motion is layered on by client compo
 >   buttons and the pixel scene the right one (`--margin`), while sections below sit
 >   in the centred `.wrap` column. The hero has no bottom padding; the gap to the
 >   next section is that section's `--gap-section`.
+> - **Phone (<=600px) is a separate, simplified layout** (duplicate markup toggled by
+>   CSS, same `content.ts` data plus short fields: `now.short`, `experience.years`,
+>   `project.short`, `skillGroup.short`, `education.schoolShort/degreeShort/years`,
+>   `contactRow`): one-line name, a compact "Building now" list (icons from
+>   `Hero/HeroArt`), side-by-side buttons; Experience and Education as 32px-tile
+>   tables (Experience rows are `<details>`); Projects as a list with a "Show
+>   diagram" toggle; Skills as a definition list; Contact as one row of links.
+>   `--gap-section` is 64px there and the zoom transitions are off.
 > - **Sections, in order:** Hero · Experience · Projects · Skills · Education ·
 >   Contact · Footer. There is no Nav component (the hero has its own top bar) and
 >   no Writing section; the blog is a link in the hero bar and Contact.

@@ -14,7 +14,7 @@
  */
 
 import { useState } from 'react';
-import { projects } from '@/content';
+import { projects, projectsCopy } from '@/content';
 import { diagrams } from './diagrams';
 import styles from './Projects.module.css';
 
@@ -75,6 +75,43 @@ export default function Projects() {
             </div>
           </div>
         </div>
+
+        {/* phone (<=600px): a plain list — name, one-liner, link; the diagram,
+            description and tags sit behind a "Show diagram" toggle */}
+        <ol className={styles.phoneList}>
+          {projects.map((p) => {
+            const Diagram = diagrams[p.diagram];
+            return (
+              <li key={p.title} className={styles.prow} data-reveal>
+                <div className={styles.phead}>
+                  <div className={styles.ptitles}>
+                    <span className={styles.pname}>{p.title}</span>
+                    <span className={styles.pshort}>{p.short}</span>
+                  </div>
+                  <a
+                    className={styles.plink}
+                    href={p.href}
+                    target="_blank"
+                    rel="noreferrer"
+                    aria-label={`${p.title}: ${p.linkLabel}`}
+                  >
+                    <span aria-hidden="true">↗</span>
+                  </a>
+                </div>
+                <details className={styles.pmore}>
+                  <summary className={styles.ptoggle}>{projectsCopy.showDiagram}</summary>
+                  <div className={styles.pscroll}>
+                    <div className={styles.pdiagram}>
+                      <Diagram />
+                    </div>
+                  </div>
+                  <p className={styles.caption}>{p.body}</p>
+                  <p className={styles.stack}>{p.tags.join(' · ')}</p>
+                </details>
+              </li>
+            );
+          })}
+        </ol>
       </div>
     </section>
   );

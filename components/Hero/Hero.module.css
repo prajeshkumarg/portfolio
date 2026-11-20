@@ -257,3 +257,94 @@
     font-size: 17vw;
   }
 }
+
+/* ---- phone (<=600px): a simplified, scannable hero --------------------------
+   one-line name, a small scene tucked under it on the right (absolute, so it
+   pushes nothing down), "Building now" as a compact list instead of cards, and
+   the two buttons side by side. */
+
+/* the compact list is phone-only */
+.nowList {
+  display: none;
+}
+
+@media (max-width: 600px) {
+  .hero {
+    grid-template-rows: auto 1fr auto;
+  }
+
+  .main {
+    grid-row: 2;
+  }
+
+  .name {
+    display: flex;
+    flex-wrap: nowrap;
+    gap: 0.25em;
+    margin-top: 20px;
+    font-size: 2.6rem;
+    line-height: 1.05;
+    white-space: nowrap;
+  }
+
+  .carts {
+    display: none;
+  }
+
+  .nowList {
+    display: flex;
+    flex-direction: column;
+    align-self: stretch;
+    gap: 2px;
+    margin-top: 8px;
+  }
+
+  .nowRow {
+    display: grid;
+    grid-template-columns: 32px auto 1fr;
+    align-items: center;
+    column-gap: 12px;
+    min-height: 44px;
+    color: inherit;
+  }
+
+  .nowIcon {
+    width: 32px;
+    height: 20px;
+    display: block;
+  }
+
+  .nowName {
+    color: var(--ink);
+    font-size: var(--step-body);
+    font-weight: 600;
+    letter-spacing: -0.01em;
+  }
+
+  .nowShort {
+    min-width: 0;
+    color: var(--muted);
+    font-size: var(--step-small);
+    line-height: 1.3;
+  }
+
+  /* buttons: one row, equal width, the last grid row */
+  .actions {
+    position: relative;
+    grid-row: 3;
+    right: auto;
+    bottom: auto;
+    flex-direction: row;
+    align-items: stretch;
+    gap: 12px;
+    margin-top: 20px;
+    padding-bottom: 8px;
+  }
+
+  .cta,
+  .quiet {
+    flex: 1 1 0;
+    justify-content: center;
+    min-height: 48px;
+  }
+}

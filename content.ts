@@ -41,8 +41,8 @@ export type SectionKey = keyof typeof sections;
 /** The hero's "Building now" cards — edit the items. */
 export const now: Now = {
   items: [
-    { id: 'psp', name: 'PSP-Infer', line: 'Getting a small LLM to run on a 2008 handheld.', art: 'psp' },
-    { id: 'splat', name: 'Splat renderer', line: 'A parallel CPU renderer for 3D Gaussian splats.', art: 'splat' },
+    { id: 'psp', name: 'PSP-Infer', line: 'Getting a small LLM to run on a 2008 handheld.', short: 'LLM on a 2008 handheld', art: 'psp' },
+    { id: 'splat', name: 'Splat renderer', line: 'A parallel CPU renderer for 3D Gaussian splats.', short: 'CPU renderer for Gaussian splats', art: 'splat' },
   ],
 };
 
@@ -89,6 +89,7 @@ export const experiences: Experience[] = [
   {
     meta: 'JUN – AUG 2026 · SEATTLE',
     org: 'Amazon',
+    years: '2026',
     logo: amazonLogo,
     logoLetters: { top: 0.023, bottom: 0.58 },
     role: 'Software Development Intern',
@@ -101,6 +102,7 @@ export const experiences: Experience[] = [
     meta: 'JAN 2026 – NOW · NEW YORK',
     current: true,
     org: 'NYU Courant',
+    years: '2026–',
     logo: nyuLogo,
     logoLetters: { top: 0.229, bottom: 0.789 },
     role: 'Course Assistant',
@@ -112,6 +114,7 @@ export const experiences: Experience[] = [
   {
     meta: 'AUG 2023 – JUL 2025 · BENGALURU',
     org: 'Shell',
+    years: '2023–25',
     logo: shellLogo,
     logoLetters: { top: 0.217, bottom: 0.973 },
     role: 'Software Engineer',
@@ -126,6 +129,7 @@ export const projects: Project[] = [
   {
     tags: ['Python', 'FastAPI', 'React', 'TypeScript', 'RAG', 'pgvector', 'Redis'],
     title: 'repo-scout',
+    short: 'Q&A over any codebase',
     body: 'Ask questions about any codebase and get answers with citations. An agent walks the code, handler to service to model, and every claim carries a file:line range you can open.',
     linkLabel: 'repo-scout.live ↗',
     href: 'https://repo-scout.live/',
@@ -134,6 +138,7 @@ export const projects: Project[] = [
   {
     tags: ['C++', 'MLIR', 'LLVM', 'JIT'],
     title: 'MiniTensorCompiler',
+    short: 'Tensor language to LLVM',
     body: 'A tensor language that compiles to LLVM through MLIR. It fuses and folds operations, catches shape mismatches at compile time, and runs native or JIT.',
     linkLabel: 'github ↗',
     href: 'https://github.com/prajeshkumarg/MiniTensorCompiler',
@@ -142,6 +147,7 @@ export const projects: Project[] = [
   {
     tags: ['OCaml', 'RISC-V', 'CFG analysis'],
     title: 'AnyLang',
+    short: 'Typed language to RISC-V',
     body: 'A four-stage compiler that lowers a typed language to RISC-V, optimizes it with control-flow-graph analysis, and verifies the output on a simulator I wrote by hand.',
     linkLabel: 'github ↗',
     href: 'https://github.com/prajeshkumarg/anylang',
@@ -149,17 +155,25 @@ export const projects: Project[] = [
   },
 ];
 
+/** Small bits of copy used by the Projects phone list. */
+export const projectsCopy = {
+  showDiagram: 'Show diagram',
+};
+
 export const skillGroups: SkillGroup[] = [
   {
     label: 'Languages',
+    short: 'Languages',
     items: ['C/C++', 'OCaml', 'Python', 'Java', 'C#', 'JavaScript'],
   },
   {
     label: 'Systems & Compilers',
+    short: 'Systems',
     items: ['LLVM/MLIR', 'CUDA', 'OpenMP', 'MPI', 'Linux', 'RISC-V'],
   },
   {
     label: 'ML & AI',
+    short: 'ML',
     items: [
       'PyTorch',
       'Hugging Face',
@@ -170,6 +184,7 @@ export const skillGroups: SkillGroup[] = [
   },
   {
     label: 'Cloud & Infra',
+    short: 'Cloud',
     items: ['AWS', 'Terraform', 'Docker', 'Kubernetes', 'CI/CD', 'PostgreSQL'],
   },
 ];
@@ -177,12 +192,18 @@ export const skillGroups: SkillGroup[] = [
 export const education: Education[] = [
   {
     degree: 'Masters - Computer Science',
+    degreeShort: 'MS Computer Science',
+    schoolShort: 'NYU Courant',
+    years: '2025–27',
     institution: 'NYU Courant Institute of Mathematical Sciences',
     meta: '2025–27 · NEW YORK, USA',
     logo: nyuLogo,
   },
   {
     degree: 'Bachelors - Computer Science & Engineering',
+    degreeShort: 'BTech CSE',
+    schoolShort: 'VIT',
+    years: '2019–23',
     institution: 'Vellore Institute of Technology',
     meta: '2019–23 · VELLORE, INDIA',
     logo: vitLogo,
@@ -212,4 +233,12 @@ export const contactLinks = [
   { label: 'GitHub', value: 'prajeshkumarg', href: site.githubHref },
   { label: 'LinkedIn', value: 'in/prajeshkumarg', href: site.linkedinHref },
   { label: 'Blog', value: 'blog-praj3sh', href: site.blogHref },
+];
+
+/** The phone's single row of contact links (each a 44px tap target). */
+export const contactRow = [
+  { label: 'Résumé', href: site.resumeHref },
+  { label: 'GitHub', href: site.githubHref },
+  { label: 'LinkedIn', href: site.linkedinHref },
+  { label: 'Email', href: `mailto:${site.email}` },
 ];

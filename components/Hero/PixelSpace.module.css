@@ -48,3 +48,20 @@
     opacity: 1;
   }
 }
+
+/* phone (<=600px): small, tucked under the one-line name on the right. Absolute,
+   so it never pushes the content down. */
+@media (max-width: 600px) {
+  .canvas {
+    position: absolute;
+    grid-row: auto;
+    justify-self: auto;
+    top: 116px;
+    right: var(--margin);
+    bottom: auto;
+    transform: none;
+    width: min(45vw, 200px);
+    margin-top: 0;
+    opacity: 0.9;
+  }
+}

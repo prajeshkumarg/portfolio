@@ -12,6 +12,8 @@ export type Experience = {
   logoLetters?: { top: number; bottom: number };
   org: string;
   role: string;
+  /** Short year range for the phone table, e.g. "2026", "2026–", "2023–25". */
+  years: string;
   /** What you did, as separate points — two reads best in the Experience columns. */
   points: string[];
   /**
@@ -34,6 +36,8 @@ export type Project = {
   /** Stack and tools, rendered as tag pills. */
   tags: string[];
   title: string;
+  /** ~5-word one-liner for the phone list. */
+  short: string;
   body: string;
   linkLabel: string;
   href: string;
@@ -47,11 +51,17 @@ export type Project = {
 
 export type SkillGroup = {
   label: string;
+  /** Shortened label for the phone definition list. */
+  short: string;
   items: string[];
 };
 
 export type Education = {
   degree: string;
+  /** Short forms for the phone table. */
+  degreeShort: string;
+  schoolShort: string;
+  years: string;
   /** Plain name — the separator lives in `degree` ("MS - Computer Science"). */
   institution: string;
   /** Dates · location line, like the experience cards' meta. */
@@ -74,6 +84,8 @@ export type NowItem = {
   name: string;
   /** One line on what it is, under the label. */
   line: string;
+  /** ~5 words, for the phone list. */
+  short: string;
   /** Key into the card art map in HeroCard. */
   art: string;
   /** Makes the whole card a link. */

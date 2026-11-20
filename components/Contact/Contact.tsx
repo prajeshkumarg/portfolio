@@ -1,4 +1,4 @@
-import { site, contact, contactLinks } from '@/content';
+import { site, contact, contactLinks, contactRow } from '@/content';
 import styles from './Contact.module.css';
 
 /*
@@ -23,6 +23,21 @@ export default function Contact() {
               <a className={styles.rowLink} href={l.href} target="_blank" rel="noreferrer">
                 <span className={styles.rowLabel}>{l.label}</span>
                 <span className={styles.rowValue}>{l.value}</span>
+              </a>
+            </li>
+          ))}
+        </ul>
+
+        {/* phone (<=600px): one row of links, in place of the grid and the big button */}
+        <ul className={styles.phoneRow}>
+          {contactRow.map((l) => (
+            <li key={l.label} data-reveal>
+              <a
+                className={styles.phoneLink}
+                href={l.href}
+                {...(l.href.startsWith('mailto:') ? {} : { target: '_blank', rel: 'noreferrer' })}
+              >
+                {l.label}
               </a>
             </li>
           ))}
