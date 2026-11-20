@@ -13,7 +13,7 @@
  * reduced motion.
  */
 
-import { site, now, nowCopy } from '@/content';
+import { site, now, nowCopy, heroNav } from '@/content';
 import PixelSpace from './PixelSpace';
 import HeroCard from './HeroCard';
 import styles from './Hero.module.css';
@@ -22,6 +22,15 @@ export default function Hero() {
   return (
     <header id="top" className={styles.hero} data-hero-pending>
       <PixelSpace />
+      <nav className={styles.sideNav} aria-label="Primary" data-hero-lede data-star-avoid>
+        <ul>
+          {heroNav.map((l) => (
+            <li key={l.label}>
+              <a href={l.href}>{l.label}</a>
+            </li>
+          ))}
+        </ul>
+      </nav>
       <div className={styles.main}>
         <h1 className={styles.name} data-star-avoid>
           <span className={styles.line} data-hero-line>

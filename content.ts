@@ -47,6 +47,13 @@ export const now: Now = {
 };
 
 /** Copy around the cards in the hero. */
+/** The hero's vertical nav, top-right, aligned with the top of the name. */
+export const heroNav: SocialLink[] = [
+  { label: 'Work', href: '#work' },
+  { label: 'Projects', href: '#projects' },
+  { label: 'Writing', href: site.blogHref },
+];
+
 export const nowCopy = {
   heading: 'Building now',
   ctaLabel: 'See my work',

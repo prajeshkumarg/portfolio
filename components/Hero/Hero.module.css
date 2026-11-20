@@ -7,12 +7,104 @@
    margin, the buttons and the pixel scene the right one. */
 .hero {
   --hero-foot: clamp(24px, 4vh, 40px);
+  --name-top: clamp(0px, 1.5vh, 16px); /* gap above the name (nudged up) */
   position: relative;
   min-height: calc(100svh - var(--hero-foot));
   padding: clamp(20px, 4vw, 40px) var(--margin) 0;
   display: grid;
   grid-template-rows: 1fr;
   background: transparent; /* the full-page StarField shows through continuously */
+}
+
+/* vertical nav as a little constellation: top-right, right-aligned, its first
+   line level with the top of the name. Each link ends in a pixel star (a 2px
+   plus, like the scene's stars); a dotted line strings the stars together.
+   Stars twinkle out of step; hover brightens the star into a jade sparkle. */
+.sideNav {
+  position: absolute;
+  z-index: 2;
+  /* the name's cap top sits ~0.082em below its box; the nav text's ~4px below its own */
+  top: calc(clamp(20px, 4vw, 40px) + var(--name-top) + var(--name-size) * 0.082 - 4px);
+  right: var(--margin);
+  font-size: var(--step-body);
+  line-height: 1.2;
+}
+
+.sideNav ul {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 22px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* the constellation line: from the first star to the last, through each one */
+.sideNav ul::before {
+  content: '';
+  position: absolute;
+  top: 0.6em;
+  bottom: 0.6em;
+  right: 3px;
+  border-right: 1px dashed var(--star-line);
+}
+
+.sideNav a {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 14px;
+  color: var(--muted);
+  transition: color var(--t-fast) var(--ease-out);
+}
+
+/* the star: a 2px pixel plus drawn with box-shadows, on the line */
+.sideNav a::after {
+  content: '';
+  width: 2px;
+  height: 2px;
+  margin-right: 2px;
+  background: var(--ink);
+  box-shadow:
+    2px 0 var(--ink), -2px 0 var(--ink), 0 2px var(--ink), 0 -2px var(--ink);
+  animation: navTwinkle 3.2s ease-in-out infinite;
+  transition: transform var(--t-fast) var(--ease-out);
+}
+
+.sideNav li:nth-child(2) a::after { animation-delay: -1.1s; }
+.sideNav li:nth-child(3) a::after { animation-delay: -2.2s; }
+
+.sideNav a:hover,
+.sideNav a:focus-visible {
+  color: var(--accent);
+}
+
+.sideNav a:hover::after,
+.sideNav a:focus-visible::after {
+  animation: none;
+  opacity: 1;
+  background: var(--accent);
+  box-shadow:
+    2px 0 var(--accent), -2px 0 var(--accent), 0 2px var(--accent), 0 -2px var(--accent),
+    4px 0 var(--accent), -4px 0 var(--accent), 0 4px var(--accent), 0 -4px var(--accent);
+  transform: scale(1.25);
+}
+
+@keyframes navTwinkle {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.35; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sideNav a::after { animation: none; }
+}
+
+@media (max-width: 600px) {
+  .sideNav {
+    display: none; /* phones keep the simplified hero with no nav */
+  }
 }
 
 /* the name sits at the top; "Building now" + the cards are pushed to the
@@ -26,17 +118,21 @@
 }
 
 /* the name: two lines, flush left */
+.hero {
+  --name-size: clamp(5rem, 15vw, 14.375rem);
+}
+
 .name {
   position: relative;
   z-index: 1;
-  margin-top: clamp(24px, 6vh, 64px);
+  margin-top: var(--name-top);
   font-weight: 600;
   letter-spacing: -0.04em;
   /* pull the box left by the P/K side bearing so the letter stems, not the
      glyph boxes, sit on the same left edge as the card row */
   margin-left: -0.06em;
   line-height: 0.9; /* a touch looser so ascenders are not shaved by the mask */
-  font-size: clamp(5rem, 15vw, 14.375rem);
+  font-size: var(--name-size);
 }
 
 /* The reveal mask clips the rising line. With tight leading the clip box is
@@ -158,8 +254,12 @@
 /* tablet / mid widths: the big name and the pixel art compete for the same
    space, so ease the name down and let the art sit lower-right behind it. */
 @media (max-width: 1024px) {
+  .hero {
+    --name-size: clamp(4rem, 13vw, 9rem);
+  }
+
   .name {
-    font-size: clamp(4rem, 13vw, 9rem);
+    font-size: var(--name-size);
   }
 }
 
@@ -174,8 +274,12 @@
     grid-row: 2;
   }
 
+  .hero {
+    --name-size: 19vw;
+  }
+
   .name {
-    font-size: 19vw;
+    font-size: var(--name-size);
   }
 
   /* cards become a snapping horizontal row that bleeds off the right edge;
@@ -220,8 +324,12 @@
 
 /* very narrow: keep the name from overflowing */
 @media (max-width: 400px) {
+  .hero {
+    --name-size: 17vw;
+  }
+
   .name {
-    font-size: 17vw;
+    font-size: var(--name-size);
   }
 }
 
@@ -243,9 +351,13 @@
     grid-row: 2;
   }
 
+  .hero {
+    --name-size: 18vw;
+  }
+
   .name {
     margin-top: 0;
-    font-size: 18vw;
+    font-size: var(--name-size);
   }
 
   .actions {

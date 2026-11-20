@@ -33,6 +33,7 @@
   --accent: #9fc7b8; /* pale jade — the contact/primary button */
   --accent-ink: #0d1412; /* ink on the jade button */
   --accent-hover: #b6d8cb; /* brighter jade for button hover */
+  --star-line: rgba(232, 230, 220, 0.22); /* faint bone: the nav's constellation line */
   --lava: #d2693a; /* clay / lava — the hero CTA */
   --lava-ink: #140a06; /* ink on the lava button */
 
