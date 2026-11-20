@@ -72,7 +72,7 @@ The page is server-rendered markup and CSS; motion is layered on by client compo
 >   up, and its `.wrap` zooms out (1 -> 0.78, fading) from its bottom at 45% to the
 >   top; the hero zooms out the same way from its bottom at 55%. `html` has
 >   `overflow-x: clip` so the scaled sections never add sideways scroll.
->   `--gap-section` is clamp(128px, 16vh, 200px), above each section only. Phones
+>   `--gap-section` is clamp(160px, 20vh, 256px), above each section only. Phones
 >   and reduced motion are static.
 > - **Hero "Building now" cards:** each `now.items` entry in `content.ts` (1–4: `id`,
 >   `name`, `line`, `art`, optional `href`) renders as a `Hero/HeroCard`: a plain

@@ -73,7 +73,7 @@
   /* ---- layout ---- */
   --content-max: 1280px;
   --margin: clamp(20px, 4vw, 64px); /* one pair of equal outer margins */
-  --gap-section: clamp(128px, 16vh, 200px); /* section rhythm: the gap ABOVE each section */
+  --gap-section: clamp(160px, 20vh, 256px); /* section rhythm: the gap ABOVE each section */
   --scroll-offset: 80px;
 
   /* ---- motion ---- */
