@@ -156,16 +156,9 @@ img {
   padding-inline: var(--margin);
 }
 
-/* The hero is pinned behind; the sheet (main + footer, with its own StarField)
-   is opaque and scrolls up over it. Content sits above the sheet's stars. */
-.sheet {
-  position: relative;
-  z-index: 1;
-  background: var(--bg);
-}
-
-.sheet > main,
-.sheet > footer {
+/* sections and the footer sit above the fixed StarField background */
+main,
+footer {
   position: relative;
   z-index: 1;
 }

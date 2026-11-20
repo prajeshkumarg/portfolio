@@ -1,30 +1,34 @@
 'use client';
 
 /*
- * StarField — a sparse star layer that fills its PARENT element (the hero, and
- * the sheet of sections that slides over it), so each layer carries its own
- * stars. It sits behind the parent's content and moves with it.
+ * StarField — a sparse star layer with two scopes:
+ *
+ *   scope="viewport" (default)  the page's background: a FIXED, full-viewport layer
+ *     that stays still while the content (the hero's name and art, then every
+ *     section) scrolls over it. Stars are drawn around the hero UI, not behind it
+ *     (see below), measured against the current scroll.
+ *   scope="host"  only the stars that hug the hero's pixel scene; fills its parent
+ *     (the hero), so the ring and the moon's pocket scroll away with the planet.
  *
  * Rendered at full device resolution with smoothing on, so stars are small,
  * SHARP round points (not chunky pixel squares). Density is low; opacity varies
  * for depth. Bright stars flash a crisp 4-point sparkle at their twinkle peak.
  * Still frames under prefers-reduced-motion.
  *
- * Inside the hero, two extra star groups hug the pixel scene: a ring around it
- * and a small pocket by its moon. Both are placed from the scene's real
- * on-screen rect (the [data-star-scene] canvas inside the parent, measured with
- * getBoundingClientRect and re-measured on resize / font load), in pixels around
- * its centre, so the falloff is round at every viewport size.
+ * The scene cluster is placed from the scene's real on-screen rect (the
+ * [data-star-scene] canvas inside the parent, measured with getBoundingClientRect
+ * and re-measured on resize / font load), in pixels around its centre, so the
+ * falloff is round at every viewport size.
  *
- * Stars never draw over the UI: every [data-star-avoid] element inside the
- * parent (hero top bar, name, "Building now", cards, buttons) is measured into
- * an exclusion rect, padded 8px, and re-measured on resize / font load.
+ * Stars never draw over the hero UI: every [data-star-avoid] element (top bar,
+ * name, "Building now", cards, buttons) is measured into an exclusion rect, padded
+ * 8px, re-measured on resize / font load, and tested at draw time.
  */
 
 import { useEffect, useRef } from 'react';
 import styles from './StarField.module.css';
 
-export default function StarField() {
+export default function StarField({ scope = 'viewport' }: { scope?: 'viewport' | 'host' }) {
   const ref = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
@@ -32,16 +36,16 @@ export default function StarField() {
     if (!canvas) return;
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
-    const host = canvas.parentElement;
-    if (!host) return;
+    const host = scope === 'host' ? canvas.parentElement : null;
+    if (scope === 'host' && !host) return;
     const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
     const dpr = Math.min(window.devicePixelRatio || 1, 2);
-    let W = host.clientWidth; // CSS px
-    let H = host.clientHeight; // CSS px
+    let W = host ? host.clientWidth : window.innerWidth; // CSS px
+    let H = host ? host.clientHeight : window.innerHeight; // CSS px
 
     const size = () => {
-      W = host.clientWidth;
-      H = host.clientHeight;
+      W = host ? host.clientWidth : window.innerWidth;
+      H = host ? host.clientHeight : window.innerHeight;
       canvas.width = Math.round(W * dpr);
       canvas.height = Math.round(H * dpr);
       canvas.style.width = `${W}px`;
@@ -65,12 +69,14 @@ export default function StarField() {
       '#b8c6d6', // faint cool blue
       '#cfe6dc', // pale jade-white
     ];
-    // exclusion rects in the parent's coordinates, padded; re-measured with the page
+    // exclusion rects, padded: relative to the parent (host scope) or in page
+    // coordinates (viewport scope, shifted by the scroll at draw time)
     const PAD = 8;
     let avoid: { x0: number; y0: number; x1: number; y1: number }[] = [];
     const measureAvoid = () => {
-      const o = host.getBoundingClientRect();
-      avoid = Array.from(host.querySelectorAll<HTMLElement>('[data-star-avoid]')).map((el) => {
+      const root: ParentNode = host ?? document;
+      const o = host ? host.getBoundingClientRect() : { left: 0, top: -window.scrollY };
+      avoid = Array.from(root.querySelectorAll<HTMLElement>('[data-star-avoid]')).map((el) => {
         const r = el.getBoundingClientRect();
         return {
           x0: r.left - o.left - PAD,
@@ -93,7 +99,7 @@ export default function StarField() {
     const build = () => {
       const next: Star[] = [];
       const rng = mulberry32(31337); // same seed every build -> a stable field
-      const COUNT = Math.round((H / 10) * 1.6); // more stars overall
+      const COUNT = host ? 0 : Math.round((H / 10) * 1.6); // the host scope only adds the scene cluster
       for (let i = 0; i < COUNT; i++) {
         // allow stars across the full width (incl. the centre gap); only nudge a
         // small share out of the middle so the field is even, not segregated.
@@ -117,9 +123,9 @@ export default function StarField() {
       // Stars hugging the hero's pixel scene, placed from its real on-screen rect so
       // they stay round (px around the centre, no page-fraction stretching) on any
       // viewport. Coordinates are relative to the parent element.
-      const sceneEl = host.querySelector<HTMLElement>('[data-star-scene]');
+      const sceneEl = host?.querySelector<HTMLElement>('[data-star-scene]');
       const sr = sceneEl?.getBoundingClientRect();
-      const o = host.getBoundingClientRect();
+      const o = host ? host.getBoundingClientRect() : { left: 0, top: 0 };
       if (sr && sr.width > 0) {
         const cx = sr.left - o.left + sr.width / 2;
         const cy = sr.top - o.top + sr.height / 2;
@@ -169,10 +175,11 @@ export default function StarField() {
 
     const draw = (t: number) => {
       ctx.clearRect(0, 0, W, H);
+      const scrolled = host ? 0 : window.scrollY; // viewport scope: avoid rects are in page coordinates
       for (const s of stars) {
         const x = s.nx * W;
         const y = s.ny * H;
-        if (blocked(x, y, s.sparkle ? 14 : s.r)) continue;
+        if (blocked(x, y + scrolled, s.sparkle ? 14 : s.r)) continue;
         const tw = reduced ? 1 : 0.55 + 0.45 * Math.sin(t / s.period + s.phase);
         const a = s.op * tw;
         if (a < 0.05) continue;
@@ -214,8 +221,10 @@ export default function StarField() {
       build();
     };
     const onResize = measure;
-    const ro = new ResizeObserver(onResize); // the parent changes height as content lands
-    ro.observe(host);
+    // host scope: the parent changes size as content lands; viewport scope: the window
+    const ro = new ResizeObserver(onResize);
+    if (host) ro.observe(host);
+    else window.addEventListener('resize', onResize);
     const t1 = setTimeout(measure, 400);
     const t2 = setTimeout(measure, 1200);
     const t3 = setTimeout(measure, 2600); // after the hero intro has settled
@@ -235,13 +244,20 @@ export default function StarField() {
     return () => {
       cancelAnimationFrame(raf);
       ro.disconnect();
+      window.removeEventListener('resize', onResize);
       clearTimeout(t1);
       clearTimeout(t2);
       clearTimeout(t3);
     };
-  }, []);
+  }, [scope]);
 
-  return <canvas ref={ref} className={styles.field} aria-hidden="true" />;
+  return (
+    <canvas
+      ref={ref}
+      className={scope === 'host' ? styles.field : styles.fixed}
+      aria-hidden="true"
+    />
+  );
 }
 
 function mulberry32(seed: number) {

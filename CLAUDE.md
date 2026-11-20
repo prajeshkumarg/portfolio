@@ -28,15 +28,13 @@ The page is server-rendered markup and CSS; motion is layered on by client compo
 >   original build: the Experience plate is a 16:7 panel, the Education plate fills
 >   the card's left side. Logo files are in `public/logos/`.
 > - **Canvas is explicitly approved on this branch** (no 3D library): `StarField`
->   (a star layer that fills its parent; one lives in the hero, one in the sheet),
 >   and `Hero/PixelSpace` (a pixel scene cycling black hole → ringed planet →
->   crescent moon → mini solar system). In the hero, StarField rings the scene via
->   `[data-star-scene]` and skips every `[data-star-avoid]` rect. Both honour
->   reduced motion.
-> - **Pinned hero:** the hero is `position: sticky` and stays put; everything after
->   it is one opaque `.sheet` (`main` + footer, in `app/page.tsx`) that scrolls up
->   over it, and `Motion` dims the hero as it is covered. On phones and short
->   windows (hero taller than the screen) the hero falls back to normal flow.
+>   crescent moon → mini solar system). StarField has two scopes: the default is the
+>   page background, a **fixed, still** full-viewport layer that the hero's content
+>   and every section scroll over; `scope="host"` sits inside the hero and only adds
+>   the ring/pocket of stars around the pixel scene (via `[data-star-scene]`), so
+>   they leave with the planet. Stars skip every `[data-star-avoid]` rect (tested
+>   against the current scroll). Both honour reduced motion.
 > - **Client components:** `Motion`, `StarField`, `Hero/PixelSpace`,
 >   `Hero/HeroCard` (pointer tilt) and `Projects`; everything else, Hero itself
 >   included, is a Server Component.

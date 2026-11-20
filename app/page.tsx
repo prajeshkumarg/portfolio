@@ -11,20 +11,18 @@ import StarField from '@/components/StarField/StarField';
 export default function Page() {
   return (
     <>
-      {/* the hero stays put; everything else is one opaque sheet (with its own
-          stars) that scrolls up over it */}
+      {/* a fixed, still starfield sits behind everything; the hero's content and
+          every section scroll over it */}
+      <StarField />
       <Hero />
-      <div className="sheet" data-sheet>
-        <StarField />
-        <main>
-          <Experience />
-          <Projects />
-          <Skills />
-          <Education />
-          <Contact />
-        </main>
-        <Footer />
-      </div>
+      <main>
+        <Experience />
+        <Projects />
+        <Skills />
+        <Education />
+        <Contact />
+      </main>
+      <Footer />
       <Motion />
     </>
   );

@@ -1,5 +1,16 @@
-/* StarField — an absolute star layer filling its parent (the hero, or the sheet
-   of sections), behind that parent's content. */
+/* StarField — two layers. .fixed is the page background: pinned to the viewport,
+   behind everything, so the content scrolls over a still sky. .field fills its
+   parent (the hero) and holds only the stars around the pixel scene. */
+
+.fixed {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  pointer-events: none;
+}
 
 .field {
   position: absolute;
@@ -7,6 +18,6 @@
   left: 0;
   width: 100%;
   height: 100%;
-  z-index: 0; /* behind the parent's content */
+  z-index: 0; /* behind the hero's content */
   pointer-events: none;
 }

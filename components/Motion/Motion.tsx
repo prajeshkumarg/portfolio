@@ -6,8 +6,6 @@
  *   data-hero-line   the two hero lines, masked and rising on load (signature)
  *   data-hero-lede   the supporting sentence + button, fading up after
  *   data-reveal      every section's parts, staggered in on scroll
- *   hero dim         the hero stays pinned; it dims (scrubbed) as the sheet of
- *                    sections scrolls up over it
  *   anchors          nav / hash links glide with a long ease-out (Lenis)
  *
  * Renders nothing, so every section stays a Server Component. Lenis gives the
@@ -71,20 +69,6 @@ export default function Motion() {
           }),
       });
     });
-
-    // the hero is pinned and the sheet scrolls over it; dim the hero as the sheet
-    // rises across it, scrubbed to the scroll (so it reverses on the way back)
-    const hero = document.getElementById('top');
-    const sheet = document.querySelector<HTMLElement>('[data-sheet]');
-    if (hero && sheet) {
-      ctx.add(() => {
-        gsap.to(hero, {
-          opacity: 0.25,
-          ease: 'none',
-          scrollTrigger: { trigger: sheet, start: 'top bottom', end: 'top top', scrub: true },
-        });
-      });
-    }
 
     const lenis = new Lenis({
       anchors: {
