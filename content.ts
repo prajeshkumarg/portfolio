@@ -41,8 +41,8 @@ export type SectionKey = keyof typeof sections;
 /** The hero's "Building now" cards — edit the items. */
 export const now: Now = {
   items: [
-    { id: 'psp', name: 'PSP-Infer', line: 'Getting a small LLM to run on a 2008 handheld.', short: 'LLM on a 2008 handheld', art: 'psp' },
-    { id: 'splat', name: 'Splat renderer', line: 'A parallel CPU renderer for 3D Gaussian splats.', short: 'CPU renderer for Gaussian splats', art: 'splat' },
+    { id: 'psp', name: 'PSP-Infer', line: 'Getting a small LLM to run on a 2008 handheld.', art: 'psp' },
+    { id: 'splat', name: 'Splat renderer', line: 'A parallel CPU renderer for 3D Gaussian splats.', art: 'splat' },
   ],
 };
 

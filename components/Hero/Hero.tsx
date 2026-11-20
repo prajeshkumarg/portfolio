@@ -16,7 +16,6 @@
 import { site, now, nowCopy } from '@/content';
 import PixelSpace from './PixelSpace';
 import HeroCard from './HeroCard';
-import { ArtSvg, getArt } from './HeroArt';
 import styles from './Hero.module.css';
 
 export default function Hero() {
@@ -52,34 +51,6 @@ export default function Hero() {
               <HeroCard item={item} />
             </li>
           ))}
-        </ul>
-
-        {/* phone (<=600px): the same items as a compact list instead of cards */}
-        <ul className={styles.nowList} data-hero-lede data-star-avoid>
-          {now.items.slice(0, 4).map((item) => {
-            const art = getArt(item.art);
-            const row = (
-              <>
-                <ArtSvg art={art} className={styles.nowIcon} />
-                <span className={styles.nowName}>{item.name}</span>
-                <span className={styles.nowShort}>{item.short}</span>
-              </>
-            );
-            const style = { '--label': art.colour } as React.CSSProperties;
-            return (
-              <li key={item.id}>
-                {item.href ? (
-                  <a className={styles.nowRow} href={item.href} target="_blank" rel="noreferrer" style={style}>
-                    {row}
-                  </a>
-                ) : (
-                  <div className={styles.nowRow} style={style}>
-                    {row}
-                  </div>
-                )}
-              </li>
-            );
-          })}
         </ul>
       </div>
 

@@ -84,8 +84,6 @@ export type NowItem = {
   name: string;
   /** One line on what it is, under the label. */
   line: string;
-  /** ~5 words, for the phone list. */
-  short: string;
   /** Key into the card art map in HeroCard. */
   art: string;
   /** Makes the whole card a link. */

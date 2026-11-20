@@ -101,7 +101,8 @@ export default function StarField({ scope = 'viewport' }: { scope?: 'viewport' |
     const build = () => {
       const next: Star[] = [];
       const rng = mulberry32(31337); // same seed every build -> a stable field
-      const COUNT = host ? 0 : Math.round((H / 10) * 2.2); // the host scope only adds the scene cluster
+      const phone = W <= 600; // fewer stars on phones
+      const COUNT = host ? 0 : Math.round((H / 10) * (phone ? 1.0 : 2.2)); // the host scope only adds the scene cluster
       for (let i = 0; i < COUNT; i++) {
         // allow stars across the full width (incl. the centre gap); only nudge a
         // small share out of the middle so the field is even, not segregated.
@@ -150,7 +151,7 @@ export default function StarField({ scope = 'viewport' }: { scope?: 'viewport' |
         };
 
         // a ring just outside the scene, even all the way round, thinning outward
-        for (let i = 0; i < 240; i++) {
+        for (let i = 0; i < (phone ? 80 : 240); i++) {
           const ang = rng() * Math.PI * 2;
           const dist = rim * (1.05 + Math.pow(rng(), 1.5) * 1.8);
           addNear(cx + Math.cos(ang) * dist, cy + Math.sin(ang) * dist, 0.78, 0.4);
@@ -160,7 +161,7 @@ export default function StarField({ scope = 'viewport' }: { scope?: 'viewport' |
         const mx = cx - sr.width * 0.14;
         const my = cy + sr.width * 0.094;
         const spread = sr.width * 0.25;
-        for (let i = 0; i < 60; i++) {
+        for (let i = 0; i < (phone ? 20 : 60); i++) {
           const ang = rng() * Math.PI * 2;
           const rad = Math.pow(rng(), 0.5) * spread;
           addNear(mx + Math.cos(ang) * rad, my + Math.sin(ang) * rad, 0.82, 0.5);

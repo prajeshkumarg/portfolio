@@ -54,10 +54,10 @@ The page is server-rendered markup and CSS; motion is layered on by client compo
 >   in the centred `.wrap` column. The hero has no bottom padding; the gap to the
 >   next section is that section's `--gap-section`.
 > - **Phone (<=600px) is a separate, simplified layout** (duplicate markup toggled by
->   CSS, same `content.ts` data plus short fields: `now.short`, `experience.years`,
+>   CSS, same `content.ts` data plus short fields: `experience.years`,
 >   `project.short`, `skillGroup.short`, `education.schoolShort/degreeShort/years`,
->   `contactRow`): one-line name, a compact "Building now" list (icons from
->   `Hero/HeroArt`), side-by-side buttons; Experience and Education as 32px-tile
+>   `contactRow`): two-line name, no nav links, the "Building now" cards as a snapping
+>   scroll row, small side-by-side buttons; Experience and Education as 32px-tile
 >   tables (Experience rows are `<details>`); Projects as a list with a "Show
 >   diagram" toggle; Skills as a definition list; Contact as one row of links.
 >   `--gap-section` is 64px there and all scroll entrances are off.
@@ -88,10 +88,10 @@ The page is server-rendered markup and CSS; motion is layered on by client compo
 >   in the centred `.wrap` column. The hero has no bottom padding; the gap to the
 >   next section is that section's `--gap-section`.
 > - **Phone (<=600px) is a separate, simplified layout** (duplicate markup toggled by
->   CSS, same `content.ts` data plus short fields: `now.short`, `experience.years`,
+>   CSS, same `content.ts` data plus short fields: `experience.years`,
 >   `project.short`, `skillGroup.short`, `education.schoolShort/degreeShort/years`,
->   `contactRow`): one-line name, a compact "Building now" list (icons from
->   `Hero/HeroArt`), side-by-side buttons; Experience and Education as 32px-tile
+>   `contactRow`): two-line name, no nav links, the "Building now" cards as a snapping
+>   scroll row, small side-by-side buttons; Experience and Education as 32px-tile
 >   tables (Experience rows are `<details>`); Projects as a list with a "Show
 >   diagram" toggle; Skills as a definition list; Contact as one row of links.
 >   `--gap-section` is 64px there and all scroll entrances are off.
