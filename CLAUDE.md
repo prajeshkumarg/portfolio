@@ -33,18 +33,24 @@ The page is server-rendered markup and CSS; motion is layered on by client compo
 >   `Hero/PixelSpace` (a pixel scene cycling black hole → ringed planet → crescent
 >   moon → mini solar system). Both honour reduced motion.
 > - **Client components:** `Motion`, `StarField`, `Hero/PixelSpace`,
->   `Hero/HeroCartridge` (pointer tilt) and `Projects`; everything else, Hero itself
+>   `Hero/HeroCard` (pointer tilt) and `Projects`; everything else, Hero itself
 >   included, is a Server Component.
-> - **Hero "Building now" cartridges:** each `now.items` entry in `content.ts`
->   (1–4: `id`, `name`, `line`, `art`, optional `href`) renders as a game cartridge
->   (`Hero/HeroCartridge`: full-bleed pixel-art panel on top, name + description
->   below; hover lifts, tilts, parallaxes the art and adds `--lift-shadow` — the one
->   shadow, never at rest). To add one: add an item to `now`,
->   then add its `art` key to the `ART` map in `HeroCartridge.tsx` (a `--viz-*` label
->   colour + a 16×16 pixel grid; unknown keys fall back to a jade, empty label) —
->   and bump `now.updated` (ISO date; the heading's "updated Nov 19" comes from it).
->   Other hero copy is `nowCopy`. The buttons sit bottom-right (stacked, full width
->   on phones). PixelSpace has no per-item scenes, so hover does not switch it.
+> - **Hero "Building now" cards:** each `now.items` entry in `content.ts` (1–4: `id`,
+>   `name`, `line`, `art`, optional `href`) renders as a `Hero/HeroCard`: a plain
+>   14px-radius card (`--radius-card-hero`) with a tinted panel on top holding a 32×20 pixel scene
+>   at 65% of the panel and name + description below. It carries `--shadow-hero-rest` (the one
+>   shadow at rest on the page); hover lifts, tilts ±6° with the pointer, slides a
+>   flat sheen and parallaxes the art — all off on touch and under reduced motion.
+>   To add one: add an item to `now`, then add its `art` key to the `ART` map in
+>   `HeroCard.tsx` (a `--viz-*` label colour + a 32×20 grid; unknown keys fall back to
+>   a jade, empty label), and bump `now.updated` (ISO date; the heading's "updated
+>   Nov 19" comes from it). Other hero copy is `nowCopy`. The buttons sit bottom-right
+>   on the same bottom edge as the cards (stacked, full width on phones). PixelSpace
+>   has no per-item scenes, so hover does not switch it.
+> - **One left edge:** the hero uses `--gutter` (globals.css) for its left/right
+>   padding and `.wrap` uses the same max-width + `--margin`, so "Prajesh", "Building
+>   now" and every section heading start at the same x. The hero has no bottom
+>   padding; the gap to the next section is that section's `--gap-section`.
 > - **Sections, in order:** Hero · Experience · Projects · Skills · Education ·
 >   Contact · Footer. There is no Nav component (the hero has its own top bar) and
 >   no Writing section; the blog is a link in the hero bar and Contact.

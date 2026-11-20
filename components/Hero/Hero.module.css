@@ -1,9 +1,14 @@
-/* Hero — flat green-black field, the name in two inks, then the "Building now" cartridges. */
+/* Hero — flat green-black field, the name in two inks, then the "Building now" cards. */
 
+/* No bottom padding: the cards and buttons end exactly at the hero's bottom edge,
+   and the next section's own --gap-section is the only space after them. The
+   hero stops --hero-foot short of the viewport so the cards still sit just inside
+   the first screen. Left/right use --gutter, the same edge as every section. */
 .hero {
+  --hero-foot: clamp(24px, 4vh, 40px);
   position: relative;
-  min-height: 100svh;
-  padding: clamp(20px, 4vw, 40px) var(--margin) clamp(64px, 12vh, 128px);
+  min-height: calc(100svh - var(--hero-foot));
+  padding: clamp(20px, 4vw, 40px) var(--gutter) 0;
   display: grid;
   grid-template-rows: auto 1fr;
   background: transparent; /* the full-page StarField shows through continuously */
@@ -38,9 +43,8 @@
   color: var(--ink);
 }
 
-/* the name sits under the top bar; "Building now" + the cartridges are pushed to
-   the bottom of this column, so the cartridges' bottom edge lines up with the
-   buttons' bottom (both sit on the hero's bottom padding) */
+/* the name sits under the top bar; "Building now" + the cards are pushed to the
+   bottom of this column, so the cards' bottom edge lines up with the buttons' */
 .main {
   position: relative;
   z-index: 1;
@@ -57,7 +61,7 @@
   font-weight: 600;
   letter-spacing: -0.04em;
   /* pull the box left by the P/K side bearing so the letter stems, not the
-     glyph boxes, sit on the same left edge as the cartridge row */
+     glyph boxes, sit on the same left edge as the card row */
   margin-left: -0.06em;
   line-height: 0.9; /* a touch looser so ascenders are not shaved by the mask */
   font-size: clamp(5rem, 15vw, 14.375rem);
@@ -85,17 +89,25 @@
   color: var(--ink-dim);
 }
 
-/* "Building now · updated Nov 19" — one quiet line above the cartridges */
+/* "Building now" in ink at --step-lead, then "· updated Nov 19" muted at --step-body */
 .nowHeading {
   margin-top: auto;
   padding-top: clamp(24px, 3.4vh, 40px);
-  color: var(--muted);
-  font-size: var(--step-small);
   font-weight: 400;
-  letter-spacing: 0.01em;
 }
 
-/* the cartridge row: left-aligned, 20px apart, the hero's main element after the name */
+.nowTitle {
+  color: var(--ink);
+  font-size: var(--step-lead);
+  letter-spacing: -0.01em;
+}
+
+.nowMeta {
+  color: var(--muted);
+  font-size: var(--step-body);
+}
+
+/* the card row: left-aligned, 20px apart, the hero's main element after the name */
 .carts {
   display: flex;
   align-items: stretch;
@@ -107,13 +119,13 @@
   display: flex;
 }
 
-/* bottom-right of the hero, on the right content margin and the hero's bottom
-   padding, under the pixel scene column */
+/* bottom-right of the hero: on the right content edge (--gutter) and the same
+   bottom edge as the card row, so the two share one baseline */
 .actions {
   position: absolute;
   z-index: 1;
-  right: var(--margin);
-  bottom: clamp(64px, 12vh, 128px);
+  right: var(--gutter);
+  bottom: 0;
   display: flex;
   align-items: center;
   gap: 12px clamp(16px, 2vw, 24px);
@@ -205,7 +217,7 @@
     font-size: 19vw;
   }
 
-  /* cartridges become a snapping horizontal row that bleeds off the right edge;
+  /* cards become a snapping horizontal row that bleeds off the right edge;
      the left margin is preserved by the hero's own padding */
   .main {
     min-width: 0;

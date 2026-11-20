@@ -38,7 +38,7 @@ export const sections = {
 
 export type SectionKey = keyof typeof sections;
 
-/** The hero's "Building now" cartridges — edit the items and bump `updated`. */
+/** The hero's "Building now" cards — edit the items and bump `updated`. */
 export const now: Now = {
   updated: '2026-11-19',
   items: [
@@ -47,7 +47,7 @@ export const now: Now = {
   ],
 };
 
-/** Copy around the cartridges in the hero. */
+/** Copy around the cards in the hero. */
 export const nowCopy = {
   heading: 'Building now',
   updatedLabel: 'updated',

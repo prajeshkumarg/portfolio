@@ -1,11 +1,11 @@
 /*
  * Hero — the one unique moment on the page. The name is huge and two-ink; under
- * it a "Building now · updated Nov 19" line and a row of game cartridges (one per
- * item in `now`, content.ts — see HeroCartridge). The two buttons, "See my work"
+ * it a "Building now · updated Nov 19" line and a row of cards (one per
+ * item in `now`, content.ts — see HeroCard). The two buttons, "See my work"
  * (lava) and a quiet Résumé, sit bottom-right under the pixel scene (PixelSpace),
  * and stack full-width at the bottom on phones.
  *
- * A Server Component (PixelSpace and HeroCartridge are the client pieces). Elements marked
+ * A Server Component (PixelSpace and HeroCard are the client pieces). Elements marked
  * data-star-avoid are measured by StarField so background stars never draw over
  * them. Everything degrades to a static, readable hero with no JS and under
  * reduced motion.
@@ -13,7 +13,7 @@
 
 import { site, now, nowCopy } from '@/content';
 import PixelSpace from './PixelSpace';
-import HeroCartridge from './HeroCartridge';
+import HeroCard from './HeroCard';
 import styles from './Hero.module.css';
 
 // "2026-11-19" -> "Nov 19", formatted in UTC so the day never shifts
@@ -47,14 +47,16 @@ export default function Hero() {
         </h1>
 
         <h2 className={styles.nowHeading} data-hero-lede data-star-avoid>
-          {nowCopy.heading} {nowCopy.separator} {nowCopy.updatedLabel}{' '}
-          <time dateTime={now.updated}>{updatedLabel}</time>
+          <span className={styles.nowTitle}>{nowCopy.heading}</span>{' '}
+          <span className={styles.nowMeta}>
+            {nowCopy.separator} {nowCopy.updatedLabel} <time dateTime={now.updated}>{updatedLabel}</time>
+          </span>
         </h2>
 
         <ul className={styles.carts} data-hero-lede data-star-avoid>
           {now.items.slice(0, 4).map((item) => (
             <li key={item.id} className={styles.cartItem}>
-              <HeroCartridge item={item} />
+              <HeroCard item={item} />
             </li>
           ))}
         </ul>

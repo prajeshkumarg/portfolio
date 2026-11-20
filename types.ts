@@ -70,17 +70,17 @@ export type SocialLink = {
 
 export type NowItem = {
   id: string;
-  /** The project's name, set on the cartridge label. */
+  /** The project's name, set on the card. */
   name: string;
   /** One line on what it is, under the label. */
   line: string;
-  /** Key into the cartridge label-art map in HeroCartridge. */
+  /** Key into the card art map in HeroCard. */
   art: string;
-  /** Makes the whole cartridge a link. */
+  /** Makes the whole card a link. */
   href?: string;
 };
 
-/** The hero's "Building now" cartridges. Render 1–4 items. */
+/** The hero's "Building now" cards. Render 1–4 items. */
 export type Now = {
   /** ISO date (YYYY-MM-DD) shown as "updated Nov 19". Bump on every edit. */
   updated: string;
