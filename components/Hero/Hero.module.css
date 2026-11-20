@@ -38,21 +38,22 @@
   color: var(--ink);
 }
 
-/* name + Building now + cartridges read as ONE group under the top bar, centred
-   in the space below it so the hero still fills the first viewport */
+/* the name sits under the top bar; "Building now" + the cartridges are pushed to
+   the bottom of this column, so the cartridges' bottom edge lines up with the
+   buttons' bottom (both sit on the hero's bottom padding) */
 .main {
   position: relative;
   z-index: 1;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  justify-content: center;
 }
 
 /* the name: two lines, flush left */
 .name {
   position: relative;
   z-index: 1;
+  margin-top: clamp(24px, 6vh, 64px);
   font-weight: 600;
   letter-spacing: -0.04em;
   /* pull the box left by the P/K side bearing so the letter stems, not the
@@ -86,7 +87,8 @@
 
 /* "Building now · updated Nov 19" — one quiet line above the cartridges */
 .nowHeading {
-  margin-top: clamp(24px, 3.4vh, 40px);
+  margin-top: auto;
+  padding-top: clamp(24px, 3.4vh, 40px);
   color: var(--muted);
   font-size: var(--step-small);
   font-weight: 400;
