@@ -42,7 +42,7 @@ export type SectionKey = keyof typeof sections;
 export const now: Now = {
   updated: '2026-11-19',
   items: [
-    { id: 'psp', name: 'PSP-3000', line: 'Getting a small LLM to run on a 2008 handheld.', art: 'psp' },
+    { id: 'psp', name: 'PSP-Infer', line: 'Getting a small LLM to run on a 2008 handheld.', art: 'psp' },
     { id: 'splat', name: 'Splat renderer', line: 'A parallel CPU renderer for 3D Gaussian splats.', art: 'splat' },
   ],
 };
