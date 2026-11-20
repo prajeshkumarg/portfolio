@@ -5,10 +5,12 @@
  *
  *   scope="viewport" (default)  the page's background: a FIXED, full-viewport layer
  *     that stays still while the content (the hero's name and art, then every
- *     section) scrolls over it. Stars are drawn around the hero UI, not behind it
+ *     section) scrolls over it. It also holds the ring of stars around the hero's
+ *     pixel scene and the pocket by its moon; those stay still too, where the
+ *     planet started, while the planet itself scrolls away. Stars are drawn around the hero UI, not behind it
  *     (see below), measured against the current scroll.
- *   scope="host"  only the stars that hug the hero's pixel scene; fills its parent
- *     (the hero), so the ring and the moon's pocket scroll away with the planet.
+ *   scope="host"  (not used on the page now) the same idea scoped to a parent element,
+ *     so its stars would scroll with that parent.
  *
  * Rendered at full device resolution with smoothing on, so stars are small,
  * SHARP round points (not chunky pixel squares). Density is low; opacity varies
@@ -122,10 +124,12 @@ export default function StarField({ scope = 'viewport' }: { scope?: 'viewport' |
 
       // Stars hugging the hero's pixel scene, placed from its real on-screen rect so
       // they stay round (px around the centre, no page-fraction stretching) on any
-      // viewport. Coordinates are relative to the parent element.
-      const sceneEl = host?.querySelector<HTMLElement>('[data-star-scene]');
+      // viewport. Page coordinates (viewport scope) or relative to the parent (host).
+      const sceneEl = (host ?? document).querySelector<HTMLElement>('[data-star-scene]');
       const sr = sceneEl?.getBoundingClientRect();
-      const o = host ? host.getBoundingClientRect() : { left: 0, top: 0 };
+      // viewport scope: page coordinates, so the cluster stays where the planet
+      // started and does NOT scroll away with it
+      const o = host ? host.getBoundingClientRect() : { left: 0, top: -window.scrollY };
       if (sr && sr.width > 0) {
         const cx = sr.left - o.left + sr.width / 2;
         const cy = sr.top - o.top + sr.height / 2;

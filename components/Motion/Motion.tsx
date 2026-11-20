@@ -83,12 +83,12 @@ export default function Motion() {
       sections.forEach((sec, n) => {
         gsap.fromTo(
           sec,
-          { scale: 1.07, opacity: 0.15, transformOrigin: '50% 0%' },
+          { scale: 1.22, opacity: 0, transformOrigin: '50% 0%' },
           {
             scale: 1,
             opacity: 1,
             ease: 'none',
-            scrollTrigger: { trigger: sec, start: 'top bottom', end: 'top 35%', scrub: true },
+            scrollTrigger: { trigger: sec, start: 'top bottom', end: 'top 25%', scrub: true },
           },
         );
         const inner = sec.querySelector<HTMLElement>(':scope > .wrap');
@@ -97,10 +97,10 @@ export default function Motion() {
             inner,
             { scale: 1, opacity: 1, transformOrigin: '50% 100%' },
             {
-              scale: 0.93,
-              opacity: 0.1,
+              scale: 0.78,
+              opacity: 0,
               ease: 'none',
-              scrollTrigger: { trigger: sec, start: 'bottom 55%', end: 'bottom top', scrub: true },
+              scrollTrigger: { trigger: sec, start: 'bottom 75%', end: 'bottom top', scrub: true },
             },
           );
         }
@@ -113,10 +113,10 @@ export default function Motion() {
           hero,
           { scale: 1, opacity: 1, transformOrigin: '50% 100%' },
           {
-            scale: 0.93,
-            opacity: 0.1,
+            scale: 0.78,
+            opacity: 0,
             ease: 'none',
-            scrollTrigger: { trigger: hero, start: 'bottom 60%', end: 'bottom top', scrub: true },
+            scrollTrigger: { trigger: hero, start: 'bottom 80%', end: 'bottom top', scrub: true },
           },
         );
       }

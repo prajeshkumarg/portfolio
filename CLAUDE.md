@@ -29,12 +29,12 @@ The page is server-rendered markup and CSS; motion is layered on by client compo
 >   the card's left side. Logo files are in `public/logos/`.
 > - **Canvas is explicitly approved on this branch** (no 3D library): `StarField`
 >   and `Hero/PixelSpace` (a pixel scene cycling black hole → ringed planet →
->   crescent moon → mini solar system). StarField has two scopes: the default is the
->   page background, a **fixed, still** full-viewport layer that the hero's content
->   and every section scroll over; `scope="host"` sits inside the hero and only adds
->   the ring/pocket of stars around the pixel scene (via `[data-star-scene]`), so
->   they leave with the planet. Stars skip every `[data-star-avoid]` rect (tested
->   against the current scroll). Both honour reduced motion.
+>   crescent moon → mini solar system). StarField is the page background: a **fixed,
+>   still** full-viewport layer that the hero's content and every section scroll
+>   over. It also holds the ring/pocket of stars around the pixel scene (placed from
+>   `[data-star-scene]`), which stay still where the planet started while the planet
+>   scrolls away. Stars skip every `[data-star-avoid]` rect (tested against the
+>   current scroll). Both honour reduced motion.
 > - **Client components:** `Motion`, `StarField`, `Hero/PixelSpace`,
 >   `Hero/HeroCard` (pointer tilt) and `Projects`; everything else, Hero itself
 >   included, is a Server Component.
@@ -60,7 +60,8 @@ The page is server-rendered markup and CSS; motion is layered on by client compo
 > - GSAP + Lenis (`components/Motion`) are approved here for the hero intro,
 >   scroll reveals (`data-hero-line`, `data-hero-lede`, `data-reveal`) and the
 >   scrubbed zoom transition between sections (each section zooms in as it arrives,
->   its `.wrap` and the hero zoom out as they leave; the fixed starfield stays still).
+>   its `.wrap` and the hero zoom out to ~78% and fade as they leave; the fixed
+>   starfield stays still).
 
 > **History — the notes below describe older branches, not `taste-folio`.**
 
