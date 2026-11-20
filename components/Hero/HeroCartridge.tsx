@@ -1,12 +1,15 @@
+'use client';
+
 /*
  * HeroCartridge — one "Building now" item drawn as a retro game cartridge: a
- * stepped-corner body with grip ridges on top and contact pins along the bottom,
- * an inset label (a 16×16 pixel illustration + the project's name) tinted in one
- * viz colour, and the one-line description underneath. The whole cartridge is the
+ * stepped-corner body whose top is a full-bleed coloured panel holding a 16×16
+ * pixel illustration, then the project's name and one-line description below,
+ * and a strip of contact pins along the bottom edge. The whole cartridge is the
  * link when `href` is set, otherwise a plain figure.
  *
- * Server Component: the lift, the label-border brighten and the PSP cursor blink
- * are pure CSS (hover / focus-visible), all switched off under reduced motion.
+ * Client only for the pointer: moving over a cartridge tilts it and shifts the
+ * illustration (parallax) through the --tx / --ty CSS variables, and the lift +
+ * drop shadow are CSS on hover. Nothing moves under reduced motion.
  *
  * To add a cartridge, add an item to `now` in content.ts and give its `art` key an
  * entry in ART below: a label colour (a --viz-* token) and a 16×16 grid, where
@@ -14,6 +17,7 @@
  * fall back to the jade label with an empty frame.
  */
 
+import { useRef } from 'react';
 import type { NowItem } from '@/types';
 import styles from './HeroCartridge.module.css';
 
@@ -76,7 +80,6 @@ const ART: Record<string, Art> = {
 
 const FALLBACK: Art = { colour: 'var(--viz-jade)', grid: [] };
 
-const GRIPS = 6;
 const PINS = 12;
 
 /** One <rect> per horizontal run of the same character. */
@@ -99,14 +102,25 @@ const FILL: Record<string, string> = { c: styles.pc, i: styles.pi, b: styles.pb 
 
 export default function HeroCartridge({ item }: { item: NowItem }) {
   const art = ART[item.art] ?? FALLBACK;
-  const body = (
-    <span className={styles.body}>
-      <span className={styles.grips} aria-hidden="true">
-        {Array.from({ length: GRIPS }, (_, n) => (
-          <span key={n} />
-        ))}
-      </span>
+  const ref = useRef<HTMLElement | null>(null);
 
+  // pointer position over the cartridge, -0.5..0.5 on each axis, as CSS vars
+  const track = (e: React.PointerEvent<HTMLElement>) => {
+    const el = ref.current;
+    if (!el || matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    const r = el.getBoundingClientRect();
+    el.style.setProperty('--tx', String((e.clientX - r.left) / r.width - 0.5));
+    el.style.setProperty('--ty', String((e.clientY - r.top) / r.height - 0.5));
+  };
+  const rest = () => {
+    ref.current?.style.setProperty('--tx', '0');
+    ref.current?.style.setProperty('--ty', '0');
+  };
+  const pointer = { onPointerMove: track, onPointerLeave: rest };
+
+  const body = (
+    <span className={styles.tilt}>
+    <span className={styles.body}>
       <span className={styles.label}>
         <svg
           className={styles.art}
@@ -128,10 +142,12 @@ export default function HeroCartridge({ item }: { item: NowItem }) {
             />
           ) : null}
         </svg>
-        <span className={styles.name}>{item.name}</span>
       </span>
 
-      <span className={styles.line}>{item.line}</span>
+      <span className={styles.text}>
+        <span className={styles.name}>{item.name}</span>
+        <span className={styles.line}>{item.line}</span>
+      </span>
 
       <span className={styles.pins} aria-hidden="true">
         {Array.from({ length: PINS }, (_, n) => (
@@ -139,16 +155,25 @@ export default function HeroCartridge({ item }: { item: NowItem }) {
         ))}
       </span>
     </span>
+    </span>
   );
 
   const style = { '--label': art.colour } as React.CSSProperties;
 
   return item.href ? (
-    <a className={`${styles.cart} ${styles.link}`} href={item.href} target="_blank" rel="noreferrer" style={style}>
+    <a
+      ref={ref as React.RefObject<HTMLAnchorElement>}
+      className={styles.cart}
+      href={item.href}
+      target="_blank"
+      rel="noreferrer"
+      style={style}
+      {...pointer}
+    >
       {body}
     </a>
   ) : (
-    <figure className={styles.cart} style={style}>
+    <figure ref={ref} className={styles.cart} style={style} {...pointer}>
       {body}
     </figure>
   );

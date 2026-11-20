@@ -1,5 +1,5 @@
 /* HeroCartridge — a retro game cartridge. Depth comes from tone (a lighter
-   top/left edge, a darker bottom/right edge), never shadow. */
+   top/left edge, a darker bottom/right edge); the only shadow is the hover lift. */
 
 .cart {
   display: block;
@@ -10,13 +10,39 @@
   --label: var(--viz-jade);
 }
 
+/* tilt + lift live on wrappers outside the clip-path so the drop-shadow (which
+   would be cut off by it) follows the stepped silhouette. --tx / --ty are the
+   pointer position, -0.5..0.5, set by the component. */
+.cart {
+  --tx: 0;
+  --ty: 0;
+  translate: 0 0;
+  transition: translate var(--t-fast) var(--ease-out);
+}
+
+.cart:hover,
+.cart:focus-visible {
+  translate: 0 -8px;
+}
+
+.tilt {
+  display: block;
+  height: 100%;
+  transform: perspective(700px) rotateX(calc(var(--ty) * -9deg)) rotateY(calc(var(--tx) * 9deg));
+  transition: transform var(--t-fast) var(--ease-out), filter var(--t-fast) var(--ease-out);
+}
+
+.cart:hover .tilt,
+.cart:focus-visible .tilt {
+  filter: var(--lift-shadow);
+}
+
 /* the clipped, bordered body: 2-step pixel notches on the top corners */
 .body {
   display: flex;
   flex-direction: column;
   height: 100%;
   min-height: 240px;
-  padding: 14px 12px 10px;
   background: var(--surface);
   border-style: solid;
   border-width: 2px;
@@ -28,36 +54,26 @@
   );
 }
 
-/* five/six thin grip ridges along the top edge */
-.grips {
-  display: flex;
-  justify-content: center;
-  gap: 5px;
-  margin-bottom: 10px;
-}
-
-.grips span {
-  width: 3px;
-  height: 9px;
-  background: var(--surface-2);
-}
-
-/* the inset label: one colour per cartridge */
+/* the illustration fills the top edge to edge, no padding, on a coloured ground;
+   the art drifts opposite the pointer (parallax) */
 .label {
   display: flex;
-  flex-direction: column;
   align-items: center;
-  gap: 8px;
-  padding: 12px 8px 10px;
-  background: color-mix(in srgb, var(--label) 18%, transparent);
-  border: 1.5px solid var(--label);
+  justify-content: center;
+  height: 128px;
+  flex: none;
+  overflow: hidden;
+  background: color-mix(in srgb, var(--label) 30%, var(--surface));
+  border-bottom: 1.5px solid var(--label);
   transition: border-color var(--t-fast) var(--ease-out);
 }
 
 .art {
-  width: 88px;
-  height: 88px;
+  width: 96px;
+  height: 96px;
   display: block;
+  translate: calc(var(--tx) * -10px) calc(var(--ty) * -10px);
+  transition: translate var(--t-fast) var(--ease-out);
 }
 
 .pc {
@@ -72,13 +88,20 @@
   fill: var(--bg);
 }
 
+/* name + description under the label */
+.text {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 12px 12px 0;
+}
+
 .name {
   color: var(--ink);
   font-size: var(--step-body);
   font-weight: 600;
   letter-spacing: -0.01em;
   line-height: 1.15;
-  text-align: center;
 }
 
 .line {
@@ -86,7 +109,6 @@
   -webkit-line-clamp: 3;
   -webkit-box-orient: vertical;
   overflow: hidden;
-  margin-top: 12px;
   color: var(--muted);
   font-size: var(--step-small);
   line-height: 1.4;
@@ -108,24 +130,13 @@
   opacity: 0.35;
 }
 
-/* link cartridges lift, brighten their label border and (PSP) blink the cursor */
-.link {
-  translate: 0 0;
-  transition: translate var(--t-fast) var(--ease-out);
-}
-
-.link:hover,
-.link:focus-visible {
-  translate: 0 -8px;
-}
-
-.link:hover .label,
-.link:focus-visible .label {
+.cart:hover .label,
+.cart:focus-visible .label {
   border-color: color-mix(in srgb, var(--label) 65%, var(--ink));
 }
 
-.link:hover .cursor,
-.link:focus-visible .cursor {
+.cart:hover .cursor,
+.cart:focus-visible .cursor {
   animation: blink 1s steps(1) infinite;
 }
 
@@ -135,18 +146,32 @@
   }
 }
 
+/* reduced motion: no slide, tilt, parallax, shadow or blink — just the border change */
 @media (prefers-reduced-motion: reduce) {
-  .link {
+  .cart,
+  .tilt,
+  .art {
     transition: none;
   }
 
-  .link:hover,
-  .link:focus-visible {
+  .cart:hover,
+  .cart:focus-visible {
     translate: 0 0;
   }
 
-  .link:hover .cursor,
-  .link:focus-visible .cursor {
+  .tilt,
+  .cart:hover .tilt,
+  .cart:focus-visible .tilt {
+    transform: none;
+    filter: none;
+  }
+
+  .art {
+    translate: 0 0;
+  }
+
+  .cart:hover .cursor,
+  .cart:focus-visible .cursor {
     animation: none;
   }
 }

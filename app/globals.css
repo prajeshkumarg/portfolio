@@ -22,6 +22,9 @@
   --ink-dim: #c7c6bd; /* second display ink (hero line two) */
   --cart-hi: #242e2b; /* --surface lightened ~6%: a cartridge's lit top/left edge */
   --cart-lo: #151f1c; /* --surface darkened ~6%: its shaded bottom/right edge */
+  /* the only shadow, on a hovered cartridge (never at rest); drop-shadow so it
+     follows the cartridge's stepped corners */
+  --lift-shadow: drop-shadow(0 16px 18px rgba(0, 0, 0, 0.5));
   --muted: #94a09a; /* secondary notes, meta — ~5:1 on bg */
   --accent: #9fc7b8; /* pale jade — the contact/primary button */
   --accent-ink: #0d1412; /* ink on the jade button */

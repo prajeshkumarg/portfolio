@@ -5,7 +5,7 @@
  * (lava) and a quiet Résumé, sit bottom-right under the pixel scene (PixelSpace),
  * and stack full-width at the bottom on phones.
  *
- * A Server Component (PixelSpace is the client piece). Elements marked
+ * A Server Component (PixelSpace and HeroCartridge are the client pieces). Elements marked
  * data-star-avoid are measured by StarField so background stars never draw over
  * them. Everything degrades to a static, readable hero with no JS and under
  * reduced motion.

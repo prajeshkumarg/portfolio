@@ -32,11 +32,14 @@ The page is server-rendered markup and CSS; motion is layered on by client compo
 >   `[data-star-scene]`, and skips every `[data-star-avoid]` rect) and
 >   `Hero/PixelSpace` (a pixel scene cycling black hole → ringed planet → crescent
 >   moon → mini solar system). Both honour reduced motion.
-> - **Client components:** `Motion`, `StarField`, `Hero/PixelSpace` and `Projects`;
->   everything else, Hero included, is a Server Component.
+> - **Client components:** `Motion`, `StarField`, `Hero/PixelSpace`,
+>   `Hero/HeroCartridge` (pointer tilt) and `Projects`; everything else, Hero itself
+>   included, is a Server Component.
 > - **Hero "Building now" cartridges:** each `now.items` entry in `content.ts`
 >   (1–4: `id`, `name`, `line`, `art`, optional `href`) renders as a game cartridge
->   (`Hero/HeroCartridge`, a Server Component). To add one: add an item to `now`,
+>   (`Hero/HeroCartridge`: full-bleed pixel-art panel on top, name + description
+>   below; hover lifts, tilts, parallaxes the art and adds `--lift-shadow` — the one
+>   shadow, never at rest). To add one: add an item to `now`,
 >   then add its `art` key to the `ART` map in `HeroCartridge.tsx` (a `--viz-*` label
 >   colour + a 16×16 pixel grid; unknown keys fall back to a jade, empty label) —
 >   and bump `now.updated` (ISO date; the heading's "updated Nov 19" comes from it).
