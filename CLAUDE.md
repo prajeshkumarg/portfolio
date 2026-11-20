@@ -98,11 +98,6 @@ The page is server-rendered markup and CSS; motion is layered on by client compo
 > - **Sections, in order:** Hero · Experience · Projects · Skills · Education ·
 >   Contact · Footer. There is no Nav component (the hero has its own top bar) and
 >   no Writing section; the blog is a link in the hero bar and Contact.
-> - GSAP + Lenis (`components/Motion`) are approved here for the hero intro,
->   scroll reveals (`data-hero-line`, `data-hero-lede`, `data-reveal`) and the
->   scrubbed zoom transition between sections (each section zooms in as it arrives,
->   its `.wrap` and the hero zoom out to ~78% and fade as they leave; the fixed
->   starfield stays still).
 
 > **History — the notes below describe older branches, not `taste-folio`.**
 
