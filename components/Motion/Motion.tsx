@@ -6,6 +6,10 @@
  *   data-hero-line   the two hero lines, masked and rising on load (signature)
  *   data-hero-lede   the supporting sentence + button, fading up after
  *   data-reveal      every section's parts, staggered in on scroll
+ *   zoom transitions each section zooms IN as it arrives and its content zooms OUT
+ *                    as it leaves (scrubbed to the scroll, reversible); the hero
+ *                    zooms out too, taking its planet-side stars with it. The fixed
+ *                    starfield behind stays still.
  *   anchors          nav / hash links glide with a long ease-out (Lenis)
  *
  * Renders nothing, so every section stays a Server Component. Lenis gives the
@@ -68,6 +72,54 @@ export default function Motion() {
             clearProps: 'transform',
           }),
       });
+    });
+
+    // zoom out / zoom in between sections. Enter acts on the <section>, exit on its
+    // .wrap child, so the two scrubs never fight over one transform. Origins sit on
+    // the edge that is on screen (top while arriving, bottom while leaving) so tall
+    // sections do not swing about their off-screen centre.
+    ctx.add(() => {
+      const sections = gsap.utils.toArray<HTMLElement>('main > section');
+      sections.forEach((sec, n) => {
+        gsap.fromTo(
+          sec,
+          { scale: 1.07, opacity: 0.15, transformOrigin: '50% 0%' },
+          {
+            scale: 1,
+            opacity: 1,
+            ease: 'none',
+            scrollTrigger: { trigger: sec, start: 'top bottom', end: 'top 35%', scrub: true },
+          },
+        );
+        const inner = sec.querySelector<HTMLElement>(':scope > .wrap');
+        if (inner && n < sections.length - 1) {
+          gsap.fromTo(
+            inner,
+            { scale: 1, opacity: 1, transformOrigin: '50% 100%' },
+            {
+              scale: 0.93,
+              opacity: 0.1,
+              ease: 'none',
+              scrollTrigger: { trigger: sec, start: 'bottom 55%', end: 'bottom top', scrub: true },
+            },
+          );
+        }
+      });
+
+      // the hero leaves the same way (its ring of planet stars is inside it)
+      const hero = document.getElementById('top');
+      if (hero) {
+        gsap.fromTo(
+          hero,
+          { scale: 1, opacity: 1, transformOrigin: '50% 100%' },
+          {
+            scale: 0.93,
+            opacity: 0.1,
+            ease: 'none',
+            scrollTrigger: { trigger: hero, start: 'bottom 60%', end: 'bottom top', scrub: true },
+          },
+        );
+      }
     });
 
     const lenis = new Lenis({
