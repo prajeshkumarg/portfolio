@@ -34,9 +34,14 @@ The page is server-rendered markup and CSS; motion is layered on by client compo
 >   moon → mini solar system). Both honour reduced motion.
 > - **Client components:** `Motion`, `StarField`, `Hero/PixelSpace` and `Projects`;
 >   everything else, Hero included, is a Server Component.
-> - **Hero "Right now" block:** to update it, edit `now` in `content.ts` (1–4 items:
->   `id`, `name`, `status`, optional `href`) and bump `now.updated` (ISO date; the
->   "Updated …" line is formatted from it). The other hero copy is `nowCopy`.
+> - **Hero "Building now" cartridges:** each `now.items` entry in `content.ts`
+>   (1–4: `id`, `name`, `line`, `art`, optional `href`) renders as a game cartridge
+>   (`Hero/HeroCartridge`, a Server Component). To add one: add an item to `now`,
+>   then add its `art` key to the `ART` map in `HeroCartridge.tsx` (a `--viz-*` label
+>   colour + a 16×16 pixel grid; unknown keys fall back to a jade, empty label) —
+>   and bump `now.updated` (ISO date; the heading's "updated Nov 19" comes from it).
+>   Other hero copy is `nowCopy`. The buttons sit bottom-right (stacked, full width
+>   on phones). PixelSpace has no per-item scenes, so hover does not switch it.
 > - **Sections, in order:** Hero · Experience · Projects · Skills · Education ·
 >   Contact · Footer. There is no Nav component (the hero has its own top bar) and
 >   no Writing section; the blog is a link in the hero bar and Contact.

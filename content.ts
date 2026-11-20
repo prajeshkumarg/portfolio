@@ -38,21 +38,20 @@ export const sections = {
 
 export type SectionKey = keyof typeof sections;
 
-/** The hero's "Right now" block — edit the items and bump `updated`. */
+/** The hero's "Building now" cartridges — edit the items and bump `updated`. */
 export const now: Now = {
   updated: '2026-11-19',
   items: [
-    { id: 'psp', name: 'PSP-3000', status: 'Getting a small LLM to run on a 2008 handheld.' },
-    { id: 'kindle', name: 'Kindle', status: 'Jailbroken. Setting up KOReader next.' },
-    { id: 'splat', name: 'Splat renderer', status: 'A parallel CPU renderer for 3D Gaussian splats.' },
+    { id: 'psp', name: 'PSP-3000', line: 'Getting a small LLM to run on a 2008 handheld.', art: 'psp' },
+    { id: 'splat', name: 'Splat renderer', line: 'A parallel CPU renderer for 3D Gaussian splats.', art: 'splat' },
   ],
 };
 
-/** Copy around the "Right now" block in the hero. */
+/** Copy around the cartridges in the hero. */
 export const nowCopy = {
-  heading: 'Right now',
-  updatedLabel: 'Updated',
-  summary: 'Software engineer · NYU Courant MSCS, May 2027',
+  heading: 'Building now',
+  updatedLabel: 'updated',
+  separator: '·',
   ctaLabel: 'See my work',
   ctaHref: '#work',
   resumeLabel: 'Résumé',

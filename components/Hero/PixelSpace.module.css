@@ -22,7 +22,8 @@
 @media (max-width: 1024px) {
   .canvas {
     top: auto;
-    bottom: clamp(80px, 14vh, 140px);
+    /* clear of the hero buttons, which sit bottom-right (Hero.module.css) */
+    bottom: calc(clamp(64px, 12vh, 128px) + 84px);
     transform: none;
     width: clamp(240px, 36vw, 340px);
     right: clamp(-10px, 2vw, 40px);

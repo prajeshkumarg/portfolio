@@ -1,25 +1,25 @@
 /*
  * Hero — the one unique moment on the page. The name is huge and two-ink; under
- * it sits a "Right now" block (what Prajesh is working on, from `now` in
- * content.ts), a one-line summary, and two buttons: "See my work" (lava) and a
- * quiet Résumé link. The pixel scene (PixelSpace) sits on the right on desktop
- * and in its own row on phones.
+ * it a "Building now · updated Nov 19" line and a row of game cartridges (one per
+ * item in `now`, content.ts — see HeroCartridge). The two buttons, "See my work"
+ * (lava) and a quiet Résumé, sit bottom-right under the pixel scene (PixelSpace),
+ * and stack full-width at the bottom on phones.
  *
- * A Server Component (PixelSpace is the client piece). Elements
- * marked data-star-avoid are measured by StarField so background stars never
- * draw over them. Everything degrades to a static, readable hero with no JS and
- * under reduced motion.
+ * A Server Component (PixelSpace is the client piece). Elements marked
+ * data-star-avoid are measured by StarField so background stars never draw over
+ * them. Everything degrades to a static, readable hero with no JS and under
+ * reduced motion.
  */
 
 import { site, now, nowCopy } from '@/content';
 import PixelSpace from './PixelSpace';
+import HeroCartridge from './HeroCartridge';
 import styles from './Hero.module.css';
 
-// "2026-11-19" -> "Nov 19, 2026", formatted in UTC so the day never shifts
+// "2026-11-19" -> "Nov 19", formatted in UTC so the day never shifts
 const updatedLabel = new Date(`${now.updated}T00:00:00Z`).toLocaleDateString('en-US', {
   month: 'short',
   day: 'numeric',
-  year: 'numeric',
   timeZone: 'UTC',
 });
 
@@ -46,40 +46,27 @@ export default function Hero() {
           </span>
         </h1>
 
-        <section className={styles.now} aria-labelledby="now-h" data-hero-lede data-star-avoid>
-          <h2 id="now-h" className={styles.nowHeading}>
-            {nowCopy.heading}
-          </h2>
-          <ul className={styles.nowList}>
-            {now.items.slice(0, 4).map((item) => (
-              <li key={item.id} className={styles.nowRow}>
-                {item.href ? (
-                  <a className={`${styles.nowName} ${styles.nowLink}`} href={item.href}>
-                    {item.name}
-                  </a>
-                ) : (
-                  <span className={styles.nowName}>{item.name}</span>
-                )}
-                <span className={styles.nowStatus}>{item.status}</span>
-              </li>
-            ))}
-          </ul>
-          <p className={styles.updated}>
-            {nowCopy.updatedLabel} <time dateTime={now.updated}>{updatedLabel}</time>
-          </p>
-        </section>
+        <h2 className={styles.nowHeading} data-hero-lede data-star-avoid>
+          {nowCopy.heading} {nowCopy.separator} {nowCopy.updatedLabel}{' '}
+          <time dateTime={now.updated}>{updatedLabel}</time>
+        </h2>
 
-        <div className={styles.foot} data-hero-lede data-star-avoid>
-          <p className={styles.summary}>{nowCopy.summary}</p>
-          <div className={styles.actions}>
-            <a className={styles.cta} href={nowCopy.ctaHref}>
-              {nowCopy.ctaLabel}
-            </a>
-            <a className={styles.quiet} href={site.resumeHref}>
-              {nowCopy.resumeLabel}
-            </a>
-          </div>
-        </div>
+        <ul className={styles.carts} data-hero-lede data-star-avoid>
+          {now.items.slice(0, 4).map((item) => (
+            <li key={item.id} className={styles.cartItem}>
+              <HeroCartridge item={item} />
+            </li>
+          ))}
+        </ul>
+      </div>
+
+      <div className={styles.actions} data-hero-lede data-star-avoid>
+        <a className={styles.cta} href={nowCopy.ctaHref}>
+          {nowCopy.ctaLabel}
+        </a>
+        <a className={styles.quiet} href={site.resumeHref}>
+          {nowCopy.resumeLabel}
+        </a>
       </div>
     </header>
   );

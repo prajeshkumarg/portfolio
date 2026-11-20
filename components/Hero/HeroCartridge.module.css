@@ -1,0 +1,159 @@
+/* HeroCartridge — a retro game cartridge. Depth comes from tone (a lighter
+   top/left edge, a darker bottom/right edge), never shadow. */
+
+.cart {
+  display: block;
+  margin: 0;
+  width: 200px;
+  flex: none;
+  color: inherit;
+  --label: var(--viz-jade);
+}
+
+/* the clipped, bordered body: 2-step pixel notches on the top corners */
+.body {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 240px;
+  padding: 14px 12px 10px;
+  background: var(--surface);
+  border-style: solid;
+  border-width: 2px;
+  border-color: var(--cart-hi) var(--cart-lo) var(--cart-lo) var(--cart-hi);
+  clip-path: polygon(
+    0 8px, 4px 8px, 4px 4px, 8px 4px, 8px 0,
+    calc(100% - 8px) 0, calc(100% - 8px) 4px, calc(100% - 4px) 4px, calc(100% - 4px) 8px, 100% 8px,
+    100% 100%, 0 100%
+  );
+}
+
+/* five/six thin grip ridges along the top edge */
+.grips {
+  display: flex;
+  justify-content: center;
+  gap: 5px;
+  margin-bottom: 10px;
+}
+
+.grips span {
+  width: 3px;
+  height: 9px;
+  background: var(--surface-2);
+}
+
+/* the inset label: one colour per cartridge */
+.label {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 8px 10px;
+  background: color-mix(in srgb, var(--label) 18%, transparent);
+  border: 1.5px solid var(--label);
+  transition: border-color var(--t-fast) var(--ease-out);
+}
+
+.art {
+  width: 88px;
+  height: 88px;
+  display: block;
+}
+
+.pc {
+  fill: var(--label);
+}
+
+.pi {
+  fill: var(--ink);
+}
+
+.pb {
+  fill: var(--bg);
+}
+
+.name {
+  color: var(--ink);
+  font-size: var(--step-body);
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  line-height: 1.15;
+  text-align: center;
+}
+
+.line {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  margin-top: 12px;
+  color: var(--muted);
+  font-size: var(--step-small);
+  line-height: 1.4;
+}
+
+/* the edge connector: a strip of tiny contact pins */
+.pins {
+  display: flex;
+  justify-content: center;
+  gap: 5px;
+  margin-top: auto;
+  padding-top: 12px;
+}
+
+.pins span {
+  width: 4px;
+  height: 6px;
+  background: var(--muted);
+  opacity: 0.35;
+}
+
+/* link cartridges lift, brighten their label border and (PSP) blink the cursor */
+.link {
+  translate: 0 0;
+  transition: translate var(--t-fast) var(--ease-out);
+}
+
+.link:hover,
+.link:focus-visible {
+  translate: 0 -8px;
+}
+
+.link:hover .label,
+.link:focus-visible .label {
+  border-color: color-mix(in srgb, var(--label) 65%, var(--ink));
+}
+
+.link:hover .cursor,
+.link:focus-visible .cursor {
+  animation: blink 1s steps(1) infinite;
+}
+
+@keyframes blink {
+  50% {
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .link {
+    transition: none;
+  }
+
+  .link:hover,
+  .link:focus-visible {
+    translate: 0 0;
+  }
+
+  .link:hover .cursor,
+  .link:focus-visible .cursor {
+    animation: none;
+  }
+}
+
+/* phones: each cartridge is ~70vw, max 220px, inside a snapping scroll row */
+@media (max-width: 600px) {
+  .cart {
+    width: min(70vw, 220px);
+  }
+}
